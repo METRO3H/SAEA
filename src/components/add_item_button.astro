@@ -1,0 +1,25 @@
+
+---
+const {button_text_content, button_color} = Astro.props
+---
+
+<button type="button" class=`btn ${button_color} btn-lg add-item` data-mdb-ripple-init>{button_text_content}</>
+
+<script>
+
+  const add_item_buttons = document.querySelectorAll('button.add-item');
+
+  // Handle clicks on each button.
+  add_item_buttons.forEach((button) => {
+    button.addEventListener('click', () => {
+      console.log("BRUF")
+    });
+  });
+
+</script>
+
+<style>
+    .add-item{
+        margin-top: 11px;
+    }
+</style>

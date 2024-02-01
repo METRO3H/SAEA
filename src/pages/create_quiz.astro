@@ -1,89 +1,76 @@
 ---
-import BaseHead from '../components/BaseHead.astro';
-import Header from '../components/Header.astro';
-import Footer from '../components/Footer.astro';
+import BaseHead from "../components/BaseHead.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import AddItemButton from "../components/add_item_button.astro";
+import QuestionListItem from "../components/question/question_list_item.astro";
 ---
 
 <html lang="en">
-	<head>
-		<BaseHead title= "Crear Quiz" description= "Crear Quiz" />
-    </head>
-    <body>
-        <Header/>
-        <main>
-            <div id="question-card-container">
-                <div  id="question-list-container">
-                  <div class="list-group list-group-light" id="list-tab" role="tablist">
-                    <a class="list-group-item list-group-item-action active px-3 border-0" id="list-home-list"
-                      data-mdb-list-init href="#list-home" role="tab" aria-controls="list-home">Pregunta 1</a>
-                    <a class="list-group-item list-group-item-action px-3 border-0" id="list-profile-list"
-                      data-mdb-list-init href="#list-profile" role="tab" aria-controls="list-profile">Profile</a>
-                  </div>
-                </div>
-                <div id="question-content-container">
-                  <div class="tab-content" id="nav-tabContent">
-                    <div class="tab-pane fade show active" id="list-home" role="tabpanel"
-                      aria-labelledby="list-home-list">
+  <head>
+    <BaseHead title="Crear Quiz" description="Crear Quiz" />
+  </head>
+  <body>
+    <Header />
+    <main>
+      <div id="question-card-container">
+        <div id="question-list-container">
+          <QuestionListItem question_list_item_name="Pregunta 56" />
+        </div>
+        <div id="question-content-container">
+          <div class="tab-content">
 
-                        <h2 class="h1 fw-bold"> Pregunta 1</h2>
-                        <hr/>
-                      <div class="form-outline" data-mdb-input-init>
-                        <i class="fas fa-exclamation-circle trailing"></i>
-                        <textarea class="form-control" id="textAreaExample" rows="1"></textarea>
-                        <label class="form-label" for="textAreaExample">Pregunta</label>
-                      </div>
+            <div
+              class="tab-pane fade"
+              id="list-profile"
+              role="tabpanel"
+              aria-labelledby="list-profile-list"
+            >
+              Some placeholder content in a paragraph relating to "Profile". And
+              some more content, used here just to pad out and fill this tab
+              panel. In production, you would obviously have more real content
+              here. And not just text. It could be anything, really. Text,
+              images, forms.
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
 
-                    </div>
-                    <div class="tab-pane fade" id="list-profile" role="tabpanel" aria-labelledby="list-profile-list">
-                      Some placeholder content in a paragraph relating to "Profile". And some more content, used here just
-                      to pad out and fill this tab panel. In production, you would obviously have more real content here.
-                      And not just text. It could be anything, really. Text, images, forms.
-                    </div>
-                  </div>
-                </div>
-              </div>
-        </main>
-
-        <Footer/>
-    </body>
-
-</html>
-
-<style>
-    #question-card-container{
+    <Footer />
+    <style>
+      #question-card-container {
         display: grid;
         grid-template-columns: 1fr 5fr;
         width: 805px;
         height: 90%;
         margin: 0;
         padding: 0;
-		background: white;
-		box-shadow: 0 2px 8px rgba(var(--black), 5%);
+        background: white;
+        box-shadow: 0 2px 8px rgba(var(--black), 5%);
         border-radius: 11px;
-        
-    }
-    #question-list-container{
-        width: 150px;
+      }
+      #question-list-container {
+        width: 180px;
         padding: 0;
-
-    }
-    #question-content-container{
+      }
+      #question-content-container {
         display: flex;
         flex-direction: column;
         padding-left: 21px;
         padding-right: 21px;
-        
+
         margin-top: 11px;
-    }
-    .form-outline{
+      }
+      .form-outline {
         padding-top: 8px;
-    }
+      }
 
-    @media (max-width: 805px) {
-    #question-card-container {
-      width: 100%;
-    }
-}
-    
-
-</style>
+      @media (max-width: 805px) {
+        #question-card-container {
+          width: 100%;
+        }
+      }
+    </style>
+  </body>
+</html>
