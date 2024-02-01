@@ -1,0 +1,39 @@
+---
+import AddItemButton from "../add_item_button.astro";
+import AnswerItem from "./answer_item.astro";
+const { question_content_item_number, add_class = "" } = Astro.props;
+---
+
+<div
+  class=`tab-pane show ${add_class}`
+  id=`question-content-item-${question_content_item_number}`
+  role="tabpanel"
+  aria-labelledby=`question-list-item-${question_content_item_number}`
+>
+  <h2 class="h1 fw-bold">
+    <i class="far fa-circle-question trailing"></i> Pregunta {
+      question_content_item_number
+    }
+  </h2>
+  <hr />
+  <div class="form-outline" data-mdb-input-init>
+    <i class="fas fa-circle-question trailing"></i>
+    <textarea class="form-control" id="textAreaExample" rows="1"></textarea>
+    <label class="form-label" for="textAreaExample">Pregunta</label>
+  </div>
+  <AnswerItem/>
+  <AnswerItem/>
+  
+
+  <AddItemButton
+    button_text_content="Añadir respuesta"
+    button_color="btn-outline-primary"
+  />
+</div>
+
+
+<style>
+  .form-outline {
+    padding-top: 8px;
+  }
+</style>

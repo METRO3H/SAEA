@@ -2,8 +2,9 @@
 import BaseHead from "../components/BaseHead.astro";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
-import AddItemButton from "../components/add_item_button.astro";
 import QuestionListItem from "../components/question/question_list_item.astro";
+import QuestionContentItem from "../components/question/question_content_item.astro";
+import { question_number } from "../components/question/const_var";
 ---
 
 <html lang="en">
@@ -15,12 +16,35 @@ import QuestionListItem from "../components/question/question_list_item.astro";
     <main>
       <div id="question-card-container">
         <div id="question-list-container">
-          <QuestionListItem question_list_item_name="Pregunta 56" />
+          <div class="list-group list-group-light" id="list-tab" role="tablist">
+            <QuestionListItem
+              question_list_item_number={question_number}
+              add_class="active"
+            />
+
+            <QuestionListItem question_list_item_number={question_number + 1} />
+            <QuestionListItem question_list_item_number={question_number + 2} />
+            <QuestionListItem question_list_item_number={question_number + 3} />
+          </div>
         </div>
+
         <div id="question-content-container">
           <div class="tab-content">
+            <QuestionContentItem
+              question_content_item_number={question_number}
+              add_class="active"
+            />
+            <QuestionContentItem
+              question_content_item_number={question_number + 1}
+            />
+            <QuestionContentItem
+              question_content_item_number={question_number + 2}
+            />
+            <QuestionContentItem
+              question_content_item_number={question_number + 3}
+            />
 
-            <div
+            <!--             <div
               class="tab-pane fade"
               id="list-profile"
               role="tabpanel"
@@ -31,7 +55,7 @@ import QuestionListItem from "../components/question/question_list_item.astro";
               panel. In production, you would obviously have more real content
               here. And not just text. It could be anything, really. Text,
               images, forms.
-            </div>
+            </div> -->
           </div>
         </div>
       </div>
@@ -61,9 +85,6 @@ import QuestionListItem from "../components/question/question_list_item.astro";
         padding-right: 21px;
 
         margin-top: 11px;
-      }
-      .form-outline {
-        padding-top: 8px;
       }
 
       @media (max-width: 805px) {
