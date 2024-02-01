@@ -7,12 +7,16 @@
     "start": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "node:watcher": "nodemon --watch src/**/* -e js,ts,astro --exec npm run build",
+    "node:server": "nodemon server.js"
   },
   "dependencies": {
     "@astrojs/mdx": "^2.1.1",
+    "@astrojs/node": "^8.1.0",
     "@astrojs/rss": "^4.0.4",
     "@astrojs/sitemap": "^3.0.5",
-    "astro": "^4.2.8"
+    "astro": "^4.2.8",
+    "express": "^4.18.2"
   }
 }
