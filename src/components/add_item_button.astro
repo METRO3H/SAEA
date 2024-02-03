@@ -5,8 +5,10 @@ const { button_text_content, button_color } = Astro.props;
 <button
   type="button"
   class=`btn ${button_color} btn-lg add-item`
-  data-mdb-ripple-init>{button_text_content}</button
+  data-mdb-ripple-init
 >
+  {button_text_content}
+</button>
 
 <script>
   const add_item_button = document.querySelectorAll("button.add-item");
@@ -21,7 +23,7 @@ const { button_text_content, button_color } = Astro.props;
       button.parentElement?.insertBefore(answer_item, button);
       console.log("BRUF");
       answer_item = answer_item.cloneNode(true) as HTMLElement;
-      iterator++
+      iterator++;
     });
   });
 </script>
