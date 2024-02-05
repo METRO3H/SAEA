@@ -4,28 +4,94 @@ const { question_content_item_number, add_class = "" } = Astro.props;
 ---
 
 <div
-  class=`tab-pane show ${add_class}`
+  class=`tab-pane show question-content-item ${add_class}`
   id=`question-content-item-${question_content_item_number}`
   role="tabpanel"
   aria-labelledby=`question-list-item-${question_content_item_number}`
 >
-  <h2 class="h1 fw-bold">
-    <i class="far fa-circle-question trailing"></i> Pregunta {
-      question_content_item_number
-    }
-  </h2>
-  <hr />
-  <div class="form-outline" data-mdb-input-init>
-    <i class="fas fa-circle-question trailing"></i>
-    <textarea class="form-control" id="textAreaExample" rows="1"></textarea>
-    <label class="form-label" for="textAreaExample">Pregunta</label>
-  </div>
+  <div id="question-content-title-container">
+    <h2 class="h1 fw-bold">
+      <i class="far fa-circle-question trailing"></i> Pregunta {
+        question_content_item_number
+      }
+    </h2>
 
-  <AnswerItemLayout client:load />
+    <button class="btn btn-dark btn-lg btn-rounded" id="save-question-item">
+      <i class="far fa-bookmark" style="padding-right: 4px;"></i> GUARDAR</button
+    >
+  </div>
+  <hr />
+  <form id=`question-form-${question_content_item_number}`>
+    <div class="form-outline" data-mdb-input-init>
+      <i class="fas fa-circle-question trailing"></i>
+      <textarea class="form-control" id="textAreaExample" rows="1"></textarea>
+      <label class="form-label" for="textAreaExample">Pregunta</label>
+    </div>
+    <AnswerItemLayout client:load />
+  </form>
 </div>
 
 <style is:global>
   .add-item {
     margin-top: 11px;
+    margin-left: 21px;
+    width: 200px;
+  }
+  .remove-button {
+    margin-left: 15px;
+  }
+  .answer-items-section {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    padding-top: 15px;
+  }
+  #question-content-title-container {
+    display: flex;
+    justify-content: space-between;
   }
 </style>
+
+<script>
+  document
+    .getElementById("save-question-item")!
+    .addEventListener("click", function (event: MouseEvent) {
+      event.preventDefault(); // Prevenir el comportamiento predeterminado del botón
+      console.log("BRUF");
+      // Obtener todas las respuestas dentro del contenedor
+      const answers = document.querySelectorAll("#question-form-1 .form-check");
+
+       // Crear un array para almacenar las preguntas y si están marcadas como correctas
+      const data_form : { number: number, answer: string; is_correct: boolean }[] = [];
+
+
+      answers.forEach((answer, index) => {
+        const answer_text = (
+        answer.querySelector(".input-text") as HTMLInputElement
+        ).value;
+        const answer_value = (
+        answer.querySelector(".input-box") as HTMLInputElement
+        ).checked;
+
+        // Agregar la pregunta y si es correcta al array de datos
+        data_form.push({
+          number: index + 1,
+          answer: answer_text,
+          is_correct: answer_value,
+        });
+      });
+
+      // Aquí puedes hacer lo que quieras con los datos del formulario
+      console.log(data_form);
+
+/*     //Disparar manualmente el evento submit del formulario
+      (
+        document.getElementById("miFormulario") as HTMLFormElement
+      ).dispatchEvent(new Event("submit"));  */
+    
+    
+    }); 
+
+
+
+</script>
