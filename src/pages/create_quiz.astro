@@ -23,8 +23,8 @@ import {question_number} from "../components/question/const_var";
             />
 
             <QuestionListItem question_list_item_number={question_number + 1} />
-            <QuestionListItem question_list_item_number={question_number + 2} />
-            <QuestionListItem question_list_item_number={question_number + 3} />
+<!--             <QuestionListItem question_list_item_number={question_number + 2} />
+            <QuestionListItem question_list_item_number={question_number + 3} /> -->
           </div>
         </div>
 
@@ -37,12 +37,12 @@ import {question_number} from "../components/question/const_var";
             <QuestionContentItem
               question_content_item_number={question_number + 1}
             />
-            <QuestionContentItem
+<!--             <QuestionContentItem
               question_content_item_number={question_number + 2}
             />
             <QuestionContentItem
               question_content_item_number={question_number + 3}
-            />
+            /> -->
           </div>
         </div>
       </div>
@@ -85,14 +85,21 @@ import {question_number} from "../components/question/const_var";
 
           const data_form = Get_Data_Form();
           console.log(data_form);
+          Start_Animation(); 
           fetch("/request/create_form", {
             method: "POST",
             headers: {"content-type": "application/json"},
             body: JSON.stringify(data_form),
           })
             .then((response) => response.json())
-            .then((data) => console.log(data))
-            .catch((error) => console.error("Error : ", error));
+            .then((data) => {
+              console.log(data.message)
+              End_Animation(data.message, true);
+            })
+            .catch((error) => {
+              console.error("Error : ", error);
+              End_Animation(error.message, false);
+            });
         });
       });
 
@@ -143,6 +150,47 @@ import {question_number} from "../components/question/const_var";
         });
 
         return data_form;
+      }
+
+      import {Modal} from "bootstrap";
+
+      function Start_Animation() {
+        const modal = new Modal("#staticBackdrop");
+        modal.show();
+
+        return false;
+      }
+
+      function End_Animation(message, is_correct) {
+
+        (
+          document.querySelector(".check-mark") as HTMLDivElement
+        ).style.display = "block";
+
+        document.documentElement.style.setProperty("--cicleFlow", "forwards");
+        document.documentElement.style.setProperty(
+          "--finalBorder",
+          "rgb(215, 215, 231) rgb(215, 215, 231) rgb(215, 215, 231) rgb(215, 215, 231)"
+        );
+        document.documentElement.style.setProperty(
+          "--h1Animation",
+          "h1-animation-2"
+        );
+
+        const modal_message_element = document.querySelector("#loadMessage") as HTMLElement
+        if(is_correct){
+          const link = document.createElement("a")
+          link.href = message
+          link.textContent = "Quiz URL"
+          modal_message_element.textContent = message;
+          
+          modal_message_element.append(link)
+          return
+        } 
+
+        modal_message_element.textContent = message;
+        return
+
       }
     </script>
   </body>

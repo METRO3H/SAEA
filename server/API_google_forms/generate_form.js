@@ -4,14 +4,19 @@ import google from "@googleapis/forms";
 import {authenticate} from "@google-cloud/local-auth";
 
 export default async function (data) {
+
   const access_form_response = await User_Authentication();
   const create_form_response = await Create_Form(access_form_response);
+
   await Fill_Form(access_form_response, create_form_response, data);
 
   const form_URL = create_form_response.data.responderUri;
+  
   console.log("\nForm generado con éxito!!")
   console.log(`\nURL : ${form_URL}`)
+
   return form_URL;
+
 }
 
 async function User_Authentication() {
@@ -55,7 +60,7 @@ async function Create_Form(form_access) {
     ],
   };
 
-  const res = await form_access.forms.batchUpdate({
+    await form_access.forms.batchUpdate({
     formId: create_form_response.data.formId,
     requestBody: updateRequest,
   });
@@ -64,6 +69,7 @@ async function Create_Form(form_access) {
 }
 
 async function Fill_Form(access_form_response, create_form_response, data) {
+
   for (let i = 0; i < data.length; i++) {
     const answers = [];
     const correct_answers = [];
@@ -80,13 +86,14 @@ async function Fill_Form(access_form_response, create_form_response, data) {
 
     const new_item = await Create_Item(question, answers, correct_answers, i);
 
-    await access_form_response.forms.batchUpdate({
-      formId: create_form_response.data.formId,
-      requestBody: new_item,
-    });
+      await access_form_response.forms.batchUpdate({
+        formId: create_form_response.data.formId,
+        requestBody: new_item,
+      });
 
     console.log(`Pregunta ${i + 1} agregada...`);
   }
+
   return;
 }
 
