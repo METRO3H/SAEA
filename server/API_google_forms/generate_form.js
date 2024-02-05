@@ -2,130 +2,132 @@
 import path from "path";
 import google from "@googleapis/forms";
 import {authenticate} from "@google-cloud/local-auth";
-import { fileURLToPath } from 'url';
 
 export default async function (data) {
+  const access_form_response = await User_Authentication();
+  const create_form_response = await Create_Form(access_form_response);
+  await Fill_Form(access_form_response, create_form_response, data);
 
-   const response = await runSample()
-
-   console.log(response)
-  return "bruf";
+  const form_URL = create_form_response.data.responderUri;
+  console.log("\nForm generado con éxito!!")
+  console.log(`\nURL : ${form_URL}`)
+  return form_URL;
 }
 
+async function User_Authentication() {
+  const main_folder = process.cwd();
+  const authClient = await authenticate({
+    keyfilePath: path.join(main_folder, "credentials.json"),
+    scopes: "https://www.googleapis.com/auth/drive",
+  });
 
-async function runSample(query) {
-    const main_folder = process.cwd()
-    const authClient = await authenticate({
-      keyfilePath: path.join(main_folder, "credentials.json"),
-      scopes: "https://www.googleapis.com/auth/drive",
-    });
-    const forms = google.forms({
-      version: "v1",
-      auth: authClient,
-    });
-    const newForm = {
-      info: {
-        title: "TEST 1 Google forms API",
-      },
-    };
-    const createResponse = await forms.forms.create({
-      requestBody: newForm,
-    });
-    
-    console.log("Link : " + createResponse.data.responderUri);
+  const forms = google.forms({
+    version: "v1",
+    auth: authClient,
+  });
 
-    // Request body to convert form to a quiz
-    const updateRequest = {
-      requests: [
-        {
-          updateSettings: {
-            settings: {
-              quizSettings: {
-                isQuiz: true,
-              },
+  return forms;
+}
+async function Create_Form(form_access) {
+  const newForm = {
+    info: {
+      title: "TEST 1 Google forms API",
+    },
+  };
+
+  const create_form_response = await form_access.forms.create({
+    requestBody: newForm,
+  });
+
+  // Request body to convert form to a quiz
+  const updateRequest = {
+    requests: [
+      {
+        updateSettings: {
+          settings: {
+            quizSettings: {
+              isQuiz: true,
             },
-            updateMask: "quizSettings.isQuiz",
           },
+          updateMask: "quizSettings.isQuiz",
         },
-      ],
-    };
+      },
+    ],
+  };
 
-    const res = await forms.forms.batchUpdate({
-      formId: createResponse.data.formId,
-      requestBody: updateRequest,
+  const res = await form_access.forms.batchUpdate({
+    formId: create_form_response.data.formId,
+    requestBody: updateRequest,
+  });
+
+  return create_form_response;
+}
+
+async function Fill_Form(access_form_response, create_form_response, data) {
+  for (let i = 0; i < data.length; i++) {
+    const answers = [];
+    const correct_answers = [];
+
+    const question = data[i].question;
+
+    data[i].answers.forEach((item) => {
+      answers.push({value: item.answer});
+
+      if (item.is_correct == true) {
+        correct_answers.push({value: item.answer});
+      }
     });
 
-    for (let i = 0; i < 4; i++) {
-      const question =
-        "Which of these singers was not a member of Destiny's Child?";
-      const answers = [
-        "Kelly Rowland",
-        "Beyoncé",
-        "Rihanna",
-        "Michelle Williams",
-      ];
-      const correct_answers = ["Rihanna"];
-      const answers_map = answers.map((name) => ({value: name}));
-      const correct_answers_map = correct_answers.map((name) => ({
-        value: name,
-      }));
+    const new_item = await Create_Item(question, answers, correct_answers, i);
 
-      const request_new_item = Create_Item(
-        question,
-        answers_map,
-        correct_answers_map,
-        i
-      );
-
-      await Add_New_Item(forms, createResponse, request_new_item);
-    }
-
-    return;
-  }
-
-  async function Add_New_Item(forms, createResponse, request_new_item) {
-    const response_add_item = await forms.forms.batchUpdate({
-      formId: createResponse.data.formId,
-      requestBody: request_new_item,
+    await access_form_response.forms.batchUpdate({
+      formId: create_form_response.data.formId,
+      requestBody: new_item,
     });
 
-    return response_add_item.data;
+    console.log(`Pregunta ${i + 1} agregada...`);
   }
+  return;
+}
 
-  function Create_Item(question, answers_map, correct_answers_map, position) {
-    console.log(position);
-    const request_new_item = {
-      requests: [
-        {
-          createItem: {
-            item: {
-              title: question,
-              questionItem: {
-                question: {
-                  required: true,
-                  grading: {
-                    pointValue: 2,
-                    correctAnswers: {
-                      answers: correct_answers_map,
-                    },
-                    whenRight: {text: "You got it!"},
-                    whenWrong: {text: "Sorry, that's wrong"},
+async function Create_Item(
+  question,
+  answers_map,
+  correct_answers_map,
+  position
+) {
+  const new_item = {
+    requests: [
+      {
+        createItem: {
+          item: {
+            title: question,
+            questionItem: {
+              question: {
+                required: true,
+                grading: {
+                  pointValue: 2,
+                  correctAnswers: {
+                    answers: correct_answers_map,
                   },
-                  choiceQuestion: {
-                    type: "RADIO",
-                    options: answers_map,
-                  },
+                  whenRight: {text: "You got it!"},
+                  whenWrong: {text: "Sorry, that's wrong"},
+                },
+                choiceQuestion: {
+                  type: "RADIO",
+                  options: answers_map,
                 },
               },
             },
+          },
 
-            location: {
-              index: position,
-            },
+          location: {
+            index: position,
           },
         },
-      ],
-    };
+      },
+    ],
+  };
 
-    return request_new_item;
-  }
+  return new_item;
+}

@@ -1,12 +1,13 @@
 "use strict";
 
-const path = require("path");
-const google = require("@googleapis/forms");
-const { authenticate } = require("@google-cloud/local-auth");
+import path from "path";
+import google from "@googleapis/forms";
+import {authenticate} from "@google-cloud/local-auth";
 
-async function runSample(query) {
+
+export default async function runSample(query) {
   const authClient = await authenticate({
-    keyfilePath: path.join(__dirname, "credentials.json"),
+    keyfilePath: path.join(process.cwd(), "credentials.json"),
     scopes: "https://www.googleapis.com/auth/drive",
   });
   const forms = google.forms({
@@ -58,6 +59,9 @@ async function runSample(query) {
     const answers_map = answers.map((name) => ({ value: name }));
     const correct_answers_map = correct_answers.map((name) => ({value: name}))
 
+    console.log(answers_map)
+    console.log(correct_answers_map)
+    
     const request_new_item = Create_Item(question, answers_map, correct_answers_map, i);
 
     await Add_New_Item(forms, createResponse, request_new_item);
@@ -65,11 +69,6 @@ async function runSample(query) {
 
   return
 }
-
-if (module === require.main) {
-  runSample().catch(console.error);
-}
-module.exports = runSample;
 
 async function Add_New_Item(forms, createResponse, request_new_item) {
   const response_add_item = await forms.forms.batchUpdate({
@@ -117,3 +116,5 @@ function Create_Item(question, answers_map, correct_answers_map, position) {
 
   return request_new_item;
 }
+
+
