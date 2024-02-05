@@ -9,14 +9,14 @@ function CheckboxComponent({
   return (
     <div className="form-check">
       <input
-        className="form-check-input input-box"
+        className="form-check-input answer-input-box"
         type="checkbox"
         value=""
         id={check_box_id}
       />
 
       <div className="group">
-        <input required type="text" className="input input-text" autoComplete="no" />
+        <input required type="text" className="input answer-input-text" autoComplete="no" />
         <span className="highlight"></span>
         <span className="bar"></span>
         <label htmlFor={check_box_key}>{check_box_label}</label>

@@ -4,7 +4,7 @@ import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import QuestionListItem from "../components/question/question_list_item.astro";
 import QuestionContentItem from "../components/question/question_content_item.astro";
-import { question_number } from "../components/question/const_var";
+import {question_number} from "../components/question/const_var";
 ---
 
 <html lang="en">
@@ -78,5 +78,72 @@ import { question_number } from "../components/question/const_var";
         }
       }
     </style>
+    <script>
+      document
+        .getElementById("save-question-item")!
+        .addEventListener("click", function (event: MouseEvent) {
+          event.preventDefault(); // Prevenir el comportamiento predeterminado del botón
+
+          const data_form = Get_Data_Form();
+
+          fetch("/server.js", {
+            method: "POST",
+            headers: {"content-type": "application/json"},
+            body: JSON.stringify(data_form),
+          })
+            .then((response) => response.json())
+            .then((data) => console.log(data))
+            .catch((error) => console.error("Error : ", error));
+        });
+
+      function Get_Data_Form() {
+        const questions = document.querySelectorAll(".question-content-item");
+
+        const data_form: {
+          question: String;
+          answers: object;
+        }[] = [];
+
+        questions.forEach((question_item) => {
+          // Obtener todas las respuestas dentro de la pregunta
+          const question_text = (
+            question_item.querySelector(
+              ".question-input-text"
+            ) as HTMLTextAreaElement
+          ).value;
+
+          const answers = question_item.querySelectorAll(
+            ".question-answers .form-check"
+          );
+
+          // Crear un array para almacenar las respuestas y si están marcadas como correctas
+          const answers_data: {
+            answer: string;
+            is_correct: boolean;
+          }[] = [];
+          answers.forEach((answer, index) => {
+            const answer_text = (
+              answer.querySelector(".answer-input-text") as HTMLInputElement
+            ).value;
+            const answer_value = (
+              answer.querySelector(".answer-input-box") as HTMLInputElement
+            ).checked;
+
+            // Agregar la pregunta y si es correcta al array de datos
+            answers_data.push({
+              answer: answer_text,
+              is_correct: answer_value,
+            });
+          });
+
+          data_form.push({
+            question: question_text,
+            answers: answers_data,
+          });
+        });
+
+        return data_form;
+      }
+    </script>
   </body>
 </html>

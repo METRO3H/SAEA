@@ -1,12 +1,13 @@
 .group {
   position: relative;
+  width: 300px;
 }
 
 .input {
   font-size: 16px;
   padding: 10px 10px 10px 5px;
   display: block;
-  width: 200px;
+  width: 300px;
   border: none;
   border-bottom: 1px solid #bdbdbd;
   background: transparent;
@@ -39,7 +40,7 @@ label {
 .bar {
   position: relative;
   display: block;
-  width: 200px;
+  width: 300px;
 }
 
 .bar:before,
