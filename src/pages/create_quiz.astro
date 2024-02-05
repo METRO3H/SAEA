@@ -79,13 +79,12 @@ import {question_number} from "../components/question/const_var";
       }
     </style>
     <script>
-      document
-        .getElementById("save-question-item")!
-        .addEventListener("click", function (event: MouseEvent) {
+      document.querySelectorAll(".save-question-item")!.forEach((button) => {
+        button.addEventListener("click", function (event: MouseEvent) {
           event.preventDefault(); // Prevenir el comportamiento predeterminado del botón
 
           const data_form = Get_Data_Form();
-
+          console.log(data_form);
           fetch("/server.js", {
             method: "POST",
             headers: {"content-type": "application/json"},
@@ -95,6 +94,7 @@ import {question_number} from "../components/question/const_var";
             .then((data) => console.log(data))
             .catch((error) => console.error("Error : ", error));
         });
+      });
 
       function Get_Data_Form() {
         const questions = document.querySelectorAll(".question-content-item");
