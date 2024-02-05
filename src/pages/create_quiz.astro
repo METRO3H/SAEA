@@ -23,7 +23,7 @@ import {question_number} from "../components/question/const_var";
             />
 
             <QuestionListItem question_list_item_number={question_number + 1} />
-<!--             <QuestionListItem question_list_item_number={question_number + 2} />
+            <!--             <QuestionListItem question_list_item_number={question_number + 2} />
             <QuestionListItem question_list_item_number={question_number + 3} /> -->
           </div>
         </div>
@@ -37,7 +37,7 @@ import {question_number} from "../components/question/const_var";
             <QuestionContentItem
               question_content_item_number={question_number + 1}
             />
-<!--             <QuestionContentItem
+            <!--             <QuestionContentItem
               question_content_item_number={question_number + 2}
             />
             <QuestionContentItem
@@ -85,20 +85,27 @@ import {question_number} from "../components/question/const_var";
 
           const data_form = Get_Data_Form();
           console.log(data_form);
-          Start_Animation(); 
+          Start_Animation();
           fetch("/request/create_form", {
             method: "POST",
             headers: {"content-type": "application/json"},
             body: JSON.stringify(data_form),
           })
-            .then((response) => response.json())
+            .then((response) => {
+              if (!response.ok) {
+                return response.json().then((errorResponse) => {
+                  throw errorResponse.message || "Error en la solicitud"
+                  
+                });
+              }
+              return response.json();
+            })
             .then((data) => {
-              console.log(data.message)
-              End_Animation(data.message, true);
+              End_Animation(data.message, false);
             })
             .catch((error) => {
-              console.error("Error : ", error);
-              End_Animation(error.message, false);
+              console.error(error);
+              End_Animation(error, true);
             });
         });
       });
@@ -161,8 +168,7 @@ import {question_number} from "../components/question/const_var";
         return false;
       }
 
-      function End_Animation(message, is_correct) {
-
+      function End_Animation(message, is_error) {
         (
           document.querySelector(".check-mark") as HTMLDivElement
         ).style.display = "block";
@@ -177,20 +183,25 @@ import {question_number} from "../components/question/const_var";
           "h1-animation-2"
         );
 
-        const modal_message_element = document.querySelector("#loadMessage") as HTMLElement
-        if(is_correct){
-          const link = document.createElement("a")
-          link.href = message
-          link.textContent = "Quiz URL"
-          modal_message_element.textContent = message;
-          
-          modal_message_element.append(link)
-          return
-        } 
+        const modal_message_container = document.querySelector(
+          "#modal-message-container"
+        ) as HTMLElement;
 
-        modal_message_element.textContent = message;
-        return
+        if (is_error) {
+          modal_message_container.innerHTML = `
+            <h3 id="modal-message-text"> ${message} </h3>
+          `;
+          return;
+        }
 
+        modal_message_container.innerHTML = ` 
+        <a class="btn btn-primary text-white btn-link-form" data-mdb-ripple-init href="${message}" role="button" target="_blank" title="${message}">
+  <i class="fab fa-google me-2 fa-2x"></i>
+  <span> Link del formulario </span>
+  
+</a> `;
+
+        return;
       }
     </script>
   </body>

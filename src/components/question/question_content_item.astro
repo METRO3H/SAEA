@@ -16,9 +16,7 @@ const {question_content_item_number, add_class = ""} = Astro.props;
       }
     </h2>
 
-    <button
-      class="btn btn-dark btn-lg btn-rounded save-question-item"
-    >
+    <button class="btn btn-dark btn-lg btn-rounded save-question-item">
       <i class="far fa-bookmark" style="padding-right: 4px;"></i> GENERAR</button
     >
   </div>
@@ -50,9 +48,9 @@ const {question_content_item_number, add_class = ""} = Astro.props;
           <div class="check-mark"></div>
         </div>
 
-          <h2 id="loadMessage">Creando cuestionario...</h2>
-        
-
+        <div id="modal-message-container">
+          <h3 id="modal-message-text">Creando cuestionario...</h3>
+        </div>
       </div>
     </div>
   </div>
@@ -86,10 +84,10 @@ const {question_content_item_number, add_class = ""} = Astro.props;
     font-size: medium;
   }
   @media (min-width: 576px) {
-      .modal-dialog-centered {
-          max-width: 100%;
-        }
-      }
+    .modal-dialog-centered {
+      max-width: 100%;
+    }
+  }
   .modal-element {
     display: flex;
     flex-direction: column;
@@ -98,7 +96,7 @@ const {question_content_item_number, add_class = ""} = Astro.props;
     align-items: center;
     width: 100%;
     background: transparent;
-    box-shadow: none!important;
+    box-shadow: none !important;
   }
   .lds-dual-ring {
     position: relative;
@@ -106,7 +104,7 @@ const {question_content_item_number, add_class = ""} = Astro.props;
     width: 164px;
     height: 164px;
   }
-  .lds-dual-ring ~ h2 {
+  #modal-message-text {
     color: rgb(215, 215, 231);
     text-shadow: 0px 0px 1% rgb(215, 215, 231);
     animation: var(--h1Animation) 1500ms linear var(--cicleFlow);
@@ -217,5 +215,13 @@ const {question_content_item_number, add_class = ""} = Astro.props;
       border-right: 11px solid rgb(215, 215, 231);
       opacity: 1;
     }
+  }
+
+  .btn-link-form{
+    display: flex;
+    align-items: center;
+  }
+  .btn-link-form ~ span{
+    font-size: larger;
   }
 </style>

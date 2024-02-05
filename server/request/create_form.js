@@ -5,14 +5,14 @@ const router = express.Router();
 
 router.post("/", async function (request, response) {
   const data = request.body;
-    console.log(data)
+  console.log(data);
   try {
     const form_URL = await Generate_Form(data);
     // Enviar una respuesta
     return response.status(200).send({message: form_URL});
     
   } catch (error) {
-    console.error(error);
+    console.error(error.message);
     return response.status(400).send({message: "Error al ingresar los datos"});
   }
 });
