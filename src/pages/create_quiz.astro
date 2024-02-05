@@ -85,7 +85,7 @@ import {question_number} from "../components/question/const_var";
 
           const data_form = Get_Data_Form();
           console.log(data_form);
-          fetch("/server.js", {
+          fetch("/request/create_form", {
             method: "POST",
             headers: {"content-type": "application/json"},
             body: JSON.stringify(data_form),
