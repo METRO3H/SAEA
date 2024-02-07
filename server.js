@@ -7,7 +7,7 @@ const app = express();
 // Change this based on your astro.config.mjs, `base` option.
 // They should match. The default value is "/".
 const base = "/";
-app.use(base, express.static("./dist/client/"));
+app.use(base, express.static("dist/client"));
 app.use(ssrHandler);
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
