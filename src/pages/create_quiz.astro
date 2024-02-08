@@ -105,7 +105,11 @@ import {question_number} from "../components/question/const_var";
 
       function Get_Data_Form() {
         const questions = document.querySelectorAll(".question-content-item");
-
+        const data = {
+          title: String,
+          created_by: Number,
+          questions: []
+        }
         const data_form: {
           question: String;
           answers: object;
