@@ -1,19 +1,15 @@
 ---
-import BaseHead from "../components/BaseHead.astro";
-import Header from "../components/Header.astro";
-import Footer from "../components/Footer.astro";
-import QuestionListItem from "../components/question/question_list_item.astro";
-import QuestionContentItem from "../components/question/question_content_item.astro";
-import { question_number } from "../components/question/const_var";
+import BaseHead from "../../components/BaseHead.astro";
+import Header from "../../components/Header.astro";
+import Footer from "../../components/Footer.astro";
+import QuestionListItem from "../../components/question/question_list_item.astro";
+import QuestionContentItem from "../../components/question/question_content_item.astro";
+import { question_number } from "../../components/question/const_var";
+import Document from "../../layouts/document.astro";
 ---
 
-<html lang="en">
-  <head>
-    <BaseHead title="Crear Quiz" description="Crear Quiz" />
-  </head>
-  <body>
-    <Header />
-    <main>
+    <Document title="Crear Quiz" description="Crear Quiz">
+
       <div id="question-card-container">
         <div id="question-list-container">
           <div class="list-group list-group-light" id="list-tab" role="tablist">
@@ -33,8 +29,9 @@ import { question_number } from "../components/question/const_var";
           </div>
         </div>
       </div>
-    </main>
-    <Footer />
+      
+    </Document>
+
     <style>
       #question-card-container {
         display: grid;
@@ -67,22 +64,21 @@ import { question_number } from "../components/question/const_var";
     </style>
     <script>
       document.querySelectorAll(".save-question-item")!.forEach((button) => {
-        button.addEventListener("click", function (event: MouseEvent) {
+        button.addEventListener("click", function (event) {
           event.preventDefault(); // Prevenir el comportamiento predeterminado del botón
 
           const data_form = Get_Data_Form();
           console.log(data_form);
-          Start_Animation();
+          
           fetch("/request/create_form", {
             method: "POST",
             headers: { "content-type": "application/json" },
             body: JSON.stringify(data_form),
           })
-            .then((response) => {
+            .then(async (response) => {
               if (!response.ok) {
-                return response.json().then((errorResponse) => {
-                  throw errorResponse.message || "Error en la solicitud";
-                });
+                const errorResponse = await response.json();
+                throw errorResponse || "Error en la solicitud";
               }
               return response.json();
             })
@@ -149,15 +145,6 @@ import { question_number } from "../components/question/const_var";
         return data_form;
       }
 
-      import { Modal } from "bootstrap";
-
-      function Start_Animation() {
-        const modal = new Modal("#staticBackdrop");
-        modal.show();
-
-        return false;
-      }
-
       function End_Animation(response, is_error) {
         (document.querySelector(".check-mark") as HTMLDivElement).style.display = "block";
 
@@ -183,7 +170,7 @@ import { question_number } from "../components/question/const_var";
 
         if (!is_error) {
           const btn_link_form = document.querySelector(".btn-link-form") as HTMLLinkElement;
-          btn_link_form.href = response.URL
+          btn_link_form.href = response.URL;
           btn_link_form.style.height = "51px";
           btn_link_form.style.width = "auto";
           btn_link_form.style.paddingTop = "var(--mdb-btn-padding-top)";
