@@ -1,10 +1,10 @@
 import sqlite3 from "sqlite3";
 import path from "path";
 import moment from "moment";
-import { data } from "../data_test.js";
+/* import { data } from "../data_test.js"; */
 sqlite3.verbose();
 
-async function Create_Form(data_form) {
+export async function Save_Form(data_form) {
   const data_base_path = path.join(process.cwd(), "server", "database", "database.db");
   const date_time = moment().format("YYYY-MM-DD HH:mm:ss");
   const db = new sqlite3.Database(data_base_path);
@@ -53,13 +53,19 @@ async function Create_Form(data_form) {
         get_answer_id.finalize();
 
         db.run("COMMIT");
+        db.close()
+        return true
       } catch (error) {
         console.error(error);
         db.run("ROLLBACK");
+        db.close()
+        return false
       }
     });
   } catch (error) {
+    db.close()
     console.error(error);
+    return false
   }
 }
 
@@ -116,7 +122,3 @@ const query = {
   VALUES (?, ?, ?, ?)
   `,
 };
-
-//TEST
-
-Create_Form(data);

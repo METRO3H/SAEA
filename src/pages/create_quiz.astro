@@ -4,7 +4,7 @@ import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import QuestionListItem from "../components/question/question_list_item.astro";
 import QuestionContentItem from "../components/question/question_content_item.astro";
-import {question_number} from "../components/question/const_var";
+import { question_number } from "../components/question/const_var";
 ---
 
 <html lang="en">
@@ -17,13 +17,9 @@ import {question_number} from "../components/question/const_var";
       <div id="question-card-container">
         <div id="question-list-container">
           <div class="list-group list-group-light" id="list-tab" role="tablist">
-            <QuestionListItem
-              question_list_item_number={question_number}
-              add_class="active"
-            />
+            <QuestionListItem question_list_item_number={question_number} add_class="active" />
 
             <QuestionListItem question_list_item_number={question_number + 1} />
-
           </div>
         </div>
 
@@ -33,9 +29,7 @@ import {question_number} from "../components/question/const_var";
               question_content_item_number={question_number}
               add_class="active"
             />
-            <QuestionContentItem
-              question_content_item_number={question_number + 1}
-            />
+            <QuestionContentItem question_content_item_number={question_number + 1} />
           </div>
         </div>
       </div>
@@ -81,20 +75,19 @@ import {question_number} from "../components/question/const_var";
           Start_Animation();
           fetch("/request/create_form", {
             method: "POST",
-            headers: {"content-type": "application/json"},
+            headers: { "content-type": "application/json" },
             body: JSON.stringify(data_form),
           })
             .then((response) => {
               if (!response.ok) {
                 return response.json().then((errorResponse) => {
-                  throw errorResponse.message || "Error en la solicitud"
-                  
+                  throw errorResponse.message || "Error en la solicitud";
                 });
               }
               return response.json();
             })
-            .then((data) => {
-              End_Animation(data.message, false);
+            .then((response) => {
+              End_Animation(response, false);
             })
             .catch((error) => {
               console.error(error);
@@ -105,50 +98,50 @@ import {question_number} from "../components/question/const_var";
 
       function Get_Data_Form() {
         const questions = document.querySelectorAll(".question-content-item");
-        const data = {
-          title: String,
-          created_by: Number,
-          questions: []
-        }
-        const data_form: {
-          question: String;
-          answers: object;
-        }[] = [];
+
+        let data_form: {
+          title: String;
+          created_by: Number;
+          questions: {
+            text: String;
+            answers: {
+              text: String;
+              is_correct: boolean;
+            }[];
+          }[];
+        } = {
+          title: "Testeo 1",
+          created_by: 1,
+          questions: [],
+        };
 
         questions.forEach((question_item) => {
           // Obtener todas las respuestas dentro de la pregunta
           const question_text = (
-            question_item.querySelector(
-              ".question-input-text"
-            ) as HTMLTextAreaElement
+            question_item.querySelector(".question-input-text") as HTMLTextAreaElement
           ).value;
 
-          const answers = question_item.querySelectorAll(
-            ".question-answers .form-check"
-          );
+          const answers = question_item.querySelectorAll(".question-answers .form-check");
 
           // Crear un array para almacenar las respuestas y si están marcadas como correctas
           const answers_data: {
-            answer: string;
+            text: string;
             is_correct: boolean;
           }[] = [];
           answers.forEach((answer, index) => {
-            const answer_text = (
-              answer.querySelector(".answer-input-text") as HTMLInputElement
-            ).value;
-            const answer_value = (
-              answer.querySelector(".answer-input-box") as HTMLInputElement
-            ).checked;
+            const answer_text = (answer.querySelector(".answer-input-text") as HTMLInputElement)
+              .value;
+            const answer_value = (answer.querySelector(".answer-input-box") as HTMLInputElement)
+              .checked;
 
             // Agregar la pregunta y si es correcta al array de datos
             answers_data.push({
-              answer: answer_text,
+              text: answer_text,
               is_correct: answer_value,
             });
           });
-
-          data_form.push({
-            question: question_text,
+          data_form.questions.push({
+            text: question_text,
             answers: answers_data,
           });
         });
@@ -156,7 +149,7 @@ import {question_number} from "../components/question/const_var";
         return data_form;
       }
 
-      import {Modal} from "bootstrap";
+      import { Modal } from "bootstrap";
 
       function Start_Animation() {
         const modal = new Modal("#staticBackdrop");
@@ -165,38 +158,40 @@ import {question_number} from "../components/question/const_var";
         return false;
       }
 
-      function End_Animation(message, is_error) {
-        (
-          document.querySelector(".check-mark") as HTMLDivElement
-        ).style.display = "block";
+      function End_Animation(response, is_error) {
+        (document.querySelector(".check-mark") as HTMLDivElement).style.display = "block";
 
         document.documentElement.style.setProperty("--cicleFlow", "forwards");
         document.documentElement.style.setProperty(
           "--finalBorder",
           "rgb(215, 215, 231) rgb(215, 215, 231) rgb(215, 215, 231) rgb(215, 215, 231)"
         );
-        document.documentElement.style.setProperty(
-          "--h1Animation",
-          "h1-animation-2"
-        );
+        document.documentElement.style.setProperty("--h1Animation", "h1-animation-2");
 
-        const modal_message_container = document.querySelector(
-          "#modal-message-container"
-        ) as HTMLElement;
+        const modal_message_container = ((
+          document.querySelector("#modal-message-container") as HTMLElement
+        ).innerHTML = `
+            <h3 id="modal-message-text"> ${response.message} </h3>
+          `);
+        const btn_close_modal = document.querySelector(".btn-close-modal") as HTMLElement;
 
-        if (is_error) {
-          modal_message_container.innerHTML = `
-            <h3 id="modal-message-text"> ${message} </h3>
-          `;
+        btn_close_modal.style.height = "51px";
+        btn_close_modal.style.paddingTop = "var(--mdb-btn-padding-top)";
+        btn_close_modal.style.paddingBottom = "var(--mdb-btn-padding-bottom)";
+        btn_close_modal.style.paddingTop = "var(--mdb-btn-padding-top)";
+        btn_close_modal.style.paddingBottom = "var(--mdb-btn-padding-bottom)";
+
+        if (!is_error) {
+          const btn_link_form = document.querySelector(".btn-link-form") as HTMLLinkElement;
+          btn_link_form.href = response.URL
+          btn_link_form.style.height = "51px";
+          btn_link_form.style.width = "auto";
+          btn_link_form.style.paddingTop = "var(--mdb-btn-padding-top)";
+          btn_link_form.style.paddingBottom = "var(--mdb-btn-padding-bottom)";
+          btn_link_form.style.paddingLeft = "var(--mdb-btn-padding-x)";
+          btn_link_form.style.paddingRight = "var(--mdb-btn-padding-x)";
           return;
         }
-
-        modal_message_container.innerHTML = ` 
-        <a class="btn btn-primary text-white btn-link-form" data-mdb-ripple-init href="${message}" role="button" target="_blank" title="${message}">
-  <i class="fab fa-google me-2 fa-2x"></i>
-  <span> Link del formulario </span>
-  
-</a> `;
 
         return;
       }

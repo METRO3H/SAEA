@@ -1,22 +1,20 @@
 "use strict";
 import path from "path";
 import google from "@googleapis/forms";
-import {authenticate} from "@google-cloud/local-auth";
+import { authenticate } from "@google-cloud/local-auth";
 
-export default async function (data) {
-
+export default async function (data_form) {
   const access_form_response = await User_Authentication();
-  const create_form_response = await Create_Form(access_form_response);
+  const create_form_response = await Create_Form(access_form_response, data_form.title);
 
-  await Fill_Form(access_form_response, create_form_response, data);
+  await Fill_Form(access_form_response, create_form_response, data_form);
 
   const form_URL = create_form_response.data.responderUri;
-  
-  console.log("\nForm generado con éxito!!")
-  console.log(`\nURL : ${form_URL}`)
+
+  console.log("\nForm generado con éxito!!");
+  console.log(`\nURL : ${form_URL}`);
 
   return form_URL;
-
 }
 
 async function User_Authentication() {
@@ -33,10 +31,10 @@ async function User_Authentication() {
 
   return forms;
 }
-async function Create_Form(form_access) {
+async function Create_Form(form_access, form_title) {
   const newForm = {
     info: {
-      title: "TEST 1 Google forms API",
+      title: form_title,
     },
   };
 
@@ -60,7 +58,7 @@ async function Create_Form(form_access) {
     ],
   };
 
-    await form_access.forms.batchUpdate({
+  await form_access.forms.batchUpdate({
     formId: create_form_response.data.formId,
     requestBody: updateRequest,
   });
@@ -68,28 +66,26 @@ async function Create_Form(form_access) {
   return create_form_response;
 }
 
-async function Fill_Form(access_form_response, create_form_response, data) {
-
-  for (let i = 0; i < data.length; i++) {
+async function Fill_Form(access_form_response, create_form_response, data_form) {
+  const questions = data_form.questions;
+  for (let i = 0; i < questions.length; i++) {
     const answers = [];
     const correct_answers = [];
 
-    const question = data[i].question;
+    questions[i].answers.forEach((answer) => {
+      answers.push({ value: answer.text });
 
-    data[i].answers.forEach((item) => {
-      answers.push({value: item.answer});
-
-      if (item.is_correct == true) {
-        correct_answers.push({value: item.answer});
+      if (answer.is_correct == true) {
+        correct_answers.push({ value: answer.text });
       }
     });
 
-    const new_item = await Create_Item(question, answers, correct_answers, i);
+    const new_item = await Create_Item(questions[i].text, answers, correct_answers, i);
 
-      await access_form_response.forms.batchUpdate({
-        formId: create_form_response.data.formId,
-        requestBody: new_item,
-      });
+    await access_form_response.forms.batchUpdate({
+      formId: create_form_response.data.formId,
+      requestBody: new_item,
+    });
 
     console.log(`Pregunta ${i + 1} agregada...`);
   }
@@ -97,12 +93,7 @@ async function Fill_Form(access_form_response, create_form_response, data) {
   return;
 }
 
-async function Create_Item(
-  question,
-  answers_map,
-  correct_answers_map,
-  position
-) {
+async function Create_Item(question, answers_map, correct_answers_map, position) {
   const new_item = {
     requests: [
       {
@@ -117,8 +108,8 @@ async function Create_Item(
                   correctAnswers: {
                     answers: correct_answers_map,
                   },
-                  whenRight: {text: "You got it!"},
-                  whenWrong: {text: "Sorry, that's wrong"},
+                  whenRight: { text: "You got it!" },
+                  whenWrong: { text: "Sorry, that's wrong" },
                 },
                 choiceQuestion: {
                   type: "RADIO",

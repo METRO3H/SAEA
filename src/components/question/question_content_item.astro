@@ -1,6 +1,6 @@
 ---
 import AnswerItemLayout from "./answer_item_layout.jsx";
-const {question_content_item_number, add_class = ""} = Astro.props;
+const { question_content_item_number, add_class = "" } = Astro.props;
 ---
 
 <div
@@ -11,9 +11,7 @@ const {question_content_item_number, add_class = ""} = Astro.props;
 >
   <div id="question-content-title-container">
     <h2 class="h1 fw-bold">
-      <i class="far fa-circle-question trailing"></i> Pregunta {
-        question_content_item_number
-      }
+      <i class="far fa-circle-question trailing"></i> Pregunta {question_content_item_number}
     </h2>
 
     <button class="btn btn-dark btn-lg btn-rounded save-question-item">
@@ -24,10 +22,7 @@ const {question_content_item_number, add_class = ""} = Astro.props;
   <form class=`question-answers`>
     <div class="form-outline" data-mdb-input-init>
       <i class="fas fa-circle-question trailing"></i>
-      <textarea
-        class="form-control question-input-text"
-        id="textAreaExample"
-        rows="1"></textarea>
+      <textarea class="form-control question-input-text" id="textAreaExample" rows="1"></textarea>
       <label class="form-label" for="textAreaExample">Pregunta</label>
     </div>
     <AnswerItemLayout client:load />
@@ -43,13 +38,35 @@ const {question_content_item_number, add_class = ""} = Astro.props;
     aria-hidden="true"
   >
     <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-element modal-content">
-        <div class="lds-dual-ring">
-          <div class="check-mark"></div>
-        </div>
+      <div class="modal-content modal-content-gap modal-element">
+        <div class="modal-body modal-body-extra modal-element">
+          <div class="lds-dual-ring">
+            <div class="check-mark"></div>
+          </div>
 
-        <div id="modal-message-container">
-          <h3 id="modal-message-text">Creando cuestionario...</h3>
+          <div id="modal-message-container">
+            <h3 id="modal-message-text">Creando cuestionario...</h3>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-secondary btn-lg btn-close-modal"
+            data-bs-dismiss="modal"
+          >
+            <i class="fas fa-xmark me-2"></i> Cerrar</button
+          >
+          <a
+            role="button"
+            class="btn btn-primary btn-link-form btn-lg text-white"
+            data-mdb-ripple-init
+            target="_blank"
+            title="Quiz URL"
+            aria-disabled="true"
+          >
+            <i class="fab fa-google me-2 fa-2x"></i>
+            <span> Link del formulario</span>
+          </a>
         </div>
       </div>
     </div>
@@ -94,10 +111,42 @@ const {question_content_item_number, add_class = ""} = Astro.props;
     justify-content: center;
     row-gap: 30px;
     align-items: center;
-    width: 100%;
     background: transparent;
     box-shadow: none !important;
   }
+  .modal-content-gap {
+    row-gap: 10px;
+  }
+
+  .modal-footer {
+    /* height: 0; */
+    padding-bottom: 0;
+    overflow: hidden;
+    transition: all 500ms ease;
+  }
+
+  .btn-link-form {
+    display: flex;
+    align-items: center;
+    transition: all 500ms ease;
+    height: 0;
+    padding: 0;
+    width: 0;
+    overflow: hidden;
+  }
+  .btn-link-form ~ span {
+    font-size: larger;
+  }
+  .btn-close-modal {
+    display: flex;
+    align-items: center;
+    height: 0px;
+    overflow: hidden;
+    transition: all 500ms ease;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+
   .lds-dual-ring {
     position: relative;
     display: inline-block;
@@ -165,8 +214,7 @@ const {question_content_item_number, add_class = ""} = Astro.props;
     }
     100% {
       transform: rotate(360deg);
-      border-color: rgb(215, 215, 231) rgb(215, 215, 231) rgb(215, 215, 231)
-        rgb(215, 215, 231);
+      border-color: rgb(215, 215, 231) rgb(215, 215, 231) rgb(215, 215, 231) rgb(215, 215, 231);
     }
   }
   .modal-backdrop.show {
@@ -215,13 +263,5 @@ const {question_content_item_number, add_class = ""} = Astro.props;
       border-right: 11px solid rgb(215, 215, 231);
       opacity: 1;
     }
-  }
-
-  .btn-link-form{
-    display: flex;
-    align-items: center;
-  }
-  .btn-link-form ~ span{
-    font-size: larger;
   }
 </style>

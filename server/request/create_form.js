@@ -1,15 +1,17 @@
 import express from "express";
 import Generate_Form from "../API_google_forms/generate_form.js";
-import test from "../API_google_forms/main.js";
+import {Save_Form} from "../database/request/save_form.js"
+/* import test from "../API_google_forms/main.js"; */
 const router = express.Router();
 
 router.post("/", async function (request, response) {
   const data = request.body;
-  console.log(data);
+  /* console.log(JSON.stringify(data, null, 4)); */
   try {
-    const form_URL = await Generate_Form(data);
+    const form_URL = await Generate_Form(data) || "bruf";
+    await Save_Form(data)
     // Enviar una respuesta
-    return response.status(200).send({message: form_U                                 RL});
+    return response.status(200).send({message: "Cuestionario generado con éxito!", URL: form_URL});
     
   } catch (error) {
     console.error(error.message);
