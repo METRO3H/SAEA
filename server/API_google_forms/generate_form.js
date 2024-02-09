@@ -4,6 +4,7 @@ import google from "@googleapis/forms";
 import { authenticate } from "@google-cloud/local-auth";
 
 export default async function (data_form) {
+  console.log("\nGenerando Form...\n");
   const access_form_response = await User_Authentication();
   const create_form_response = await Create_Form(access_form_response, data_form.title);
 
@@ -87,7 +88,7 @@ async function Fill_Form(access_form_response, create_form_response, data_form) 
       requestBody: new_item,
     });
 
-    console.log(`Pregunta ${i + 1} agregada...`);
+    console.log(` Pregunta ${i + 1} agregada...`);
   }
 
   return;
