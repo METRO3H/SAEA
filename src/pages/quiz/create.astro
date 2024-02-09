@@ -1,187 +1,176 @@
 ---
-import BaseHead from "../../components/BaseHead.astro";
-import Header from "../../components/Header.astro";
-import Footer from "../../components/Footer.astro";
 import QuestionListItem from "../../components/question/question_list_item.astro";
 import QuestionContentItem from "../../components/question/question_content_item.astro";
 import { question_number } from "../../components/question/const_var";
 import Document from "../../layouts/document.astro";
 ---
 
-    <Document title="Crear Quiz" description="Crear Quiz">
+<Document title="Crear Quiz" description="Crear Quiz">
+  <div id="question-card-container">
+    <div id="question-list-container">
+      <div class="list-group list-group-light" id="list-tab" role="tablist">
+        <QuestionListItem question_list_item_number={question_number} add_class="active" />
 
-      <div id="question-card-container">
-        <div id="question-list-container">
-          <div class="list-group list-group-light" id="list-tab" role="tablist">
-            <QuestionListItem question_list_item_number={question_number} add_class="active" />
-
-            <QuestionListItem question_list_item_number={question_number + 1} />
-          </div>
-        </div>
-
-        <div id="question-content-container">
-          <div class="tab-content">
-            <QuestionContentItem
-              question_content_item_number={question_number}
-              add_class="active"
-            />
-            <QuestionContentItem question_content_item_number={question_number + 1} />
-          </div>
-        </div>
+        <QuestionListItem question_list_item_number={question_number + 1} />
       </div>
-      
-    </Document>
+    </div>
 
-    <style>
-      #question-card-container {
-        display: grid;
-        grid-template-columns: 1fr 5fr;
-        width: 805px;
-        min-height: 95%;
-        margin: 0;
-        padding: 0;
-        background: white;
-        box-shadow: 0 2px 8px rgba(var(--black), 5%);
-        border-radius: 11px;
-      }
-      #question-list-container {
-        width: 180px;
-        padding: 0;
-      }
-      #question-content-container {
-        display: flex;
-        flex-direction: column;
-        padding-left: 21px;
-        padding-right: 21px;
-        margin-top: 11px;
-      }
+    <div id="question-content-container">
+      <div class="tab-content">
+        <QuestionContentItem question_content_item_number={question_number} add_class="active" />
+        <QuestionContentItem question_content_item_number={question_number + 1} />
+      </div>
+    </div>
+  </div>
+</Document>
 
-      @media (max-width: 805px) {
-        #question-card-container {
-          width: 100%;
-        }
-      }
-    </style>
-    <script>
-      document.querySelectorAll(".save-question-item")!.forEach((button) => {
-        button.addEventListener("click", function (event) {
-          event.preventDefault(); // Prevenir el comportamiento predeterminado del botón
+<style>
+  #question-card-container {
+    display: grid;
+    grid-template-columns: 1fr 5fr;
+    width: 805px;
+    min-height: 95%;
+    margin: 0;
+    padding: 0;
+    background: white;
+    box-shadow: 0 2px 8px rgba(var(--black), 5%);
+    border-radius: 11px;
+  }
+  #question-list-container {
+    width: 180px;
+    padding: 0;
+  }
+  #question-content-container {
+    display: flex;
+    flex-direction: column;
+    padding-left: 21px;
+    padding-right: 21px;
+    margin-top: 11px;
+  }
 
-          const data_form = Get_Data_Form();
-          console.log(data_form);
-          
-          fetch("/request/create_form", {
-            method: "POST",
-            headers: { "content-type": "application/json" },
-            body: JSON.stringify(data_form),
-          })
-            .then(async (response) => {
-              if (!response.ok) {
-                const errorResponse = await response.json();
-                throw errorResponse || "Error en la solicitud";
-              }
-              return response.json();
-            })
-            .then((response) => {
-              End_Animation(response, false);
-            })
-            .catch((error) => {
-              console.error(error);
-              End_Animation(error, true);
-            });
+  @media (max-width: 805px) {
+    #question-card-container {
+      width: 100%;
+    }
+  }
+</style>
+<script>
+  document.querySelectorAll(".save-question-item")!.forEach((button) => {
+    button.addEventListener("click", function (event) {
+      event.preventDefault(); // Prevenir el comportamiento predeterminado del botón
+
+      const data_form = Get_Data_Form();
+      console.log(data_form);
+
+      fetch("/request/create_form", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify(data_form),
+      })
+        .then(async (response) => {
+          if (!response.ok) {
+            const errorResponse = await response.json();
+            throw errorResponse || "Error en la solicitud";
+          }
+          return response.json();
+        })
+        .then((response) => {
+          End_Animation(response, false);
+        })
+        .catch((error) => {
+          console.error(error);
+          End_Animation(error, true);
+        });
+    });
+  });
+
+  function Get_Data_Form() {
+    const questions = document.querySelectorAll(".question-content-item");
+
+    let data_form: {
+      title: String;
+      created_by: Number;
+      questions: {
+        text: String;
+        answers: {
+          text: String;
+          is_correct: boolean;
+        }[];
+      }[];
+    } = {
+      title: "Testeo 1",
+      created_by: 1,
+      questions: [],
+    };
+
+    questions.forEach((question_item) => {
+      // Obtener todas las respuestas dentro de la pregunta
+      const question_text = (
+        question_item.querySelector(".question-input-text") as HTMLTextAreaElement
+      ).value;
+
+      const answers = question_item.querySelectorAll(".question-answers .form-check");
+
+      // Crear un array para almacenar las respuestas y si están marcadas como correctas
+      const answers_data: {
+        text: string;
+        is_correct: boolean;
+      }[] = [];
+      answers.forEach((answer, index) => {
+        const answer_text = (answer.querySelector(".answer-input-text") as HTMLInputElement).value;
+        const answer_value = (answer.querySelector(".answer-input-box") as HTMLInputElement)
+          .checked;
+
+        // Agregar la pregunta y si es correcta al array de datos
+        answers_data.push({
+          text: answer_text,
+          is_correct: answer_value,
         });
       });
+      data_form.questions.push({
+        text: question_text,
+        answers: answers_data,
+      });
+    });
 
-      function Get_Data_Form() {
-        const questions = document.querySelectorAll(".question-content-item");
+    return data_form;
+  }
 
-        let data_form: {
-          title: String;
-          created_by: Number;
-          questions: {
-            text: String;
-            answers: {
-              text: String;
-              is_correct: boolean;
-            }[];
-          }[];
-        } = {
-          title: "Testeo 1",
-          created_by: 1,
-          questions: [],
-        };
+  function End_Animation(response, is_error) {
+    (document.querySelector(".check-mark") as HTMLDivElement).style.display = "block";
 
-        questions.forEach((question_item) => {
-          // Obtener todas las respuestas dentro de la pregunta
-          const question_text = (
-            question_item.querySelector(".question-input-text") as HTMLTextAreaElement
-          ).value;
+    document.documentElement.style.setProperty("--cicleFlow", "forwards");
+    document.documentElement.style.setProperty(
+      "--finalBorder",
+      "rgb(215, 215, 231) rgb(215, 215, 231) rgb(215, 215, 231) rgb(215, 215, 231)"
+    );
+    document.documentElement.style.setProperty("--h1Animation", "h1-animation-2");
 
-          const answers = question_item.querySelectorAll(".question-answers .form-check");
-
-          // Crear un array para almacenar las respuestas y si están marcadas como correctas
-          const answers_data: {
-            text: string;
-            is_correct: boolean;
-          }[] = [];
-          answers.forEach((answer, index) => {
-            const answer_text = (answer.querySelector(".answer-input-text") as HTMLInputElement)
-              .value;
-            const answer_value = (answer.querySelector(".answer-input-box") as HTMLInputElement)
-              .checked;
-
-            // Agregar la pregunta y si es correcta al array de datos
-            answers_data.push({
-              text: answer_text,
-              is_correct: answer_value,
-            });
-          });
-          data_form.questions.push({
-            text: question_text,
-            answers: answers_data,
-          });
-        });
-
-        return data_form;
-      }
-
-      function End_Animation(response, is_error) {
-        (document.querySelector(".check-mark") as HTMLDivElement).style.display = "block";
-
-        document.documentElement.style.setProperty("--cicleFlow", "forwards");
-        document.documentElement.style.setProperty(
-          "--finalBorder",
-          "rgb(215, 215, 231) rgb(215, 215, 231) rgb(215, 215, 231) rgb(215, 215, 231)"
-        );
-        document.documentElement.style.setProperty("--h1Animation", "h1-animation-2");
-
-        const modal_message_container = ((
-          document.querySelector("#modal-message-container") as HTMLElement
-        ).innerHTML = `
+    const modal_message_container = ((
+      document.querySelector("#modal-message-container") as HTMLElement
+    ).innerHTML = `
             <h3 id="modal-message-text"> ${response.message} </h3>
           `);
-        const btn_close_modal = document.querySelector(".btn-close-modal") as HTMLElement;
+    const btn_close_modal = document.querySelector(".btn-close-modal") as HTMLElement;
 
-        btn_close_modal.style.height = "51px";
-        btn_close_modal.style.paddingTop = "var(--mdb-btn-padding-top)";
-        btn_close_modal.style.paddingBottom = "var(--mdb-btn-padding-bottom)";
-        btn_close_modal.style.paddingTop = "var(--mdb-btn-padding-top)";
-        btn_close_modal.style.paddingBottom = "var(--mdb-btn-padding-bottom)";
+    btn_close_modal.style.height = "51px";
+    btn_close_modal.style.paddingTop = "var(--mdb-btn-padding-top)";
+    btn_close_modal.style.paddingBottom = "var(--mdb-btn-padding-bottom)";
+    btn_close_modal.style.paddingTop = "var(--mdb-btn-padding-top)";
+    btn_close_modal.style.paddingBottom = "var(--mdb-btn-padding-bottom)";
 
-        if (!is_error) {
-          const btn_link_form = document.querySelector(".btn-link-form") as HTMLLinkElement;
-          btn_link_form.href = response.URL;
-          btn_link_form.style.height = "51px";
-          btn_link_form.style.width = "auto";
-          btn_link_form.style.paddingTop = "var(--mdb-btn-padding-top)";
-          btn_link_form.style.paddingBottom = "var(--mdb-btn-padding-bottom)";
-          btn_link_form.style.paddingLeft = "var(--mdb-btn-padding-x)";
-          btn_link_form.style.paddingRight = "var(--mdb-btn-padding-x)";
-          return;
-        }
+    if (!is_error) {
+      const btn_link_form = document.querySelector(".btn-link-form") as HTMLLinkElement;
+      btn_link_form.href = response.URL;
+      btn_link_form.style.height = "51px";
+      btn_link_form.style.width = "auto";
+      btn_link_form.style.paddingTop = "var(--mdb-btn-padding-top)";
+      btn_link_form.style.paddingBottom = "var(--mdb-btn-padding-bottom)";
+      btn_link_form.style.paddingLeft = "var(--mdb-btn-padding-x)";
+      btn_link_form.style.paddingRight = "var(--mdb-btn-padding-x)";
+      return;
+    }
 
-        return;
-      }
-    </script>
-  </body>
-</html>
+    return;
+  }
+</script>
