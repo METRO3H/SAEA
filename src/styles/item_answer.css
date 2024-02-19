@@ -1,16 +1,17 @@
 .group {
   position: relative;
-  width: 300px;
 }
 
 .input {
-  font-size: 16px;
-  padding: 10px 10px 10px 5px;
+  font-size: inherit;
+  padding: 10px 10px 3px 5px;
   display: block;
-  width: 300px;
+  width: 100%;
+  height: 100%;
   border: none;
-  border-bottom: 1px solid #bdbdbd;
+  border-bottom: 1px solid #bdbdbd !important;
   background: transparent;
+  text-overflow: ellipsis;
 }
 
 .input:focus {
@@ -24,7 +25,7 @@ label {
   position: absolute;
   pointer-events: none;
   left: 5px;
-  top: 10px;
+  top: calc(100% - 31px);
   transition: 0.2s ease all;
   -moz-transition: 0.2s ease all;
   -webkit-transition: 0.2s ease all;
@@ -40,7 +41,7 @@ label {
 .bar {
   position: relative;
   display: block;
-  width: 300px;
+  width: 100%;
 }
 
 .bar:before,

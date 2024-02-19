@@ -1,11 +1,5 @@
-import "../../styles/item_answer.css";
-
-function CheckboxComponent({
-  check_box_key,
-  check_box_id,
-  check_box_label,
-  handleItemDelete,
-}) {
+import SpecialInputText from "../special_input_text.jsx";
+function CheckboxComponent({ check_box_key, check_box_id, check_box_label, handleItemDelete }) {
   return (
     <div className="form-check">
       <input
@@ -14,23 +8,13 @@ function CheckboxComponent({
         value=""
         id={check_box_id}
       />
-
-      <div className="group">
-        <input required type="text" className="input answer-input-text" autoComplete="no" />
-        <span className="highlight"></span>
-        <span className="bar"></span>
-        <label htmlFor={check_box_key}>{check_box_label}</label>
-      </div>
-
+      <SpecialInputText input_label={check_box_label} input_width="300px" />
       <button
         type="button"
         className="btn btn-secondary btn-floating btn-sm remove-button"
         data-mdb-ripple-init
       >
-        <i
-          className="fas fa-trash-can"
-          onClick={() => handleItemDelete(check_box_key)}
-        ></i>
+        <i className="fas fa-trash-can" onClick={() => handleItemDelete(check_box_key)}></i>
       </button>
     </div>
   );
