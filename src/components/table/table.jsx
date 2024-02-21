@@ -10,13 +10,19 @@ function Custom_table({}) {
       </caption>
       <thead className="table-dark">
         <tr>
-          <th id="thead-axis">Eje</th>
-          <th id="thead-content">Contenidos</th>
-          <th id="thead-objective">Objetivos</th>
-          <th id="thead-classes" className="text-center">
+          <th id="thead-axis" className="left-cell thead-fix-y-padding">
+            Eje
+          </th>
+          <th id="thead-content" className="left-cell thead-fix-y-padding">
+            Contenidos
+          </th>
+          <th id="thead-objective" className="left-cell thead-fix-y-padding">
+            Objetivos
+          </th>
+          <th id="thead-classes" className="text-center thead-fix-y-padding">
             Clases
           </th>
-          <th id="thead-percentage" className="text-center">
+          <th id="thead-percentage" className="text-center thead-fix-y-padding">
             %
           </th>
           <th
@@ -59,12 +65,9 @@ function Custom_table({}) {
       </thead>
       <tbody>
         <tr>
-          {/*           <td rowSpan="5" className="cell" title="Ingrese un eje a evaluar. Ej: Números">
-            <input type="text" placeholder="Ej: Geometría" required />
-          </td> */}
           <Table_Item
             row_span={5}
-            td_class="cell"
+            td_class="cell left-cell"
             item_title="Ingrese un eje a evaluar. Ej: Números"
             contains_input="true"
             input_placeholder="Ej: Geometría"
@@ -72,182 +75,236 @@ function Custom_table({}) {
 
           <Table_Item
             row_span={3}
-            td_class="cell"
+            td_class="cell left-cell"
             item_title="Ingresa un contenido. Ej: Transformaciones isométricas"
             contains_input="true"
             input_placeholder="Ej: Figuras geométricas"
           />
 
           <Table_Item
-            td_class="cell"
+            td_class="cell left-cell patron-cell"
             item_title="Ingresa un objetivo. Ej: Componer rotaciones, traslaciones y reflexiones en el plano cartesiano"
             contains_input="true"
-            input_class="text-center"
             input_placeholder="Ej: Efectuar rotaciones y traslaciones"
           />
           <Table_Item
-            td_class="cell"
+            td_class="cell patron-cell"
             item_title="Ingresa la cantidad de clases realizadas con respecto a este contenido. Ej: 4"
             contains_input="true"
-            input_class="text-center"
+            input_class="text-center number-cell"
             input_placeholder="Ej: 2"
           />
-          <Table_Item td_class="cell" item_title="Porcentaje de clases" />
+          <Table_Item
+            td_class="cell text-center number-cell patron-cell"
+            item_title="Porcentaje de clases"
+          />
 
           <Table_Item
-            td_class="cell"
+            td_class="cell patron-cell"
             item_title="Ingresa la cantidad de preguntas que tendra este item. Ej: 3"
             contains_input="true"
-            input_class="text-center"
+            input_class="text-center number-cell"
             input_placeholder="-"
           />
           <Table_Item
-            td_class="cell"
+            td_class="cell patron-cell"
             item_title="Ingresa la cantidad de preguntas que tendra este item. Ej: 3"
             contains_input="true"
-            input_class="text-center"
+            input_class="text-center number-cell"
             input_placeholder="-"
           />
           <Table_Item
-            td_class="cell"
+            td_class="cell patron-cell"
             item_title="Ingresa la cantidad de preguntas que tendra este item. Ej: 3"
             contains_input="true"
-            input_class="text-center"
+            input_class="text-center number-cell"
             input_placeholder="-"
           />
 
-          <Table_Item td_class="cell" item_title="Porcentaje de clases" />
+          <Table_Item
+            td_class="cell text-center number-cell patron-cell"
+            item_title="Cantidad de preguntas de este item"
+          />
         </tr>
         <tr>
-          <td
-            className="cell"
-            title="Ingresa un objetivo. Ej: Componer rotaciones, traslaciones y reflexiones en el plano cartesiano"
-          >
-            <input
-              className="text-center"
-              type="text"
-              placeholder="Ej: Efectuar rotaciones y traslaciones"
-              required
-            />
-          </td>
-          <td
-            className="cell"
-            title="Ingresa la cantidad de clases realizadas con respecto a este contenido. Ej: 4"
-          >
-            <input className="text-center" type="text" placeholder="Ej: 2" required />
-          </td>
-          <td className="text-center">-</td>
-          <td className="cell" title="Ingresa la cantidad de preguntas que tendra este item. Ej: 3">
-            <input className="text-center" type="text" placeholder="-" required />
-          </td>
-          <td className="cell" title="Ingresa la cantidad de preguntas que tendra este item. Ej: 3">
-            <input className="text-center" type="number" placeholder="-" required />
-          </td>
-          <td className="cell" title="Ingresa la cantidad de preguntas que tendra este item. Ej: 3">
-            <input className="text-center" type="text" placeholder="-" required />
-          </td>
+          <Table_Item
+            td_class="cell left-cell patron-cell"
+            item_title="Ingresa un objetivo. Ej: Componer rotaciones, traslaciones y reflexiones en el plano cartesiano"
+            contains_input="true"
+            input_placeholder="Ej: Efectuar rotaciones y traslaciones"
+          />
+          <Table_Item
+            td_class="cell patron-cell"
+            item_title="Ingresa la cantidad de clases realizadas con respecto a este contenido. Ej: 4"
+            contains_input="true"
+            input_class="text-center number-cell"
+            input_placeholder="Ej: 2"
+          />
+          <Table_Item td_class="cell text-center number-cell patron-cell" item_title="Porcentaje de clases" />
 
-          <td className="text-center">-</td>
+          <Table_Item
+            td_class="cell patron-cell"
+            item_title="Ingresa la cantidad de preguntas que tendra este item. Ej: 3"
+            contains_input="true"
+            input_class="text-center number-cell"
+            input_placeholder="-"
+          />
+          <Table_Item
+            td_class="cell patron-cell"
+            item_title="Ingresa la cantidad de preguntas que tendra este item. Ej: 3"
+            contains_input="true"
+            input_class="text-center number-cell"
+            input_placeholder="-"
+          />
+          <Table_Item
+            td_class="cell patron-cell"
+            item_title="Ingresa la cantidad de preguntas que tendra este item. Ej: 3"
+            contains_input="true"
+            input_class="text-center number-cell"
+            input_placeholder="-"
+          />
+
+          <Table_Item
+            td_class="cell text-center number-cell patron-cell"
+            item_title="Cantidad de preguntas de este item"
+          />
         </tr>
         <tr>
-          <td
-            className="cell"
-            title="Ingresa un objetivo. Ej: Componer rotaciones, traslaciones y reflexiones en el plano cartesiano"
-          >
-            <input
-              className="text-center"
-              type="text"
-              placeholder="Ej: Efectuar rotaciones y traslaciones"
-              required
-            />
-          </td>
-          <td
-            className="cell"
-            title="Ingresa la cantidad de clases realizadas con respecto a este contenido. Ej: 4"
-          >
-            <input className="text-center" type="text" placeholder="Ej: 2" required />
-          </td>
-          <td className="text-center">-</td>
-          <td className="cell" title="Ingresa la cantidad de preguntas que tendra este item. Ej: 3">
-            <input className="text-center" type="text" placeholder="-" required />
-          </td>
-          <td className="cell" title="Ingresa la cantidad de preguntas que tendra este item. Ej: 3">
-            <input className="text-center" type="number" placeholder="-" required />
-          </td>
-          <td className="cell" title="Ingresa la cantidad de preguntas que tendra este item. Ej: 3">
-            <input className="text-center" type="text" placeholder="-" required />
-          </td>
+          <Table_Item
+            td_class="cell left-cell patron-cell"
+            item_title="Ingresa un objetivo. Ej: Componer rotaciones, traslaciones y reflexiones en el plano cartesiano"
+            contains_input="true"
+            input_placeholder="Ej: Efectuar rotaciones y traslaciones"
+          />
+          <Table_Item
+            td_class="cell patron-cell"
+            item_title="Ingresa la cantidad de clases realizadas con respecto a este contenido. Ej: 4"
+            contains_input="true"
+            input_class="text-center number-cell"
+            input_placeholder="Ej: 2"
+          />
+          <Table_Item td_class="cell text-center number-cell patron-cell" item_title="Porcentaje de clases" />
 
-          <td className="text-center">-</td>
+          <Table_Item
+            td_class="cell patron-cell"
+            item_title="Ingresa la cantidad de preguntas que tendra este item. Ej: 3"
+            contains_input="true"
+            input_class="text-center number-cell"
+            input_placeholder="-"
+          />
+          <Table_Item
+            td_class="cell patron-cell"
+            item_title="Ingresa la cantidad de preguntas que tendra este item. Ej: 3"
+            contains_input="true"
+            input_class="text-center number-cell"
+            input_placeholder="-"
+          />
+          <Table_Item
+            td_class="cell patron-cell"
+            item_title="Ingresa la cantidad de preguntas que tendra este item. Ej: 3"
+            contains_input="true"
+            input_class="text-center number-cell"
+            input_placeholder="-"
+          />
+
+          <Table_Item
+            td_class="cell text-center number-cell patron-cell"
+            item_title="Cantidad de preguntas de este item"
+          />
         </tr>
         <tr>
-          <td
-            rowSpan="3"
-            className="cell"
-            title="Ingresa un contenido. Ej: Transformaciones isométricas"
-          >
-            <input type="text" placeholder="Ej: Figuras geométricas" required />
-          </td>
-          <td
-            className="cell"
-            title="Ingresa un objetivo. Ej: Componer rotaciones, traslaciones y reflexiones en el plano cartesiano"
-          >
-            <input
-              className="text-center"
-              type="text"
-              placeholder="Ej: Efectuar rotaciones y traslaciones"
-              required
-            />
-          </td>
-          <td
-            className="cell"
-            title="Ingresa la cantidad de clases realizadas con respecto a este contenido. Ej: 4"
-          >
-            <input className="text-center" type="text" placeholder="Ej: 2" required />
-          </td>
-          <td className="text-center">-</td>
-          <td className="cell" title="Ingresa la cantidad de preguntas que tendra este item. Ej: 3">
-            <input className="text-center" type="text" placeholder="-" required />
-          </td>
-          <td className="cell" title="Ingresa la cantidad de preguntas que tendra este item. Ej: 3">
-            <input className="text-center" type="number" placeholder="-" required />
-          </td>
-          <td className="cell" title="Ingresa la cantidad de preguntas que tendra este item. Ej: 3">
-            <input className="text-center" type="text" placeholder="-" required />
-          </td>
+          <Table_Item
+            row_span={2}
+            td_class="cell left-cell"
+            item_title="Ingresa un contenido. Ej: Transformaciones isométricas"
+            contains_input="true"
+            input_placeholder="Ej: Figuras geométricas"
+          />
 
-          <td className="text-center">-</td>
+          <Table_Item
+            td_class="cell left-cell patron-cell"
+            item_title="Ingresa un objetivo. Ej: Componer rotaciones, traslaciones y reflexiones en el plano cartesiano"
+            contains_input="true"
+            input_placeholder="Ej: Efectuar rotaciones y traslaciones"
+          />
+          <Table_Item
+            td_class="cell patron-cell"
+            item_title="Ingresa la cantidad de clases realizadas con respecto a este contenido. Ej: 4"
+            contains_input="true"
+            input_class="text-center number-cell"
+            input_placeholder="Ej: 2"
+          />
+          <Table_Item td_class="cell text-center number-cell patron-cell" item_title="Porcentaje de clases" />
+
+          <Table_Item
+            td_class="cell patron-cell"
+            item_title="Ingresa la cantidad de preguntas que tendra este item. Ej: 3"
+            contains_input="true"
+            input_class="text-center number-cell"
+            input_placeholder="-"
+          />
+          <Table_Item
+            td_class="cell patron-cell"
+            item_title="Ingresa la cantidad de preguntas que tendra este item. Ej: 3"
+            contains_input="true"
+            input_class="text-center number-cell"
+            input_placeholder="-"
+          />
+          <Table_Item
+            td_class="cell patron-cell"
+            item_title="Ingresa la cantidad de preguntas que tendra este item. Ej: 3"
+            contains_input="true"
+            input_class="text-center number-cell"
+            input_placeholder="-"
+          />
+
+          <Table_Item
+            td_class="cell text-center number-cell patron-cell"
+            item_title="Cantidad de preguntas de este item"
+          />
         </tr>
         <tr>
-          <td
-            className="cell"
-            title="Ingresa un objetivo. Ej: Componer rotaciones, traslaciones y reflexiones en el plano cartesiano"
-          >
-            <input
-              className="text-center"
-              type="text"
-              placeholder="Ej: Efectuar rotaciones y traslaciones"
-              required
-            />
-          </td>
-          <td
-            className="cell"
-            title="Ingresa la cantidad de clases realizadas con respecto a este contenido. Ej: 4"
-          >
-            <input className="text-center" type="text" placeholder="Ej: 2" required />
-          </td>
-          <td className="text-center">-</td>
-          <td className="cell" title="Ingresa la cantidad de preguntas que tendra este item. Ej: 3">
-            <input className="text-center" type="text" placeholder="-" required />
-          </td>
-          <td className="cell" title="Ingresa la cantidad de preguntas que tendra este item. Ej: 3">
-            <input className="text-center" type="number" placeholder="-" required />
-          </td>
-          <td className="cell" title="Ingresa la cantidad de preguntas que tendra este item. Ej: 3">
-            <input className="text-center" type="text" placeholder="-" required />
-          </td>
+          <Table_Item
+            td_class="cell left-cell patron-cell"
+            item_title="Ingresa un objetivo. Ej: Componer rotaciones, traslaciones y reflexiones en el plano cartesiano"
+            contains_input="true"
+            input_placeholder="Ej: Efectuar rotaciones y traslaciones"
+          />
+          <Table_Item
+            td_class="cell patron-cell"
+            item_title="Ingresa la cantidad de clases realizadas con respecto a este contenido. Ej: 4"
+            contains_input="true"
+            input_class="text-center number-cell"
+            input_placeholder="Ej: 2"
+          />
+          <Table_Item td_class="cell text-center number-cell" item_title="Porcentaje de clases" />
 
-          <td className="text-center">-</td>
+          <Table_Item
+            td_class="cell patron-cell"
+            item_title="Ingresa la cantidad de preguntas que tendra este item. Ej: 3"
+            contains_input="true"
+            input_class="text-center number-cell"
+            input_placeholder="-"
+          />
+          <Table_Item
+            td_class="cell patron-cell"
+            item_title="Ingresa la cantidad de preguntas que tendra este item. Ej: 3"
+            contains_input="true"
+            input_class="text-center number-cell"
+            input_placeholder="-"
+          />
+          <Table_Item
+            td_class="cell patron-cell"
+            item_title="Ingresa la cantidad de preguntas que tendra este item. Ej: 3"
+            contains_input="true"
+            input_class="text-center number-cell"
+            input_placeholder="-"
+          />
+
+          <Table_Item
+            td_class="cell text-center number-cell patron-cell"
+            item_title="Cantidad de preguntas de este item"
+          />
         </tr>
       </tbody>
       <tfoot>
@@ -255,8 +312,8 @@ function Custom_table({}) {
           <td colSpan="3" className="text-center">
             TOTAL
           </td>
-          <td className="text-center">-</td>
-          <td className="text-center">100</td>
+          <td className="text-center number-cell">-</td>
+          <td className="text-center number-cell">100%</td>
           <td className="text-center">-</td>
           <td className="text-center">-</td>
           <td className="text-center">-</td>

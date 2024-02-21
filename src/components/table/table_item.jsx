@@ -1,5 +1,3 @@
-
-
 function Table_Item({
   row_span = 1,
   td_class = "",
@@ -8,10 +6,13 @@ function Table_Item({
   input_class = "",
   input_placeholder = "input XD",
 }) {
+  console.log(td_class);
   return (
     <td rowSpan={row_span} className={td_class} title={item_title}>
-      {contains_input && (
+      {contains_input ? (
         <input className={input_class} type="text" placeholder={input_placeholder} required />
+      ) : (
+        "-"
       )}
     </td>
   );

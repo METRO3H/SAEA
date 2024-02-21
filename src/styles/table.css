@@ -1,6 +1,10 @@
 caption {
   padding: 0.5rem 0rem !important;
 }
+.thead-fix-y-padding {
+  padding-top: 11px !important;
+  padding-bottom: 11px !important;
+}
 
 .cell {
   position: relative;
@@ -39,17 +43,11 @@ thead > tr > th {
   padding-right: 0 !important;
 }
 
-#thead-axis,
-#thead-content,
-#thead-objective,
-tbody > tr > :nth-child(1) > input,
-tbody > tr > :nth-child(2) > input,
-tbody > tr > :nth-child(3) > input {
+.left-cell {
   padding-left: 0.7rem !important;
 }
 
-tbody > tr > :nth-child(4) > input,
-tbody > tr > :nth-child(5) {
+.number-cell {
   font-family: Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
   font-size: 14.4px !important;
 }
@@ -63,6 +61,9 @@ thead > tr > :last-child {
   padding-bottom: 0 !important;
   height: 0px;
   width: 8%;
+}
+.patron-cell {
+  height: 60px;
 }
 thead > tr > :last-child > div {
   height: 100%;
