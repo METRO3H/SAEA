@@ -15,7 +15,7 @@ import Custom_table from "../components/table/table";
       />
     </div>
 
-    <Custom_table />
+    <Custom_table client:load/>
   </div>
 </Document>
 
@@ -39,19 +39,13 @@ import Custom_table from "../components/table/table";
 
 <script>
   document.querySelectorAll<HTMLInputElement>(".cell input").forEach((input: HTMLInputElement) => {
-    input.addEventListener("mouseover", function () {
+    const parent = input.parentNode as HTMLElement;
+    const original_title = parent.title;
+    input.addEventListener("change", function () {
       if (input.offsetWidth < input.scrollWidth) {
-        const parent = input.parentNode as HTMLElement;
-        input.title = input.value;
-        if (!parent.classList.contains("cell-hint")) {
-          parent.setAttribute("title", input.value);
-          document.documentElement.style.setProperty("--display-before-after", "block");
-        }
-
-        console.log(input.value);
+        parent.title = input.value;
       } else {
-        console.log("BRUFA2");
-        document.documentElement.style.setProperty("--display-before-after", "none");
+        parent.title = original_title;
       }
     });
   });
