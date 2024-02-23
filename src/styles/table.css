@@ -93,6 +93,13 @@ tfoot > tr > td {
 #item-total-class {
   max-width: 70px;
 }
+#item-total-all-questions {
+  background: rgb(35, 55, 255) !important;
+}
+#item-total-all-questions > input,
+#item-total-all-questions > input::placeholder {
+  color: white;
+}
 @media (max-width: 768px) {
   thead > tr > :nth-child(1) {
     padding-left: 0 !important;

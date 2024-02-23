@@ -4,13 +4,52 @@ import "../../styles/table.css";
 
 function Custom_table() {
   function Handle_Class_Item_Change() {
-    let sum = 0;
-    document.querySelectorAll(".item-class").forEach((input) => {
-      const VALUE = parseInt(input.value, 10);
-      sum += isNaN(VALUE) ? 0 : VALUE;
+    let inputs_sum = 0;
+    const ALL_INPUTS = document.querySelectorAll(".item-class");
+
+    ALL_INPUTS.forEach((input) => {
+      const INPUT_VALUE = parseInt(input.value, 10);
+      inputs_sum += isNaN(INPUT_VALUE) ? 0 : INPUT_VALUE;
+    });
+    document.querySelector("#item-total-class").textContent = inputs_sum;
+
+    ALL_INPUTS.forEach((input) => {
+      const INPUT_VALUE = parseInt(input.value, 10);
+      const ITEM_PERCENTAGE = input.closest("tr").querySelector(".item-percentage");
+      const ITEM_PERCENTAGE_VALUE = parseFloat(((INPUT_VALUE / inputs_sum) * 100).toFixed(1));
+      ITEM_PERCENTAGE.textContent = isNaN(INPUT_VALUE) ? "-" : `${ITEM_PERCENTAGE_VALUE}%`;
+    });
+    Handle_Item_Total_All_questions_Change()
+
+    return
+  }
+  function Handle_Skill_Item_Change(event) {
+    const tr_element = event.target.closest("tr");
+    const item_skill_elements = tr_element.querySelectorAll(".item-skill");
+
+    let index = Array.prototype.indexOf.call(item_skill_elements, event.target);
+
+    const ALL_tr_elements = document.querySelectorAll("tbody tr");
+    let skill_sum = 0;
+    ALL_tr_elements.forEach((tr) => {
+      const item_skill_value = parseInt(tr.querySelectorAll(".item-skill")[index].value, 10);
+      skill_sum += isNaN(item_skill_value) ? 0 : item_skill_value;
     });
 
-    document.querySelector("#item-total-class").textContent = sum
+    document.querySelectorAll(".item-total-skill")[index].textContent = skill_sum;
+    return
+  }
+
+  function Handle_Item_Total_All_questions_Change() {
+    const item_total_all_questions_input = document.querySelector("#item-total-all-questions").firstElementChild;
+    const ALL_tr_elements = document.querySelectorAll("tbody tr");
+    ALL_tr_elements.forEach((tr) => {
+      const percentage = parseFloat(tr.querySelector(".item-percentage").textContent);
+      const total_questions = parseFloat(item_total_all_questions_input.value);
+      const number_of_questions = Math.round((total_questions * percentage) / 100);
+      tr.querySelector(".item-total-question").textContent = isNaN(number_of_questions) ? 0 : number_of_questions
+    });
+    return
   }
 
   return (
@@ -116,6 +155,7 @@ function Custom_table() {
             contains_input="true"
             input_class="text-center number-cell item-skill"
             input_placeholder="-"
+            Handle_Input_Change={(event) => Handle_Skill_Item_Change(event)}
           />
           <Table_Item
             td_class="cell patron-cell"
@@ -123,6 +163,7 @@ function Custom_table() {
             contains_input="true"
             input_class="text-center number-cell item-skill"
             input_placeholder="-"
+            Handle_Input_Change={(event) => Handle_Skill_Item_Change(event)}
           />
           <Table_Item
             td_class="cell patron-cell"
@@ -130,6 +171,7 @@ function Custom_table() {
             contains_input="true"
             input_class="text-center number-cell item-skill"
             input_placeholder="-"
+            Handle_Input_Change={(event) => Handle_Skill_Item_Change(event)}
           />
 
           <Table_Item
@@ -163,6 +205,7 @@ function Custom_table() {
             contains_input="true"
             input_class="text-center number-cell item-skill"
             input_placeholder="-"
+            Handle_Input_Change={(event) => Handle_Skill_Item_Change(event)}
           />
           <Table_Item
             td_class="cell patron-cell"
@@ -170,6 +213,7 @@ function Custom_table() {
             contains_input="true"
             input_class="text-center number-cell item-skill"
             input_placeholder="-"
+            Handle_Input_Change={(event) => Handle_Skill_Item_Change(event)}
           />
           <Table_Item
             td_class="cell patron-cell"
@@ -177,6 +221,7 @@ function Custom_table() {
             contains_input="true"
             input_class="text-center number-cell item-skill"
             input_placeholder="-"
+            Handle_Input_Change={(event) => Handle_Skill_Item_Change(event)}
           />
 
           <Table_Item
@@ -191,15 +236,21 @@ function Custom_table() {
             TOTAL
           </td>
           <td className="text-center number-cell" id="item-total-class">
-            -
+            0
           </td>
           <td className="text-center number-cell">100%</td>
-          <td className="text-center number-cell item-total-skill">-</td>
-          <td className="text-center number-cell item-total-skill">-</td>
-          <td className="text-center number-cell item-total-skill">-</td>
-          <td className="text-center number-cell" id="item-total-all-questions">
-            -
-          </td>
+          <td className="text-center number-cell item-total-skill">0</td>
+          <td className="text-center number-cell item-total-skill">0</td>
+          <td className="text-center number-cell item-total-skill">0</td>
+          <Table_Item
+            td_id="item-total-all-questions"
+            td_class="cell number-cell"
+            item_title="Ingresa la cantidad de preguntas que tendra este item. Ej: 3"
+            contains_input="true"
+            input_class="text-center number-cell"
+            input_placeholder="-"
+            Handle_Input_Change={(event) => Handle_Item_Total_All_questions_Change()}
+          />
         </tr>
       </tfoot>
     </table>
