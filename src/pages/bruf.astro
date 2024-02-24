@@ -22,7 +22,7 @@ import Custom_table from "../components/table/table";
     </div>
     <Custom_table client:load />
     <div id="next-part-div">
-      <div id="button-next-part" class="btn btn-primary">Siguiente</div>
+      <button id="button-next-part" class="btn btn-primary">Siguiente</button>
     </div>
   </div>
 </Document>
@@ -50,6 +50,7 @@ import Custom_table from "../components/table/table";
     justify-content: flex-end;
     width: 100%;
     padding-top: 11px;
+    margin-bottom: 11px;
   }
   #button-next-part {
     background: rgb(34, 41, 57) !important;
@@ -67,5 +68,55 @@ import Custom_table from "../components/table/table";
         parent.title = original_title;
       }
     });
+  });
+
+  const button_next_part = document.querySelector("#button-next-part");
+  button_next_part?.addEventListener("click", () => {
+    const table = document.querySelector(".custom-container");
+
+    const quiz_title = (table?.querySelector("#quiz-title div input")! as HTMLInputElement).value;
+
+    const quiz_subject = (table?.querySelector("#table-subject input")! as HTMLInputElement).value;
+
+    const quiz_skills = Array.from(
+      table?.querySelectorAll(".thead-input input")! as NodeListOf<HTMLInputElement>
+    ).map((input) => input.value);
+
+    const total_questions = (
+      table?.querySelector("#item-total-all-questions input")! as HTMLInputElement
+    ).value;
+
+    const quiz_data: {
+      title: string;
+      created_by: number;
+      specifications_table: {
+        subject: string;
+        skills: string[];
+        total_questions: string;
+        table_content: {
+          thematic_area: string;
+          contents: {
+            content: string;
+            objectives: {
+              performed_classes: string;
+              skills: [];
+            };
+          }[];
+        }[];
+      };
+      questions: [];
+    } = {
+      title: quiz_title,
+      created_by: 1,
+      specifications_table: {
+        subject: quiz_subject,
+        skills: quiz_skills,
+        total_questions: total_questions,
+        table_content: [],
+      },
+      questions: [],
+    };
+
+    console.log(quiz_data);
   });
 </script>
