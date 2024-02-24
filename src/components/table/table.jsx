@@ -55,13 +55,7 @@ function Custom_table() {
     });
     return;
   }
-  /*          <SpecialInputText
-            input_label="Asignatura"
-            input_width="20%"
-            // input_focus_color="rgba(34, 41, 57, 85%)" 
-            input_no_focus_color="rgba(34, 41, 57, 85%)"
-          /> 
-          */
+
   return (
     <table className="table align-middle mb-0 bg-white table-hover table-bordered align-middle caption-top">
       <caption>
