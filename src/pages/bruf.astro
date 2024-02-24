@@ -21,6 +21,9 @@ import Custom_table from "../components/table/table";
       />
     </div>
     <Custom_table client:load />
+    <div id="next-part-div">
+      <div id="button-next-part" class="btn btn-primary">Siguiente</div>
+    </div>
   </div>
 </Document>
 
@@ -41,6 +44,15 @@ import Custom_table from "../components/table/table";
     width: 100%;
     padding-top: 1rem;
     gap: 8px;
+  }
+  #next-part-div {
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+    padding-top: 11px;
+  }
+  #button-next-part {
+    background: rgb(34, 41, 57) !important;
   }
 </style>
 

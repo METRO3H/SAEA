@@ -1,4 +1,4 @@
-import SpecialInputText from "../special_input_text.jsx";
+
 import Table_Item from "./table_item.jsx";
 import "../../styles/table.css";
 
