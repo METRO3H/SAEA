@@ -19,9 +19,9 @@ function Custom_table() {
       const ITEM_PERCENTAGE_VALUE = parseFloat(((INPUT_VALUE / inputs_sum) * 100).toFixed(1));
       ITEM_PERCENTAGE.textContent = isNaN(INPUT_VALUE) ? "-" : `${ITEM_PERCENTAGE_VALUE}%`;
     });
-    Handle_Item_Total_All_questions_Change()
+    Handle_Item_Total_All_questions_Change();
 
-    return
+    return;
   }
   function Handle_Skill_Item_Change(event) {
     const tr_element = event.target.closest("tr");
@@ -37,25 +37,43 @@ function Custom_table() {
     });
 
     document.querySelectorAll(".item-total-skill")[index].textContent = skill_sum;
-    return
+    return;
   }
 
   function Handle_Item_Total_All_questions_Change() {
-    const item_total_all_questions_input = document.querySelector("#item-total-all-questions").firstElementChild;
+    const item_total_all_questions_input = document.querySelector(
+      "#item-total-all-questions"
+    ).firstElementChild;
     const ALL_tr_elements = document.querySelectorAll("tbody tr");
     ALL_tr_elements.forEach((tr) => {
       const percentage = parseFloat(tr.querySelector(".item-percentage").textContent);
       const total_questions = parseFloat(item_total_all_questions_input.value);
       const number_of_questions = Math.round((total_questions * percentage) / 100);
-      tr.querySelector(".item-total-question").textContent = isNaN(number_of_questions) ? 0 : number_of_questions
+      tr.querySelector(".item-total-question").textContent = isNaN(number_of_questions)
+        ? 0
+        : number_of_questions;
     });
-    return
+    return;
   }
-
+  /*          <SpecialInputText
+            input_label="Asignatura"
+            input_width="20%"
+            // input_focus_color="rgba(34, 41, 57, 85%)" 
+            input_no_focus_color="rgba(34, 41, 57, 85%)"
+          /> 
+          */
   return (
     <table className="table align-middle mb-0 bg-white table-hover table-bordered align-middle caption-top">
       <caption>
-        <SpecialInputText input_label="Asignatura" input_width="20%" />
+        <div id="caption-container">
+          <div id="table-subject">
+            <input placeholder="Asignatura"></input>
+          </div>
+          <div id="table-title">
+            <i className="fas fa-table fa-2x"></i>
+            <h2 className="h4 fw-bold">Tabla de especificaciones</h2>
+          </div>
+        </div>
       </caption>
       <thead className="table-dark">
         <tr>
@@ -245,7 +263,7 @@ function Custom_table() {
           <Table_Item
             td_id="item-total-all-questions"
             td_class="cell number-cell"
-            item_title="Ingresa la cantidad de preguntas que tendra este item. Ej: 3"
+            item_title="Total de preguntas"
             contains_input="true"
             input_class="text-center number-cell"
             input_placeholder="-"

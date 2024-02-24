@@ -1,5 +1,46 @@
 caption {
-  padding: 0.5rem 0rem !important;
+  padding: 0 !important;
+}
+#caption-container {
+  display: flex;
+  padding-top: 35px;
+  box-sizing: border-box;
+  justify-content: space-between;
+}
+#table-subject {
+  width: 20%;
+  max-width: 300px;
+  background: rgb(34, 41, 57);
+  border: 1px solid rgb(92, 87, 87);
+  border-top-left-radius: 11px;
+  border-top-right-radius: 11px;
+  border-bottom: 0;
+}
+#table-subject > input {
+  height: 100%;
+  width: 100%;
+  background: transparent;
+  color: white;
+  padding-left: 0.7rem;
+  outline: 0;
+  border: 0;
+  border-top-left-radius: 11px;
+  border-top-right-radius: 11px;
+}
+#table-title {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  /* padding: 0 0 0 111px; */
+  gap: 11px;
+  white-space: nowrap;
+  box-sizing: border-box;
+  overflow: hidden;
+  color: rgb(34, 41, 57) !important;
+}
+#table-title > * {
+  margin: 0;
+  text-overflow: ellipsis;
 }
 .thead-fix-y-padding {
   padding-top: 11px !important;
@@ -84,7 +125,7 @@ input {
 
 tfoot > tr > td {
   padding: 0 !important;
-  background: rgb(92, 87, 87) !important;
+  background: rgba(34, 41, 57, 85%) !important;
   color: white !important;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -93,12 +134,15 @@ tfoot > tr > td {
 #item-total-class {
   max-width: 70px;
 }
-#item-total-all-questions {
+/* #item-total-all-questions {
   background: rgb(35, 55, 255) !important;
-}
+} */
 #item-total-all-questions > input,
 #item-total-all-questions > input::placeholder {
   color: white;
+}
+thead > tr > th {
+  background-color: rgb(34, 41, 57) !important;
 }
 @media (max-width: 768px) {
   thead > tr > :nth-child(1) {

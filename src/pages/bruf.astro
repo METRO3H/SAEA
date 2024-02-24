@@ -9,13 +9,18 @@ import Custom_table from "../components/table/table";
     <div id="quiz-title">
       <SpecialInputText
         input_label="Título del cuestionario"
-        input_width="50%"
+        label_font_size="28px"
+        label_class="fw-bold"
+        bar_thickness="3px"
+        input_width="45%"
+        input_min_width="310px"
         input_height="60px"
         input_font_size="31px"
+        input_no_focus_color="rgba(34, 41, 57)"
+        input_class="fw-bold"
       />
     </div>
-
-    <Custom_table client:load/>
+    <Custom_table client:load />
   </div>
 </Document>
 
@@ -32,8 +37,10 @@ import Custom_table from "../components/table/table";
   #quiz-title {
     display: flex;
     justify-content: center;
+    align-items: center;
     width: 100%;
     padding-top: 1rem;
+    gap: 8px;
   }
 </style>
 
