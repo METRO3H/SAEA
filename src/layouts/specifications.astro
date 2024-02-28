@@ -1,39 +1,38 @@
 ---
-import Document from "../layouts/document.astro";
 import SpecialInputText from "../components/special_input_text.jsx";
-import Custom_table from "../components/table/table";
+import Custom_table from "../components/table/table.jsx";
 ---
 
-<Document>
-  <div class="custom-container">
-    <div id="quiz-title">
-      <SpecialInputText
-        input_label="Título del cuestionario"
-        label_font_size="28px"
-        label_class="fw-bold"
-        bar_thickness="3px"
-        input_width="45%"
-        input_min_width="310px"
-        input_height="60px"
-        input_font_size="31px"
-        input_no_focus_color="rgba(34, 41, 57)"
-        input_class="fw-bold"
-      />
-    </div>
-    <Custom_table client:load />
-    <div id="next-part-div">
-      <button id="button-next-part" class="btn btn-primary">Siguiente</button>
-    </div>
+<div class="custom-container">
+  <div id="quiz-title">
+    <SpecialInputText
+      input_label="Título del cuestionario"
+      label_font_size="28px"
+      label_class="fw-bold"
+      bar_thickness="3px"
+      input_width="45%"
+      input_min_width="310px"
+      input_height="60px"
+      input_font_size="31px"
+      input_no_focus_color="rgba(34, 41, 57)"
+      input_class="fw-bold"
+    />
   </div>
-</Document>
+  <Custom_table client:load />
+  <div id="next-part-div">
+    <button id="button-next-part" class="btn btn-primary"
+      ><i class="fas fa-forward"></i> Siguiente
+    </button>
+  </div>
+</div>
 
 <style>
   .custom-container {
     display: flex;
     justify-content: flex-start;
     align-items: flex-start;
-    max-width: 95%;
     height: 100%;
+    width: 95%;
     overflow: auto;
     flex-direction: column;
   }
@@ -53,6 +52,9 @@ import Custom_table from "../components/table/table";
     margin-bottom: 11px;
   }
   #button-next-part {
+    display: flex;
+    align-items: center;
+    gap: 5px;
     background: rgb(34, 41, 57) !important;
   }
 </style>
@@ -72,6 +74,10 @@ import Custom_table from "../components/table/table";
 
   const button_next_part = document.querySelector("#button-next-part");
   button_next_part?.addEventListener("click", () => {
+    const movable_container = document.querySelector("#movable-container") as HTMLDivElement;
+
+    movable_container.style.transform = "translateX(-50%)";
+
     const table = document.querySelector(".custom-container");
 
     const quiz_title = (table?.querySelector("#quiz-title div input")! as HTMLInputElement).value;
@@ -114,10 +120,7 @@ import Custom_table from "../components/table/table";
       questions: [],
     };
 
-    /* quiz_data.specifications_table.table_data =  */
-
     const All_TR = table?.querySelectorAll("tbody tr") as NodeListOf<HTMLElement>;
-    /* console.log(All_TR); */
 
     let [thematic_area_aux, content_aux] = ["", ""];
 

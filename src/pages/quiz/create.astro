@@ -3,33 +3,80 @@ import QuestionListItem from "../../components/question/question_list_item.astro
 import QuestionContentItem from "../../components/question/question_content_item.astro";
 import { question_number } from "../../components/question/const_var";
 import Document from "../../layouts/document.astro";
+import Specifications from "../../layouts/specifications.astro";
 ---
 
 <Document title="Crear Quiz" description="Crear Quiz">
-  <div id="question-card-container">
-    <div id="question-list-container">
-      <div class="list-group list-group-light" id="list-tab" role="tablist">
-        <QuestionListItem question_list_item_number={question_number} add_class="active" />
-
-        <QuestionListItem question_list_item_number={question_number + 1} />
+  <div id="main-container">
+    <div id="movable-container">
+      <div id="specs-container">
+        <Specifications />
       </div>
-    </div>
+      <div id="create-questions-container">
+        <div id="question-card-container">
+          <div id="question-list-container">
+            <div class="list-group list-group-light" id="list-tab" role="tablist">
+              <QuestionListItem question_list_item_number={question_number} add_class="active" />
 
-    <div id="question-content-container">
-      <div class="tab-content">
-        <QuestionContentItem question_content_item_number={question_number} add_class="active" />
-        <QuestionContentItem question_content_item_number={question_number + 1} />
+              <QuestionListItem question_list_item_number={question_number + 1} />
+            </div>
+          </div>
+          <div id="back-part-div">
+            <button id="button-back-part" class="btn btn-primary btn-rounded"
+              ><i class="fas fa-arrow-rotate-left"></i>Atrás</button
+            >
+          </div>
+          <div id="question-content-container">
+            <div class="tab-content">
+              <QuestionContentItem
+                question_content_item_number={question_number}
+                add_class="active"
+              />
+              <QuestionContentItem question_content_item_number={question_number + 1} />
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </Document>
 
 <style>
+  #main-container {
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+  }
+  #movable-container {
+    display: flex;
+    height: 100%;
+    width: 200%;
+    transition: transform 500ms;
+  }
+  #specs-container {
+    display: flex;
+    justify-content: center;
+    width: 50%;
+  }
+  #create-questions-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 50%;
+  }
   #question-card-container {
     display: grid;
     grid-template-columns: 1fr 5fr;
+    grid-template-areas:
+      "list content content content content content"
+      "list content content content content content"
+      "list content content content content content"
+      "list content content content content content"
+      "list content content content content content"
+      "backend content content content content content";
     width: 805px;
-    min-height: 95%;
+    height: 95%;
     margin: 0;
     padding: 0;
     background: white;
@@ -39,6 +86,23 @@ import Document from "../../layouts/document.astro";
   #question-list-container {
     width: 180px;
     padding: 0;
+    grid-area: list;
+  }
+  #back-part-div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /*     padding-top: 11px;
+    margin-bottom: 11px; */
+    grid-area: backend;
+  }
+  #button-back-part {
+    background: rgb(34, 41, 57) !important;
+    height: fit-content;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
   }
   #question-content-container {
     display: flex;
@@ -46,6 +110,7 @@ import Document from "../../layouts/document.astro";
     padding-left: 21px;
     padding-right: 21px;
     margin-top: 11px;
+    grid-area: content;
   }
 
   @media (max-width: 805px) {
@@ -55,6 +120,11 @@ import Document from "../../layouts/document.astro";
   }
 </style>
 <script>
+  document.querySelector("#back-part-div")?.addEventListener("click", () => {
+    const movable_container = document.querySelector("#movable-container") as HTMLDivElement;
+
+    movable_container.style.transform = "translateX(0%)";
+  });
   document.querySelectorAll(".save-question-item")!.forEach((button) => {
     button.addEventListener("click", function (event) {
       event.preventDefault(); // Prevenir el comportamiento predeterminado del botón
