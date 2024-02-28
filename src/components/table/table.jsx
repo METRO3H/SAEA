@@ -131,14 +131,16 @@ function Custom_table() {
             item_title="Ingrese un eje a evaluar. Ej: Números"
             contains_input="true"
             input_placeholder="Ej: Geometría"
+            input_class="item-thematic-area"
           />
 
           <Table_Item
-            row_span={2}
+            row_span={1}
             td_class="cell left-cell"
             item_title="Ingresa un contenido. Ej: Transformaciones isométricas"
             contains_input="true"
             input_placeholder="Ej: Figuras geométricas"
+            input_class="item-content"
           />
 
           <Table_Item
@@ -146,6 +148,67 @@ function Custom_table() {
             item_title="Ingresa un objetivo. Ej: Componer rotaciones, traslaciones y reflexiones en el plano cartesiano"
             contains_input="true"
             input_placeholder="Ej: Efectuar rotaciones y traslaciones"
+            input_class="item-objetive"
+          />
+          <Table_Item
+            td_class="cell patron-cell"
+            item_title="Ingresa la cantidad de clases realizadas con respecto a este contenido. Ej: 4"
+            contains_input="true"
+            input_class="text-center number-cell item-class"
+            input_placeholder="Ej: 2"
+            Handle_Input_Change={() => Handle_Class_Item_Change()}
+          />
+          <Table_Item
+            td_class="cell text-center number-cell patron-cell item-percentage"
+            item_title="Porcentaje de clases"
+          />
+
+          <Table_Item
+            td_class="cell patron-cell"
+            item_title="Ingresa la cantidad de preguntas que tendra este item. Ej: 3"
+            contains_input="true"
+            input_class="text-center number-cell item-skill"
+            input_placeholder="-"
+            Handle_Input_Change={(event) => Handle_Skill_Item_Change(event)}
+          />
+          <Table_Item
+            td_class="cell patron-cell"
+            item_title="Ingresa la cantidad de preguntas que tendra este item. Ej: 3"
+            contains_input="true"
+            input_class="text-center number-cell item-skill"
+            input_placeholder="-"
+            Handle_Input_Change={(event) => Handle_Skill_Item_Change(event)}
+          />
+          <Table_Item
+            td_class="cell patron-cell"
+            item_title="Ingresa la cantidad de preguntas que tendra este item. Ej: 3"
+            contains_input="true"
+            input_class="text-center number-cell item-skill"
+            input_placeholder="-"
+            Handle_Input_Change={(event) => Handle_Skill_Item_Change(event)}
+          />
+
+          <Table_Item
+            td_class="cell text-center number-cell patron-cell item-total-question"
+            item_title="Cantidad de preguntas de este item"
+          />
+        </tr>
+        <tr>
+          <Table_Item
+            row_span={2}
+            td_class="cell left-cell"
+            item_title="Ingresa un contenido. Ej: Transformaciones isométricas"
+            contains_input="true"
+            input_placeholder="Ej: Figuras geométricas"
+            input_class="item-content"
+          />
+
+          <Table_Item
+            td_class="cell left-cell patron-cell"
+            item_title="Ingresa un objetivo. Ej: Componer rotaciones, traslaciones y reflexiones en el plano cartesiano"
+            contains_input="true"
+            input_placeholder="Ej: Efectuar rotaciones y traslaciones"
+            input_class="item-objetive"
           />
           <Table_Item
             td_class="cell patron-cell"
@@ -196,6 +259,7 @@ function Custom_table() {
             item_title="Ingresa un objetivo. Ej: Componer rotaciones, traslaciones y reflexiones en el plano cartesiano"
             contains_input="true"
             input_placeholder="Ej: Efectuar rotaciones y traslaciones"
+            input_class="item-objetive"
           />
           <Table_Item
             td_class="cell patron-cell"
@@ -203,64 +267,7 @@ function Custom_table() {
             contains_input="true"
             input_class="text-center number-cell item-class"
             input_placeholder="Ej: 2"
-            Handle_Input_Change={() => Handle_Class_Item_Change(".item-class")}
-          />
-          <Table_Item
-            td_class="cell text-center number-cell patron-cell item-percentage"
-            item_title="Porcentaje de clases"
-          />
-
-          <Table_Item
-            td_class="cell patron-cell"
-            item_title="Ingresa la cantidad de preguntas que tendra este item. Ej: 3"
-            contains_input="true"
-            input_class="text-center number-cell item-skill"
-            input_placeholder="-"
-            Handle_Input_Change={(event) => Handle_Skill_Item_Change(event)}
-          />
-          <Table_Item
-            td_class="cell patron-cell"
-            item_title="Ingresa la cantidad de preguntas que tendra este item. Ej: 3"
-            contains_input="true"
-            input_class="text-center number-cell item-skill"
-            input_placeholder="-"
-            Handle_Input_Change={(event) => Handle_Skill_Item_Change(event)}
-          />
-          <Table_Item
-            td_class="cell patron-cell"
-            item_title="Ingresa la cantidad de preguntas que tendra este item. Ej: 3"
-            contains_input="true"
-            input_class="text-center number-cell item-skill"
-            input_placeholder="-"
-            Handle_Input_Change={(event) => Handle_Skill_Item_Change(event)}
-          />
-
-          <Table_Item
-            td_class="cell text-center number-cell patron-cell item-total-question"
-            item_title="Cantidad de preguntas de este item"
-          />
-        </tr>
-        <tr>
-          <Table_Item
-            row_span={1}
-            td_class="cell left-cell"
-            item_title="Ingresa un contenido. Ej: Transformaciones isométricas"
-            contains_input="true"
-            input_placeholder="Ej: Figuras geométricas"
-          />
-          <Table_Item
-            td_class="cell left-cell patron-cell"
-            item_title="Ingresa un objetivo. Ej: Componer rotaciones, traslaciones y reflexiones en el plano cartesiano"
-            contains_input="true"
-            input_placeholder="Ej: Efectuar rotaciones y traslaciones"
-          />
-          <Table_Item
-            td_class="cell patron-cell"
-            item_title="Ingresa la cantidad de clases realizadas con respecto a este contenido. Ej: 4"
-            contains_input="true"
-            input_class="text-center number-cell item-class"
-            input_placeholder="Ej: 2"
-            Handle_Input_Change={() => Handle_Class_Item_Change(".item-class")}
+            Handle_Input_Change={() => Handle_Class_Item_Change()}
           />
           <Table_Item
             td_class="cell text-center number-cell patron-cell item-percentage"
@@ -304,6 +311,7 @@ function Custom_table() {
             item_title="Ingrese un eje a evaluar. Ej: Números"
             contains_input="true"
             input_placeholder="Ej: Geometría"
+            input_class="item-thematic-area"
           />
 
           <Table_Item
@@ -312,6 +320,7 @@ function Custom_table() {
             item_title="Ingresa un contenido. Ej: Transformaciones isométricas"
             contains_input="true"
             input_placeholder="Ej: Figuras geométricas"
+            input_class="item-content"
           />
 
           <Table_Item
@@ -319,6 +328,7 @@ function Custom_table() {
             item_title="Ingresa un objetivo. Ej: Componer rotaciones, traslaciones y reflexiones en el plano cartesiano"
             contains_input="true"
             input_placeholder="Ej: Efectuar rotaciones y traslaciones"
+            input_class="item-objetive"
           />
           <Table_Item
             td_class="cell patron-cell"
@@ -370,12 +380,15 @@ function Custom_table() {
             item_title="Ingresa un contenido. Ej: Transformaciones isométricas"
             contains_input="true"
             input_placeholder="Ej: Figuras geométricas"
+            input_class="item-content"
           />
+
           <Table_Item
             td_class="cell left-cell patron-cell"
             item_title="Ingresa un objetivo. Ej: Componer rotaciones, traslaciones y reflexiones en el plano cartesiano"
             contains_input="true"
             input_placeholder="Ej: Efectuar rotaciones y traslaciones"
+            input_class="item-objetive"
           />
           <Table_Item
             td_class="cell patron-cell"
@@ -383,7 +396,7 @@ function Custom_table() {
             contains_input="true"
             input_class="text-center number-cell item-class"
             input_placeholder="Ej: 2"
-            Handle_Input_Change={() => Handle_Class_Item_Change(".item-class")}
+            Handle_Input_Change={() => Handle_Class_Item_Change()}
           />
           <Table_Item
             td_class="cell text-center number-cell patron-cell item-percentage"

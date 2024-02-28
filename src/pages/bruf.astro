@@ -93,15 +93,12 @@ import Custom_table from "../components/table/table";
         subject: string;
         skills: string[];
         total_questions: string;
-        table_content: {
+        table_data: {
           thematic_area: string;
-          contents: {
-            content: string;
-            objectives: {
-              performed_classes: string;
-              skills: [];
-            };
-          }[];
+          content: string;
+          objective: string;
+          performed_classes: string;
+          skills: string[];
         }[];
       };
       questions: [];
@@ -112,10 +109,42 @@ import Custom_table from "../components/table/table";
         subject: quiz_subject,
         skills: quiz_skills,
         total_questions: total_questions,
-        table_content: [],
+        table_data: [],
       },
       questions: [],
     };
+
+    /* quiz_data.specifications_table.table_data =  */
+
+    const All_TR = table?.querySelectorAll("tbody tr") as NodeListOf<HTMLElement>;
+    /* console.log(All_TR); */
+
+    let [thematic_area_aux, content_aux] = ["", ""];
+
+    All_TR.forEach((tr) => {
+      let thematic_area = (tr.querySelector(".item-thematic-area") as HTMLInputElement)?.value;
+
+      if (thematic_area) {
+        thematic_area_aux = thematic_area;
+      }
+
+      let content = (tr.querySelector(".item-content") as HTMLInputElement)?.value;
+
+      if (content) {
+        content_aux = content;
+      }
+
+      /*  const content */
+      quiz_data.specifications_table.table_data.push({
+        thematic_area: thematic_area ?? thematic_area_aux,
+        content: content ?? content_aux,
+        objective: (tr.querySelector(".item-objetive") as HTMLInputElement).value,
+        performed_classes: (tr.querySelector(".item-class") as HTMLInputElement).value,
+        skills: Array.from(tr.querySelectorAll(".item-skill") as NodeListOf<HTMLInputElement>).map(
+          (item) => item.value
+        ),
+      });
+    });
 
     console.log(quiz_data);
   });

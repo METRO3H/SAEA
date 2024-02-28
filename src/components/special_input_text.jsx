@@ -33,7 +33,7 @@ function Special_Input_Text({
       <span className="highlight"></span>
       <span className="bar"></span>
       <label className={label_class}>
-        <i class="fas fa-book"></i>
+        <i className="fas fa-book"></i>
         {input_label}
       </label>
     </div>
