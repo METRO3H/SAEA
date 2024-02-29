@@ -39,7 +39,6 @@ body {
   padding: 0;
   height: 100vh;
   font-family: "Atkinson", sans-serif;
-
   text-align: left;
   background: linear-gradient(var(--gray-gradient)) no-repeat;
   background-size: 100% 600px;
@@ -52,7 +51,8 @@ body {
   flex-direction: column;
 }
 main {
-  flex-grow: 1;
+  height: calc(100vh - 54px);
+  max-height: calc(100vh - 54px);
 }
 
 h1,

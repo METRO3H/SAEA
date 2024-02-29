@@ -13,15 +13,6 @@ const { question_content_item_number, add_class = "" } = Astro.props;
     <h2 class="h1 fw-bold">
       <i class="far fa-circle-question trailing"></i> Pregunta {question_content_item_number}
     </h2>
-
-    <button
-      class="btn btn-dark btn-lg btn-rounded save-question-item"
-      data-mdb-ripple-init
-      data-mdb-modal-init
-      data-mdb-target="#staticBackdrop"
-    >
-      <i class="far fa-bookmark" style="padding-right: 4px;"></i> GENERAR</button
-    >
   </div>
   <hr />
   <form class=`question-answers`>
@@ -57,7 +48,8 @@ const { question_content_item_number, add_class = "" } = Astro.props;
           <button
             type="button"
             class="btn btn-secondary btn-lg btn-close-modal"
-            data-mdb-ripple-init data-mdb-dismiss="modal"
+            data-mdb-ripple-init
+            data-mdb-dismiss="modal"
           >
             <i class="fas fa-xmark me-2"></i> Cerrar</button
           >

@@ -99,7 +99,7 @@ import Custom_table from "../components/table/table.jsx";
         subject: string;
         skills: string[];
         total_questions: string;
-        table_data: {
+        table_body: {
           thematic_area: string;
           content: string;
           objective: string;
@@ -115,7 +115,7 @@ import Custom_table from "../components/table/table.jsx";
         subject: quiz_subject,
         skills: quiz_skills,
         total_questions: total_questions,
-        table_data: [],
+        table_body: [],
       },
       questions: [],
     };
@@ -127,18 +127,19 @@ import Custom_table from "../components/table/table.jsx";
     All_TR.forEach((tr) => {
       let thematic_area = (tr.querySelector(".item-thematic-area") as HTMLInputElement)?.value;
 
-      if (thematic_area) {
+      if (thematic_area || thematic_area == "") {
         thematic_area_aux = thematic_area;
       }
 
       let content = (tr.querySelector(".item-content") as HTMLInputElement)?.value;
 
-      if (content) {
+      if (content || content == "") {
         content_aux = content;
       }
 
-      /*  const content */
-      quiz_data.specifications_table.table_data.push({
+
+      /* const content */
+      quiz_data.specifications_table.table_body.push({
         thematic_area: thematic_area ?? thematic_area_aux,
         content: content ?? content_aux,
         objective: (tr.querySelector(".item-objetive") as HTMLInputElement).value,
