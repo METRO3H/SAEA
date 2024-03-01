@@ -71,6 +71,10 @@ const { question_content_item_number, add_class = "" } = Astro.props;
 </div>
 
 <style is:global>
+  .question-content-item {
+    height: 100%;
+    padding: 15px;
+  }
   .add-item {
     margin-top: 11px;
     margin-left: 21px;
@@ -87,7 +91,6 @@ const { question_content_item_number, add_class = "" } = Astro.props;
   }
   #question-content-title-container {
     display: flex;
-    justify-content: space-between;
   }
 
   .fade {
