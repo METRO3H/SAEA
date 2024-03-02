@@ -4,6 +4,7 @@ import QuestionContentItem from "../../components/question/question_content_item
 import { question_number } from "../../components/question/const_var";
 import Document from "../../layouts/document.astro";
 import Specifications from "../../layouts/specifications.astro";
+import Modal from "../../components/modal.astro";
 ---
 
 <Document title="Crear Quiz" description="Crear Quiz">
@@ -21,11 +22,6 @@ import Specifications from "../../layouts/specifications.astro";
               <QuestionListItem question_list_item_number={question_number + 1} />
             </div>
           </div>
-          <div id="back-part-div">
-            <button id="button-back-part" class="btn btn-danger btn-rounded"
-              ><i class="fas fa-arrow-rotate-left"></i>Atrás</button
-            >
-          </div>
           <div id="question-content-container">
             <div class="tab-content">
               <QuestionContentItem
@@ -35,19 +31,35 @@ import Specifications from "../../layouts/specifications.astro";
               <QuestionContentItem question_content_item_number={question_number + 1} />
             </div>
           </div>
+          <div id="back-part-div">
+            <button id="button-back-part" class="btn btn-secondary btn-rounded"
+              ><i class="fas fa-arrow-rotate-left"></i>Atrás</button
+            >
+          </div>
           <div id="footer-card-buttons">
+            <button type="button" id="button-save-data-form" class="btn btn-lg btn-rounded">
+              <i class="far fa-bookmark"></i>
+              <span> Guardar</span>
+            </button>
+
             <button
-              class="btn btn-dark btn-lg btn-rounded save-question-item"
+              type="button"
+              id="button-generate-google-form"
+              class="btn btn-lg btn-rounded"
               data-mdb-ripple-init
               data-mdb-modal-init
               data-mdb-target="#staticBackdrop"
+              disabled
             >
-              <i class="far fa-bookmark" style="padding-right: 4px;"></i> GENERAR</button
-            >
+              <img src="../../../public/google-icon.svg" alt="" />
+              <span>GENERAR FORMULARIO</span>
+            </button>
           </div>
         </div>
       </div>
     </div>
+
+    <Modal modal_id="staticBackdrop" />
   </div>
 </Document>
 
@@ -87,6 +99,7 @@ import Specifications from "../../layouts/specifications.astro";
       "back_button buttons";
     width: 805px;
     height: 95%;
+    /* min-height: 530px; */
     margin: 0;
     padding: 0;
     background: white;
@@ -108,6 +121,12 @@ import Specifications from "../../layouts/specifications.astro";
     padding: 0;
     grid-area: list;
   }
+  .tab-content {
+    height: 100%;
+    width: 100%;
+    max-height: 100%;
+    overflow: auto;
+  }
   #back-part-div {
     display: flex;
     justify-content: center;
@@ -115,7 +134,8 @@ import Specifications from "../../layouts/specifications.astro";
     grid-area: back_button;
   }
   #button-back-part {
-    background: #e70034 !important;
+    /*  background: #e70034 !important; */
+    color: var(--main-color-blue-light);
     height: fit-content;
     font-size: 14px;
     display: flex;
@@ -126,14 +146,30 @@ import Specifications from "../../layouts/specifications.astro";
     display: flex;
     justify-content: center;
     align-items: center;
+    gap: 15px;
     grid-area: buttons;
   }
+  #button-save-data-form {
+    display: flex;
+    justify-content: center;
+    gap: 4px;
+    align-items: center;
+    background: var(--main-color-blue);
+    color: white;
+  }
 
-  .tab-content {
-    height: 100%;
-    width: 100%;
-    max-height: 100%;
-    overflow: auto;
+  #button-save-data-form > i {
+    padding-bottom: 2.2px;
+  }
+  #button-generate-google-form {
+    display: flex;
+    justify-content: center;
+    gap: 4px;
+    background: #6200ee;
+    color: white;
+  }
+  #button-generate-google-form > img {
+    width: 20px;
   }
 
   @media (max-width: 805px) {
@@ -148,33 +184,40 @@ import Specifications from "../../layouts/specifications.astro";
 
     movable_container.style.transform = "translateX(0%)";
   });
-  document.querySelectorAll(".save-question-item")!.forEach((button) => {
-    button.addEventListener("click", function (event) {
-      event.preventDefault(); // Prevenir el comportamiento predeterminado del botón
+  const button_save_form = document.querySelector("#button-save-data-form");
+  const button_generate_form = document.querySelector("#button-generate-google-form");
 
-      const data_form = Get_Data_Form();
-      console.log(data_form);
+  button_save_form?.addEventListener("click", () => {
+    button_generate_form?.removeAttribute("disabled");
+    button_save_form.setAttribute("disabled", "");
+  });
 
-      fetch("/request/create_form", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify(data_form),
+  const button = document.querySelector("#button-generate-google-form");
+  button!.addEventListener("click", function (event) {
+    event.preventDefault(); // Prevenir el comportamiento predeterminado del botón
+
+    const data_form = Get_Data_Form();
+    console.log(data_form);
+
+    fetch("/request/create_form", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify(data_form),
+    })
+      .then(async (response) => {
+        if (!response.ok) {
+          const errorResponse = await response.json();
+          throw errorResponse || "Error en la solicitud";
+        }
+        return response.json();
       })
-        .then(async (response) => {
-          if (!response.ok) {
-            const errorResponse = await response.json();
-            throw errorResponse || "Error en la solicitud";
-          }
-          return response.json();
-        })
-        .then((response) => {
-          End_Animation(response, false);
-        })
-        .catch((error) => {
-          console.error(error);
-          End_Animation(error, true);
-        });
-    });
+      .then((response) => {
+        End_Animation(response, false);
+      })
+      .catch((error) => {
+        console.error(error);
+        End_Animation(error, true);
+      });
   });
 
   function Get_Data_Form() {
@@ -239,11 +282,14 @@ import Specifications from "../../layouts/specifications.astro";
     );
     document.documentElement.style.setProperty("--h1Animation", "h1-animation-2");
 
-    const modal_message_container = ((
-      document.querySelector("#modal-message-container") as HTMLElement
-    ).innerHTML = `
+    const modal_message_container = document.querySelector(
+      "#modal-message-container"
+    ) as HTMLElement;
+
+    modal_message_container.innerHTML = `
             <h3 id="modal-message-text"> ${response.message} </h3>
-          `);
+          `;
+
     const btn_close_modal = document.querySelector(".btn-close-modal") as HTMLElement;
 
     btn_close_modal.style.height = "51px";

@@ -8,7 +8,13 @@ function CheckboxComponent({ check_box_key, check_box_id, check_box_label, handl
         value=""
         id={check_box_id}
       />
-      <SpecialInputText input_label={check_box_label} input_width="300px" />
+      <SpecialInputText
+        input_label={check_box_label}
+        input_width="300px"
+        input_height="45px"
+        input_font_size="21px"
+        /* input_text_padding_bottom="0px" */
+      />
       <button
         type="button"
         className="btn btn-secondary btn-floating btn-sm remove-button"

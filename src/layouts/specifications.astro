@@ -14,7 +14,7 @@ import Custom_table from "../components/table/table.jsx";
       input_min_width="310px"
       input_height="60px"
       input_font_size="31px"
-      input_no_focus_color="rgba(34, 41, 57)"
+      input_no_focus_color="var(--main-color-blue)"
       input_class="fw-bold"
     />
   </div>
@@ -55,7 +55,7 @@ import Custom_table from "../components/table/table.jsx";
     display: flex;
     align-items: center;
     gap: 5px;
-    background: rgb(34, 41, 57) !important;
+    background: var(--main-color-blue) !important;
   }
 </style>
 
@@ -136,7 +136,6 @@ import Custom_table from "../components/table/table.jsx";
       if (content || content == "") {
         content_aux = content;
       }
-
 
       /* const content */
       quiz_data.specifications_table.table_body.push({

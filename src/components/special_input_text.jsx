@@ -11,6 +11,7 @@ function Special_Input_Text({
   bar_thickness = "1px",
   input_class = "",
   input_min_width = "0px",
+  input_text_padding_bottom = "3px"
 }) {
   const input_style = {
     width: input_width,
@@ -21,6 +22,7 @@ function Special_Input_Text({
     "--input-no-focus-color": input_no_focus_color,
     "--label-font-size": label_font_size,
     "--bar-thickness": bar_thickness,
+    "--input-text-padding-bottom": input_text_padding_bottom
   };
   return (
     <div className="group" style={input_style}>
