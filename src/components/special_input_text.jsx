@@ -6,21 +6,17 @@ function Special_Input_Text({
   input_font_size = "16px",
   input_focus_color = "#2337ff",
   input_no_focus_color = "#bdbdbd",
-  label_font_size = "18px",
   label_class = "",
   bar_thickness = "1px",
   input_class = "",
-  input_min_width = "0px",
   input_text_padding_bottom = "3px"
 }) {
   const input_style = {
     width: input_width,
-    minWidth: input_min_width,
     height: input_height,
-    fontSize: input_font_size,
+    "--input-font-size": input_font_size,
     "--input-focus-color": input_focus_color,
     "--input-no-focus-color": input_no_focus_color,
-    "--label-font-size": label_font_size,
     "--bar-thickness": bar_thickness,
     "--input-text-padding-bottom": input_text_padding_bottom
   };

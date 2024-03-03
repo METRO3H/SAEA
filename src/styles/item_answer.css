@@ -1,46 +1,52 @@
 .group {
   position: relative;
+  padding-top: 5px;
+  min-width: fit-content;
 }
 
 .input {
-  font-size: inherit;
-  padding: 15px 10px var(--input-text-padding-bottom, 3px) 5px;
-  display: block;
+  font-size: var(--input-font-size, 16px);
+  padding-bottom: 2px;
+  display: inline-block;
   width: 100%;
-  height: 100%;
   border: none;
   border-bottom: var(--bar-thickness) solid var(--input-no-focus-color, #bdbdbd) !important;
   background: transparent;
   text-overflow: ellipsis;
+  line-height: 1;
+  padding: 4px;
+  padding-top: 7px;
 }
 .input:focus {
   outline: none;
 }
-input::placeholder {
-  opacity: 60%;
-}
 
-label {
+.group > label {
+  position: absolute;
   display: flex;
-  /* height: max-content; */
-  padding: 0;
-  margin: 0;
   align-items: center;
   gap: 5px;
-  color: var(--input-no-focus-color, #bdbdbd);
-  font-size: var(--label-font-size, 18px);
+
   max-width: 100%;
+  padding: 0;
+  margin: 0;
+
+  left: 5px;
+  /* bottom: 0; */
+
+  /* top: calc(var(--input-font-size, 16px) - 13px); */
+  top: 0;
+
+  font-size: calc(var(--input-font-size, 16px) - 3px);
+  color: var(--input-no-focus-color, #bdbdbd);
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow-x: hidden;
-  font-weight: normal;
-  position: absolute;
   pointer-events: none;
-  left: 5px;
-  top: calc(100% - var(--label-font-size, 18px) - 13px);
-  transition: 0.2s ease all;
+
   -moz-transition: 0.2s ease all;
   -webkit-transition: 0.2s ease all;
+  transition: 0.2s ease all;
 }
 
 .input:focus ~ label,

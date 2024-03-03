@@ -6,9 +6,10 @@ const router = express.Router();
 
 router.post("/", async function (request, response) {
   const data = request.body;
-  console.log(JSON.stringify(data, null, 4));
+  // console.log(JSON.stringify(data, null, 2));
+  console.log(data);
 
-/*   try {
+  /*   try {
     const form_URL = (await Generate_Form(data)) || "brufa";
     const save_form_result = await Save_Form(data);
     console.log(save_form_result)
@@ -21,8 +22,6 @@ router.post("/", async function (request, response) {
     console.error(error.message);
     return response.status(400).send({ message: "Error al ingresar los datos" });
   } */
-
-
 });
 
 export default router;

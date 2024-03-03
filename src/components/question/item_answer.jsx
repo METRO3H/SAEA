@@ -13,7 +13,6 @@ function CheckboxComponent({ check_box_key, check_box_id, check_box_label, handl
         input_width="300px"
         input_height="45px"
         input_font_size="21px"
-        /* input_text_padding_bottom="0px" */
       />
       <button
         type="button"

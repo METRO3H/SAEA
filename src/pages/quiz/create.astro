@@ -1,10 +1,12 @@
 ---
-import QuestionListItem from "../../components/question/question_list_item.astro";
-import QuestionContentItem from "../../components/question/question_content_item.astro";
-import { question_number } from "../../components/question/const_var";
-import Document from "../../layouts/document.astro";
-import Specifications from "../../layouts/specifications.astro";
-import Modal from "../../components/modal.astro";
+import { Image } from "astro:assets";
+import Google_Icon from "@assets/svg/google-icon.svg"
+import QuestionListItem from "@components/question/question_list_item.astro";
+import QuestionContentItem from "@components/question/question_content_item.astro";
+import { question_number } from "@components/question/const_var";
+import Document from "@layouts/document.astro";
+import Specifications from "@layouts/specifications.astro";
+import Modal from "@components/modal.astro";
 ---
 
 <Document title="Crear Quiz" description="Crear Quiz">
@@ -51,7 +53,7 @@ import Modal from "../../components/modal.astro";
               data-mdb-target="#staticBackdrop"
               disabled
             >
-              <img src="../../../public/google-icon.svg" alt="" />
+              <Image src={Google_Icon} alt= "Google icon"/>
               <span>GENERAR FORMULARIO</span>
             </button>
           </div>
@@ -311,9 +313,7 @@ import Modal from "../../components/modal.astro";
         End_Animation(error, true);
       });
   }
-  function Generate_Google_Form() {
-
-  }
+  function Generate_Google_Form() {}
 
   function Update_Questions_Data() {
     const questions = document.querySelectorAll(".question-content-item");
@@ -349,7 +349,6 @@ import Modal from "../../components/modal.astro";
         answers: answers_data,
       });
     });
-
   }
 
   function End_Animation(response, is_error) {
