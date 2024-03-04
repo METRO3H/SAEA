@@ -1,6 +1,6 @@
 ---
 import { Image } from "astro:assets";
-import Google_Icon from "@assets/svg/google-icon.svg"
+import Google_Icon from "@assets/svg/google-icon.svg";
 import QuestionListItem from "@components/question/question_list_item.astro";
 import QuestionContentItem from "@components/question/question_content_item.astro";
 import { question_number } from "@components/question/const_var";
@@ -53,7 +53,7 @@ import Modal from "@components/modal.astro";
               data-mdb-target="#staticBackdrop"
               disabled
             >
-              <Image src={Google_Icon} alt= "Google icon"/>
+              <Image src={Google_Icon} alt="Google icon" />
               <span>GENERAR FORMULARIO</span>
             </button>
           </div>
@@ -289,8 +289,8 @@ import Modal from "@components/modal.astro";
     console.log(quiz_data);
   }
   function Save_Form() {
-    button_generate_google_form?.removeAttribute("disabled");
-    button_save_form.setAttribute("disabled", "");
+    /*     button_generate_google_form?.removeAttribute("disabled");
+    button_save_form.setAttribute("disabled", ""); */
     console.log(quiz_data);
 
     fetch("/request/save_form", {
@@ -392,3 +392,5 @@ import Modal from "@components/modal.astro";
     return;
   }
 </script>
+
+

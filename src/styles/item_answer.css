@@ -32,10 +32,9 @@
   margin: 0;
 
   left: 5px;
-  /* bottom: 0; */
+  top: calc(var(--input-font-size, 16px) - 6px);
 
-  /* top: calc(var(--input-font-size, 16px) - 13px); */
-  top: 0;
+  line-height: normal;
 
   font-size: calc(var(--input-font-size, 16px) - 3px);
   color: var(--input-no-focus-color, #bdbdbd);
@@ -103,10 +102,11 @@
 .input:focus ~ .highlight {
   animation: inputHighlighter 0.3s ease;
 }
-label > i {
-  padding-bottom: 4px;
-}
 
+.remove-button,
+.answer-input-box {
+  margin-top: 11px;
+}
 @keyframes inputHighlighter {
   from {
     background: var(--input-focus-color, #2337ff);

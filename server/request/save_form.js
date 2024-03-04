@@ -1,14 +1,16 @@
 import express from "express";
+import Print_JSON_Table from "../../util/print_json_table.js";
 import Generate_Form from "../API_google_forms/generate_form.js";
 import { Save_Form } from "../database/request/save_form.js";
 /* import test from "../API_google_forms/main.js"; */
+
 const router = express.Router();
 
 router.post("/", async function (request, response) {
   const data = request.body;
-  // console.log(JSON.stringify(data, null, 2));
-  console.log(data);
+  Print_JSON_Table(data);
 
+  response.status(200).send({ message: "BOB XD" });
   /*   try {
     const form_URL = (await Generate_Form(data)) || "brufa";
     const save_form_result = await Save_Form(data);

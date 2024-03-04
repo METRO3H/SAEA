@@ -9,7 +9,7 @@ function Special_Input_Text({
   label_class = "",
   bar_thickness = "1px",
   input_class = "",
-  input_text_padding_bottom = "3px"
+  input_text_padding_bottom = "3px",
 }) {
   const input_style = {
     width: input_width,
@@ -18,7 +18,7 @@ function Special_Input_Text({
     "--input-focus-color": input_focus_color,
     "--input-no-focus-color": input_no_focus_color,
     "--bar-thickness": bar_thickness,
-    "--input-text-padding-bottom": input_text_padding_bottom
+    "--input-text-padding-bottom": input_text_padding_bottom,
   };
   return (
     <div className="group" style={input_style}>
@@ -32,7 +32,7 @@ function Special_Input_Text({
       <span className="bar"></span>
       <label className={label_class}>
         <i className="fas fa-book"></i>
-        {input_label}
+        <span> {input_label}</span>
       </label>
     </div>
   );
