@@ -16,6 +16,10 @@
   margin-left: 21px;
   width: 200px;
   height: fit-content;
+  background: rgb(249, 252, 255);
+}
+.add-item:hover {
+  background: rgb(235, 240, 250);
 }
 .remove-button {
   margin-left: 15px;
@@ -34,6 +38,7 @@
 }
 #question-content-title-container {
   display: flex;
+  align-items: baseline;
 }
 .badge-container {
   display: flex;

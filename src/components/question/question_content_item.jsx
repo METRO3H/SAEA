@@ -22,14 +22,15 @@ function Question_Content_Item({ question_content_item_number, add_class = "" })
             input_label={`Pregunta ${question_content_item_number}`}
             label_class="fw-bold"
             bar_thickness="1px"
-            input_width="100%"
+            input_width="95%"
             input_font_size="31px"
             input_focus_color="var(--main-color-google-form)"
             input_class="fw-bold"
             input_icon_class="fas fa-circle-question trailing"
-            input_icon_right_class="fas fa-pencil fa-xs"
+            /* input_icon_right_class="fas fa-pencil fa-xs" */
             fix_label_position="15px"
           />
+          <i className="fas fa-pencil"></i>
         </div>
 
         <Answer_Item_Layout />

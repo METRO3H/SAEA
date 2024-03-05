@@ -42,11 +42,11 @@ function CheckboxGenerator() {
 
       <button
         type="button"
-        className="btn btn-lg btn-outline-primary btn-rounded bg-light bg-gradient add-item"
+        className="btn btn-lg btn-outline-primary btn-rounded  add-item"
         onClick={handleButtonClick}
       >
         <i className="fas fa-plus"></i>
-        Añadir respuesta
+        <span> Añadir respuesta</span>
       </button>
     </div>
   );
