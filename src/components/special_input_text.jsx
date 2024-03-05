@@ -1,15 +1,17 @@
-import "../styles/item_answer.css";
+import "@styles/special_input_text.css";
 function Special_Input_Text({
   input_label,
+  label_class = "",
   input_width = "auto",
   input_height = "auto",
   input_font_size = "16px",
   input_focus_color = "#2337ff",
   input_no_focus_color = "#bdbdbd",
-  label_class = "",
   bar_thickness = "1px",
   input_class = "",
-  input_text_padding_bottom = "3px",
+  input_icon_class = "false",
+  input_icon_right_class = "false",
+  fix_label_position = "0px",
 }) {
   const input_style = {
     width: input_width,
@@ -18,7 +20,8 @@ function Special_Input_Text({
     "--input-focus-color": input_focus_color,
     "--input-no-focus-color": input_no_focus_color,
     "--bar-thickness": bar_thickness,
-    "--input-text-padding-bottom": input_text_padding_bottom,
+
+    "--fix-label-position": fix_label_position,
   };
   return (
     <div className="group" style={input_style}>
@@ -31,8 +34,9 @@ function Special_Input_Text({
       <span className="highlight"></span>
       <span className="bar"></span>
       <label className={label_class}>
-        <i className="fas fa-book"></i>
+        {input_icon_class && <i className={input_icon_class}></i>}
         <span> {input_label}</span>
+        {input_icon_right_class && <i className={input_icon_right_class}></i>}
       </label>
     </div>
   );

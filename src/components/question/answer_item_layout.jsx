@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
+
 import ItemAnswer from "./item_answer.jsx";
 
 function CheckboxGenerator() {
   const [checkboxItems, setCheckboxItems] = useState([]);
+  const answerItemsSectionRef = useRef(null);
 
   const handleButtonClick = () => {
     const key = Date.now().toString();
@@ -20,8 +22,14 @@ function CheckboxGenerator() {
     setCheckboxItems(checkboxItems.filter((item) => item.key !== keyToDelete));
   };
 
+  useEffect(() => {
+    if (answerItemsSectionRef.current) {
+      answerItemsSectionRef.current.scrollTop = answerItemsSectionRef.current.scrollHeight;
+    }
+  }, [checkboxItems]);
+
   return (
-    <div className="answer-items-section">
+    <div className="answer-items-section" ref={answerItemsSectionRef}>
       {checkboxItems.map((item, index) => (
         <ItemAnswer
           key={item.key}
@@ -34,11 +42,10 @@ function CheckboxGenerator() {
 
       <button
         type="button"
-        className="btn btn-outline-primary btn-lg btn-rounded add-item"
-        data-mdb-ripple-init
+        className="btn btn-lg btn-outline-primary btn-rounded bg-light bg-gradient add-item"
         onClick={handleButtonClick}
       >
-        <i className="fas fa-plus" style={{ paddingRight: "4px" }}></i>
+        <i className="fas fa-plus"></i>
         Añadir respuesta
       </button>
     </div>

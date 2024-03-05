@@ -6,7 +6,9 @@ import QuestionContentItem from "@components/question/question_content_item.astr
 import { question_number } from "@components/question/const_var";
 import Document from "@layouts/document.astro";
 import Specifications from "@layouts/specifications.astro";
+import Questions_Data from "@components/question/questions_data.jsx";
 import Modal from "@components/modal.astro";
+import "@styles/questions_data.css";
 ---
 
 <Document title="Crear Quiz" description="Crear Quiz">
@@ -17,45 +19,33 @@ import Modal from "@components/modal.astro";
       </div>
       <div id="create-questions-container">
         <div id="question-card-container">
-          <div id="question-list-container">
-            <div class="list-group list-group-light" id="list-tab" role="tablist">
-              <QuestionListItem question_list_item_number={question_number} add_class="active" />
+          <Questions_Data client:load />
 
-              <QuestionListItem question_list_item_number={question_number + 1} />
-            </div>
-          </div>
-          <div id="question-content-container">
-            <div class="tab-content">
-              <QuestionContentItem
-                question_content_item_number={question_number}
-                add_class="active"
-              />
-              <QuestionContentItem question_content_item_number={question_number + 1} />
-            </div>
-          </div>
-          <div id="back-part-div">
-            <button id="button-back-part" class="btn btn-secondary btn-rounded"
-              ><i class="fas fa-arrow-rotate-left"></i>Atrás</button
-            >
-          </div>
           <div id="footer-card-buttons">
-            <button type="button" id="button-save-data-form" class="btn btn-lg btn-rounded">
-              <i class="far fa-bookmark"></i>
-              <span> Guardar</span>
-            </button>
+            <div id="back-part-div">
+              <button id="button-back-part" class="btn btn-secondary btn-rounded"
+                ><i class="fas fa-arrow-rotate-left"></i>Atrás</button
+              >
+            </div>
+            <div id="work-buttons">
+              <button type="button" id="button-save-data-form" class="btn btn-lg btn-rounded">
+                <i class="far fa-bookmark"></i>
+                <span> Guardar</span>
+              </button>
 
-            <button
-              type="button"
-              id="button-generate-google-form"
-              class="btn btn-lg btn-rounded"
-              data-mdb-ripple-init
-              data-mdb-modal-init
-              data-mdb-target="#staticBackdrop"
-              disabled
-            >
-              <Image src={Google_Icon} alt="Google icon" />
-              <span>GENERAR FORMULARIO</span>
-            </button>
+              <button
+                type="button"
+                id="button-generate-google-form"
+                class="btn btn-lg btn-rounded"
+                data-mdb-ripple-init
+                data-mdb-modal-init
+                data-mdb-target="#staticBackdrop"
+                disabled
+              >
+                <Image src={Google_Icon} alt="Google icon" />
+                <span>GENERAR FORMULARIO</span>
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -94,14 +84,14 @@ import Modal from "@components/modal.astro";
   }
   #question-card-container {
     display: grid;
-    grid-template-columns: 180px 1fr;
+    grid-template-columns: 1fr;
     grid-template-rows: minmax(0, 1fr) 80px;
     grid-template-areas:
-      "list content"
-      "back_button buttons";
+      "main_content"
+      "buttons";
     width: 805px;
     height: 95%;
-    /* min-height: 530px; */
+
     margin: 0;
     padding: 0;
     background: white;
@@ -109,31 +99,12 @@ import Modal from "@components/modal.astro";
     border-radius: 11px;
     overflow: hidden;
   }
-  #question-content-container {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    /* background: green; */
-    max-height: 100%;
-    grid-area: content;
-    overflow: auto;
-  }
-  #question-list-container {
-    width: 180px;
-    padding: 0;
-    grid-area: list;
-  }
-  .tab-content {
-    height: 100%;
-    width: 100%;
-    max-height: 100%;
-    overflow: auto;
-  }
+
   #back-part-div {
     display: flex;
     justify-content: center;
     align-items: center;
-    grid-area: back_button;
+    /* grid-area: back_button; */
   }
   #button-back-part {
     /*  background: #e70034 !important; */
@@ -145,10 +116,9 @@ import Modal from "@components/modal.astro";
     gap: 5px;
   }
   #footer-card-buttons {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 15px;
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    grid-template-areas: "back-button work-buttons";
     grid-area: buttons;
   }
   #button-save-data-form {
@@ -158,6 +128,14 @@ import Modal from "@components/modal.astro";
     align-items: center;
     background: var(--main-color-blue);
     color: white;
+    grid-area: back-button;
+  }
+  #work-buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 11px;
+    grid-area: work-buttons;
   }
 
   #button-save-data-form > i {
@@ -167,7 +145,7 @@ import Modal from "@components/modal.astro";
     display: flex;
     justify-content: center;
     gap: 4px;
-    background: #6200ee;
+    background: var(--main-color-google-form);
     color: white;
   }
   #button-generate-google-form > img {
@@ -209,6 +187,7 @@ import Modal from "@components/modal.astro";
       }[];
     }[];
   }
+
   let quiz_data: Quiz;
 
   const button_next_part = document.querySelector("#button-next-part");
@@ -257,11 +236,11 @@ import Modal from "@components/modal.astro";
       questions: [],
     };
 
-    const All_TR = table?.querySelectorAll("tbody tr") as NodeListOf<HTMLElement>;
+    const tr_all = table?.querySelectorAll("tbody tr") as NodeListOf<HTMLElement>;
 
     let [thematic_area_aux, content_aux] = ["", ""];
 
-    All_TR.forEach((tr) => {
+    tr_all.forEach((tr) => {
       let thematic_area = (tr.querySelector(".item-thematic-area") as HTMLInputElement)?.value;
 
       if (thematic_area || thematic_area == "") {
@@ -286,7 +265,11 @@ import Modal from "@components/modal.astro";
       });
     });
 
-    console.log(quiz_data);
+    console.log(quiz_data.specifications_table);
+  }
+  function Generate_Questions() {
+    const subject = quiz_data.specifications_table.subject;
+    const skills = quiz_data.specifications_table.skills;
   }
   function Save_Form() {
     /*     button_generate_google_form?.removeAttribute("disabled");
@@ -325,7 +308,7 @@ import Modal from "@components/modal.astro";
         question_item.querySelector(".question-input-text") as HTMLTextAreaElement
       ).value;
 
-      const answers = question_item.querySelectorAll(".question-answers .form-check");
+      const answers = question_item.querySelectorAll(".answer-items-section .form-check");
 
       const answers_data: {
         text: string;
@@ -392,5 +375,3 @@ import Modal from "@components/modal.astro";
     return;
   }
 </script>
-
-

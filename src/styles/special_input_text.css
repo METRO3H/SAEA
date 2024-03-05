@@ -32,7 +32,7 @@
   margin: 0;
 
   left: 5px;
-  top: calc(var(--input-font-size, 16px) - 6px);
+  top: calc(var(--input-font-size, 16px) - 6px - var(--fix-label-position, 0px));
 
   line-height: normal;
 
@@ -105,7 +105,7 @@
 
 .remove-button,
 .answer-input-box {
-  margin-top: 11px;
+  margin-top: 11px !important;
 }
 @keyframes inputHighlighter {
   from {

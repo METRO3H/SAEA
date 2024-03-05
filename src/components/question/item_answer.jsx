@@ -12,6 +12,7 @@ function CheckboxComponent({ check_box_key, check_box_id, check_box_label, handl
         input_label={check_box_label}
         input_width="300px"
         input_font_size="21px"
+        /* input_focus_color="var(--main-color-blue)" */
       />
       <button
         type="button"

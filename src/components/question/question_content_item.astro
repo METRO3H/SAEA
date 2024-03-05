@@ -9,6 +9,14 @@ const { question_content_item_number, add_class = "" } = Astro.props;
   role="tabpanel"
   aria-labelledby=`question-list-item-${question_content_item_number}`
 >
+  <div class="badge-container">
+    <span class="badge rounded-pill badge-primary">Asignatura</span>
+    <span class="badge rounded-pill badge-secondary">Eje</span>
+    <span class="badge rounded-pill badge-warning">Contenido</span>
+    <span class="badge rounded-pill badge-danger">Objetivo</span>
+    <span class="badge rounded-pill badge-success">Habilidad</span>
+  </div>
+
   <div id="question-content-title-container">
     <h2 class="h1 fw-bold">
       <i class="far fa-circle-question trailing"></i> Pregunta {question_content_item_number}
@@ -23,13 +31,13 @@ const { question_content_item_number, add_class = "" } = Astro.props;
     </div>
     <AnswerItemLayout client:load />
   </form>
-
 </div>
 
 <style is:global>
   .question-content-item {
     height: 100%;
     padding: 21px;
+    padding-top: 11px;
   }
   .add-item {
     margin-top: 11px;
@@ -47,5 +55,10 @@ const { question_content_item_number, add_class = "" } = Astro.props;
   }
   #question-content-title-container {
     display: flex;
+  }
+  .badge-container {
+    display: flex;
+    justify-content: flex-end;
+    gap: 11px;
   }
 </style>

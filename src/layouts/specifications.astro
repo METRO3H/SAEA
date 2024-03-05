@@ -1,11 +1,11 @@
 ---
-import SpecialInputText from "../components/special_input_text.jsx";
+import Special_Input_Text from "../components/special_input_text.jsx";
 import Custom_table from "../components/table/table.jsx";
 ---
 
 <div class="custom-container">
   <div id="quiz-title">
-    <SpecialInputText
+    <Special_Input_Text
       input_label="Título del cuestionario"
       label_class="fw-bold"
       bar_thickness="3px"
@@ -13,6 +13,7 @@ import Custom_table from "../components/table/table.jsx";
       input_font_size="31px"
       input_no_focus_color="var(--main-color-blue)"
       input_class="fw-bold"
+      input_icon_class="fas fa-book"
     />
   </div>
   <Custom_table client:load />

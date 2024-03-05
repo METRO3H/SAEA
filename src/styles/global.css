@@ -21,6 +21,8 @@
   --h1Animation: h1-animation-1;
   --main-color-blue: #222939;
   --main-color-blue-light: #455b84;
+  --main-color-google-form: #6200ee;
+  --main-color-google-form-light: rgba(98, 0, 238, 30%);
 }
 @font-face {
   font-family: "Atkinson";
@@ -154,22 +156,9 @@ blockquote {
   white-space: nowrap;
 }
 
-.form-check {
-  display: flex;
-  align-items: center;
-  margin-left: 15px;
-}
-.form-check-input {
-  margin-top: 0;
-}
-.form-outline {
-  padding-top: 8px;
-}
 button {
   transition: all 300ms !important;
 }
 button:hover {
-  opacity: 92%;
+  opacity: 90%;
 }
-
-
