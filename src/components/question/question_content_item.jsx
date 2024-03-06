@@ -1,6 +1,7 @@
 import "@styles/question_content_item.css";
 import Answer_Item_Layout from "@components/question/answer_item_layout.jsx";
 import Special_Input_Text from "@components/special_input_text";
+
 function Question_Content_Item({ question_content_item_number, add_class = "" }) {
   return (
     <div
@@ -17,7 +18,7 @@ function Question_Content_Item({ question_content_item_number, add_class = "" })
           <span className="badge rounded-pill badge-danger">Objetivo</span>
           <span className="badge rounded-pill badge-success">Habilidad</span>
         </div>
-        <div id="question-content-title-container">
+        <div className="question-content-title-container">
           <Special_Input_Text
             input_label={`Pregunta ${question_content_item_number}`}
             label_class="fw-bold"

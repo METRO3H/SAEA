@@ -12,7 +12,7 @@
 .add-item {
   position: sticky;
   bottom: 0;
-  margin-top: 11px;
+  margin-top: 15px;
   margin-left: 21px;
   width: 200px;
   height: fit-content;
@@ -29,14 +29,13 @@
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  gap: 15px;
-  padding: 15px 15px 15px 15px;
+  padding: 0px 15px 15px 15px;
   flex-grow: 1;
   overflow: auto;
   scrollbar-gutter: stable;
   scroll-behavior: smooth;
 }
-#question-content-title-container {
+.question-content-title-container {
   display: flex;
   align-items: baseline;
 }
@@ -46,14 +45,29 @@
   gap: 11px;
   margin-bottom: 11px;
 }
-.form-check {
+.answer-item {
   display: flex;
   align-items: center;
-  min-height: fit-content;
+  transition: all 3000ms;
+  height: 47px;
+  padding-left: 1.5em;
+  margin-bottom: 0.125rem;
+  margin-top: 15px;
+  animation: smooth_display 600ms forwards;
 }
-.form-check-input {
+
+.answer-item-input {
   margin-top: 0;
 }
 .form-outline {
   padding-top: 8px;
+}
+
+@keyframes smooth_display {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 100%;
+  }
 }

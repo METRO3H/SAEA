@@ -1,9 +1,16 @@
 import SpecialInputText from "../special_input_text.jsx";
-function CheckboxComponent({ check_box_key, check_box_id, check_box_label, handleItemDelete }) {
+function Item_Answer({
+  check_box_key,
+  check_box_id,
+  check_box_label,
+  handleItemDelete,
+  add_style = {},
+  add_class = "",
+}) {
   return (
-    <div className="form-check">
+    <div className={`answer-item ${add_class}`} style={add_style}>
       <input
-        className="form-check-input answer-input-box"
+        className="answer-item-input answer-input-box form-check-input"
         type="checkbox"
         value=""
         id={check_box_id}
@@ -25,4 +32,4 @@ function CheckboxComponent({ check_box_key, check_box_id, check_box_label, handl
   );
 }
 
-export default CheckboxComponent;
+export default Item_Answer;
