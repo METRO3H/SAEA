@@ -103,10 +103,6 @@
   animation: inputHighlighter 0.3s ease;
 }
 
-.remove-button,
-.answer-input-box {
-  margin-top: 11px !important;
-}
 @keyframes inputHighlighter {
   from {
     background: var(--input-focus-color, #2337ff);

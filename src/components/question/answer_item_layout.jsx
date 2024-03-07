@@ -25,22 +25,19 @@ function CheckboxGenerator() {
   };
   let timeout = 200;
   const handleItemDelete = (keyToDelete) => {
-    const remove_buttons = document.querySelectorAll(".remove-button")
-    console.log(remove_buttons);
-    remove_buttons.forEach(button => button.setAttribute("disabled", ""))
+    const remove_buttons = document.querySelectorAll(".remove-button");
+    remove_buttons.forEach((button) => button.setAttribute("disabled", ""));
     set_show_answer_items(show_answer_items.filter((key) => key !== keyToDelete)); // Elimina la clave del array
     setItemAdded(false);
     setTimeout(() => {
       setCheckboxItems(checkboxItems.filter((item) => item.key !== keyToDelete));
-      remove_buttons.forEach(button => button.removeAttribute("disabled"))
+      remove_buttons.forEach((button) => button.removeAttribute("disabled"));
     }, timeout);
-    
   };
 
   useEffect(() => {
     if (answerItemsSectionRef.current && itemAdded) {
       setTimeout(() => {
-        console.log(answerItemsSectionRef.current.scrollHeight);
         answerItemsSectionRef.current.scrollTop = answerItemsSectionRef.current.scrollHeight;
       }, timeout + 50);
     }
