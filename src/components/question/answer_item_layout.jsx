@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { quiz_data } from "@content/quiz_data.ts";
+
 import Item_Answer from "./item_answer.jsx";
 
 function CheckboxGenerator() {

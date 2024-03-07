@@ -6,6 +6,7 @@ function question_list_item({ question_list_item_number, add_class = "" }) {
       data-mdb-list-init
       href={`#question-content-item-${question_list_item_number}`}
       role="tab"
+      title={`Pregunta ${question_list_item_number}`}
       aria-controls={`question-content-item-${question_list_item_number}`}
     >
       <i className="fas fa-circle-question"></i> Pregunta {question_list_item_number}

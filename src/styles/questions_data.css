@@ -17,6 +17,11 @@
   width: 180px;
   padding: 0;
   grid-area: list;
+  max-height: 100%;
+  overflow: auto;
+}
+.list-group-item {
+  font-size: 18px !important;
 }
 .tab-content {
   display: flex;
