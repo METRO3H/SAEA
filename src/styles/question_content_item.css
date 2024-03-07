@@ -48,12 +48,19 @@
 .answer-item {
   display: flex;
   align-items: center;
-  transition: all 3000ms;
-  height: 47px;
+  transition: all 200ms;
+
   padding-left: 1.5em;
+  margin-bottom: 0;
+  margin-top: 0;
+  height: 0;
+  opacity: 0;
+}
+.show-answer-item {
   margin-bottom: 0.125rem;
   margin-top: 15px;
-  animation: smooth_display 600ms forwards;
+  height: 47px;
+  opacity: 100%;
 }
 
 .answer-item-input {
@@ -61,13 +68,4 @@
 }
 .form-outline {
   padding-top: 8px;
-}
-
-@keyframes smooth_display {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 100%;
-  }
 }

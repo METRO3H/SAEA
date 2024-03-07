@@ -4,7 +4,8 @@ import Item_Answer from "./item_answer.jsx";
 
 function CheckboxGenerator() {
   const [checkboxItems, setCheckboxItems] = useState([]);
-  const [deletingKey, setDeletingKey] = useState(null);
+  const [show_answer_items, set_show_answer_items] = useState([]);
+  const [itemAdded, setItemAdded] = useState(false);
   const answerItemsSectionRef = useRef(null);
 
   const handleButtonClick = () => {
@@ -17,27 +18,31 @@ function CheckboxGenerator() {
         label: `Respuesta ${checkboxItems.length + 1}`, // Corregido para que la etiqueta se incremente correctamente
       },
     ]);
+    setItemAdded(true);
+    setTimeout(() => {
+      set_show_answer_items([...show_answer_items, key]); // Agrega la clave al array
+    }, 50);
   };
-  const item_answer_remove_style = {
-    margin: "0",
-    padding: "0",
-    height: "0",
-    overflow: "hidden",
-  };
+  let timeout = 200;
   const handleItemDelete = (keyToDelete) => {
-
-    setDeletingKey(keyToDelete);
-
-    // Utiliza un efecto secundario para eliminar el elemento después de un retraso
+    const remove_buttons = document.querySelectorAll(".remove-button")
+    console.log(remove_buttons);
+    remove_buttons.forEach(button => button.setAttribute("disabled", ""))
+    set_show_answer_items(show_answer_items.filter((key) => key !== keyToDelete)); // Elimina la clave del array
+    setItemAdded(false);
     setTimeout(() => {
       setCheckboxItems(checkboxItems.filter((item) => item.key !== keyToDelete));
-      setDeletingKey(null); // Resetea deletingKey cuando la eliminación está completa
-    }, 3000); // Ajusta este retraso según sea necesario
+      remove_buttons.forEach(button => button.removeAttribute("disabled"))
+    }, timeout);
+    
   };
 
   useEffect(() => {
-    if (answerItemsSectionRef.current) {
-      answerItemsSectionRef.current.scrollTop = answerItemsSectionRef.current.scrollHeight;
+    if (answerItemsSectionRef.current && itemAdded) {
+      setTimeout(() => {
+        console.log(answerItemsSectionRef.current.scrollHeight);
+        answerItemsSectionRef.current.scrollTop = answerItemsSectionRef.current.scrollHeight;
+      }, timeout + 50);
     }
   }, [checkboxItems]);
 
@@ -50,7 +55,7 @@ function CheckboxGenerator() {
           check_box_id={`Checkbox ${index + 1}`} // Actualizado para que el ID sea consistente con la posición en el array
           check_box_label={`Respuesta ${index + 1}`} // Actualizado para que la etiqueta sea consistente con la posición en el array
           handleItemDelete={handleItemDelete}
-          add_style={item.key === deletingKey ? item_answer_remove_style : {}}
+          add_class={show_answer_items.includes(item.key) ? "show-answer-item" : ""} // Comprueba si la clave está en el array
         />
       ))}
 
