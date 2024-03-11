@@ -1,8 +1,17 @@
 import "@styles/question_content_item.css";
+import "@styles/hint.css";
 import Answer_Item_Layout from "@components/question/answer_item_layout.jsx";
 import Special_Input_Text from "@components/special_input_text";
 
-function Question_Content_Item({ question_content_item_number, add_class = "" }) {
+function Question_Content_Item({
+  question_content_item_number,
+  add_class = "",
+  subject,
+  thematic_area,
+  content,
+  objective,
+  skills,
+}) {
   return (
     <div
       className={`tab-pane show question-content-item ${add_class}`}
@@ -12,11 +21,36 @@ function Question_Content_Item({ question_content_item_number, add_class = "" })
     >
       <div className="question-content-item-main">
         <div className="badge-container">
-          <span className="badge rounded-pill badge-primary">Asignatura</span>
-          <span className="badge rounded-pill badge-secondary">Eje</span>
-          <span className="badge rounded-pill badge-warning">Contenido</span>
-          <span className="badge rounded-pill badge-danger">Objetivo</span>
-          <span className="badge rounded-pill badge-success">Habilidad</span>
+          <span
+            className="badge rounded-pill badge-primary hint--bottom hint--rounded"
+            aria-label={subject}
+          >
+            {subject}
+          </span>
+          <span
+            className="badge rounded-pill badge-secondary hint--bottom hint--rounded"
+            aria-label={thematic_area}
+          >
+            {thematic_area}
+          </span>
+          <span
+            className="badge rounded-pill badge-warning hint--bottom hint--rounded"
+            aria-label={content}
+          >
+            {content}
+          </span>
+          <span
+            className="badge rounded-pill badge-danger hint--bottom hint--rounded"
+            aria-label={objective}
+          >
+            {objective}
+          </span>
+          <span
+            className="badge rounded-pill badge-success hint--bottom hint--rounded"
+            aria-label={skills}
+          >
+            {skills}
+          </span>
         </div>
         <div className="question-content-title-container">
           <Special_Input_Text

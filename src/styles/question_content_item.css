@@ -53,6 +53,10 @@
   gap: 11px;
   margin-bottom: 11px;
 }
+.badge{
+  cursor: pointer;
+  
+}
 .answer-item {
   display: flex;
   align-items: center;

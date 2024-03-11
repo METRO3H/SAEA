@@ -3,34 +3,30 @@ import React, { useState, useEffect, useRef } from "react";
 import Item_Answer from "./item_answer.jsx";
 
 function CheckboxGenerator() {
-  const [checkboxItems, setCheckboxItems] = useState([]);
+  const [answers_items, set_answers_items] = useState([]);
   const [show_answer_items, set_show_answer_items] = useState([]);
   const [itemAdded, setItemAdded] = useState(false);
   const answerItemsSectionRef = useRef(null);
 
   const handleButtonClick = () => {
     const key = Date.now().toString();
-    setCheckboxItems([
-      ...checkboxItems,
-      {
-        key,
-        id: `Checkbox ${checkboxItems.length + 1}`, // Corregido para que el ID se incremente correctamente
-        label: `Respuesta ${checkboxItems.length + 1}`, // Corregido para que la etiqueta se incremente correctamente
-      },
-    ]);
+    set_answers_items([...answers_items, { key }]);
+
     setItemAdded(true);
     setTimeout(() => {
       set_show_answer_items([...show_answer_items, key]); // Agrega la clave al array
     }, 50);
   };
+
   let timeout = 200;
+
   const handleItemDelete = (keyToDelete) => {
     const remove_buttons = document.querySelectorAll(".remove-button");
     remove_buttons.forEach((button) => button.setAttribute("disabled", ""));
     set_show_answer_items(show_answer_items.filter((key) => key !== keyToDelete)); // Elimina la clave del array
     setItemAdded(false);
     setTimeout(() => {
-      setCheckboxItems(checkboxItems.filter((item) => item.key !== keyToDelete));
+      set_answers_items(answers_items.filter((item) => item.key !== keyToDelete));
       remove_buttons.forEach((button) => button.removeAttribute("disabled"));
     }, timeout);
   };
@@ -41,11 +37,11 @@ function CheckboxGenerator() {
         answerItemsSectionRef.current.scrollTop = answerItemsSectionRef.current.scrollHeight;
       }, timeout + 50);
     }
-  }, [checkboxItems]);
+  }, [answers_items]);
 
   return (
     <div className="answer-items-section" ref={answerItemsSectionRef}>
-      {checkboxItems.map((item, index) => (
+      {answers_items.map((item, index) => (
         <Item_Answer
           key={item.key}
           check_box_key={item.key}
