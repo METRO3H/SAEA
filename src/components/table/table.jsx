@@ -54,7 +54,6 @@ function Custom_table() {
     });
     return;
   }
-
   return (
     <table className="table align-middle mb-0 bg-white table-hover table-bordered align-middle caption-top">
       <caption>
@@ -127,7 +126,7 @@ function Custom_table() {
         <tr>
           <Table_Item
             row_span={3}
-            td_class="cell left-cell"
+            td_class="cell left-cell chips"
             item_title="Ingrese un eje a evaluar. Ej: Números"
             contains_input="true"
             input_placeholder="Ej: Geometría"
