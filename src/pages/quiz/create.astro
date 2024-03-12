@@ -1,5 +1,4 @@
 ---
-
 import "@styles/questions_data.css";
 import { Image } from "astro:assets";
 import Google_Icon from "@assets/svg/google-icon.svg";
@@ -161,7 +160,7 @@ import Modal from "@components/modal.astro";
   var use_specification_data = new CustomEvent("use_specification_data", {
     detail: { miDato: "valor" },
   });
-  
+
   const button_next_part = document.querySelector("#button-next-part");
   button_next_part?.addEventListener("click", Update_Specification_Data);
 

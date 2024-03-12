@@ -19,6 +19,7 @@ function Item_Answer({
         input_label={check_box_label}
         input_width="300px"
         input_font_size="21px"
+        add_class="answer-input-text"
         /* input_focus_color="var(--main-color-blue)" */
       />
       <button

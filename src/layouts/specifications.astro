@@ -1,5 +1,4 @@
 ---
-
 import Special_Input_Text from "../components/special_input_text.jsx";
 import Custom_table from "../components/table/table.jsx";
 ---
@@ -17,7 +16,7 @@ import Custom_table from "../components/table/table.jsx";
       input_icon_class="fas fa-book"
     />
   </div>
-  <Custom_table client:load />
+  <Custom_table client:load/>
   <div id="next-part-div">
     <button id="button-next-part" class="btn btn-primary"
       ><i class="fas fa-forward"></i> Siguiente
@@ -59,7 +58,6 @@ import Custom_table from "../components/table/table.jsx";
 </style>
 
 <script>
-  import M from "materialize-css";
   document.querySelectorAll<HTMLInputElement>(".cell input").forEach((input: HTMLInputElement) => {
     const parent = input.parentNode as HTMLElement;
     const original_title = parent.title;
@@ -71,7 +69,4 @@ import Custom_table from "../components/table/table.jsx";
       }
     });
   });
-
-  var elems = document.querySelectorAll(".chips");
-    var instances = M.Chips.init(elems);
 </script>

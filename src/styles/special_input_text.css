@@ -1,10 +1,10 @@
-.group {
+.input-container {
   position: relative;
   padding-top: 5px;
   min-width: fit-content;
 }
 
-.input {
+.input-container > input {
   font-size: var(--input-font-size, 16px);
   padding-bottom: 2px;
   display: inline-block;
@@ -17,11 +17,11 @@
   padding: 4px;
   padding-top: 7px;
 }
-.input:focus {
+.input-container > input:focus {
   outline: none;
 }
 
-.group > label {
+.input-container > label {
   position: absolute;
   display: flex;
   align-items: center;
@@ -48,8 +48,8 @@
   transition: 0.2s ease all;
 }
 
-.input:focus ~ label,
-.input:valid ~ label {
+.input-container > input:focus ~ label,
+.input-container > input:valid ~ label {
   top: -7px;
   font-size: 14px;
   color: var(--input-focus-color, #2337ff);
@@ -82,10 +82,10 @@
   right: 50%;
 }
 
-.input:focus ~ .bar:before,
-.input:focus ~ .bar:after,
-.input:valid:not(:focus) ~ .bar:before,
-.input:valid:not(:focus) ~ .bar:after {
+.input-container > input:focus ~ .bar:before,
+.input-container > input:focus ~ .bar:after,
+.input-container > input:valid:not(:focus) ~ .bar:before,
+.input-container > input:valid:not(:focus) ~ .bar:after {
   width: 50%;
 }
 
@@ -99,7 +99,7 @@
   opacity: 0.5;
 }
 
-.input:focus ~ .highlight {
+.input-container > input:focus ~ .highlight {
   animation: inputHighlighter 0.3s ease;
 }
 

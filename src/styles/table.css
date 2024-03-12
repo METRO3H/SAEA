@@ -104,6 +104,12 @@ thead > tr > :last-child {
 }
 .patron-cell {
   height: 50px;
+  max-height: 50px;
+  max-width: 80px;
+  overflow-x: auto;
+}
+.item-skill {
+  max-height: 50px;
 }
 thead > tr > :last-child > div {
   height: 100%;

@@ -24,13 +24,8 @@ function Special_Input_Text({
     "--fix-label-position": fix_label_position,
   };
   return (
-    <div className="group" style={input_style}>
-      <input
-        required
-        type="text"
-        className={`input answer-input-text ${input_class}`}
-        autoComplete="no"
-      />
+    <div className="input-container" style={input_style}>
+      <input required type="text" className={`input ${input_class}`} autoComplete="no" />
       <span className="highlight"></span>
       <span className="bar"></span>
       <label className={label_class}>

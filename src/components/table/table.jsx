@@ -1,5 +1,5 @@
 import Table_Item from "./table_item.jsx";
-import "../../styles/table.css";
+import "@styles/table.css";
 
 function Custom_table() {
   function Handle_Class_Item_Change() {
@@ -54,6 +54,7 @@ function Custom_table() {
     });
     return;
   }
+
   return (
     <table className="table align-middle mb-0 bg-white table-hover table-bordered align-middle caption-top">
       <caption>
@@ -126,7 +127,7 @@ function Custom_table() {
         <tr>
           <Table_Item
             row_span={3}
-            td_class="cell left-cell chips"
+            td_class="cell left-cell"
             item_title="Ingrese un eje a evaluar. Ej: Números"
             contains_input="true"
             input_placeholder="Ej: Geometría"
@@ -163,7 +164,7 @@ function Custom_table() {
           />
 
           <Table_Item
-            td_class="cell patron-cell"
+            td_class="cell patron-cell "
             item_title="Ingresa la cantidad de preguntas que tendra este item. Ej: 3"
             contains_input="true"
             input_class="text-center number-cell item-skill"
