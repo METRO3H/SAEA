@@ -157,6 +157,9 @@ import Modal from "@components/modal.astro";
 </style>
 <script>
   import { quiz_data } from "@content/quiz_data.ts";
+  import {test_1} from "@content/test.ts"
+
+  test_1()
   var use_specification_data = new CustomEvent("use_specification_data", {
     detail: { miDato: "valor" },
   });
