@@ -53,10 +53,13 @@
   gap: 11px;
   margin-bottom: 11px;
 }
-.badge{
+.badge {
   cursor: pointer;
-  
+  max-width: 113px;
+
+  text-overflow: ellipsis !important;
 }
+
 .answer-item {
   display: flex;
   align-items: center;

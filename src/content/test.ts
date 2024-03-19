@@ -27,7 +27,7 @@ export function test_1() {
     let performed_classes = tr.querySelector(".item-class") as HTMLInputElement;
     let skills = tr.querySelectorAll(".item-skill") as NodeListOf<HTMLInputElement>;
 
-    if (thematic_area) thematic_area.value = data.items[index].Axis;
+    if (thematic_area) thematic_area.value = data.items[index].thematic_area;
     if (content) content.value = data.items[index].Content;
     if (objective) objective.value = data.items[index].Objective;
     
@@ -45,7 +45,7 @@ function data_1() {
 
     items: [
       {
-        Axis: "Numeros",
+        thematic_area: "Números",
         Content: "Números naturales",
         Objective: "Identificar números naturales",
         performed_classes: "3",
@@ -53,7 +53,7 @@ function data_1() {
         skill_content: "1-2",
       },
       {
-        Axis: "Numeros",
+        thematic_area: "Números",
         Content: "Números enteros",
         Objective: "Identificar números enteros",
         performed_classes: "3",
@@ -61,7 +61,7 @@ function data_1() {
         skill_content: "3-4",
       },
       {
-        Axis: "Numeros",
+        thematic_area: "Números",
         Content: "Números enteros",
         Objective: "Realizar operaciones con números enteros",
         performed_classes: "4",
@@ -69,7 +69,7 @@ function data_1() {
         skill_content: "5-7",
       },
       {
-        Axis: "Álgebra",
+        thematic_area: "Álgebra",
         Content: "Expresiones algebraicas",
         Objective: "Simplificar expresiones algebraicas",
         performed_classes: "5",
@@ -77,7 +77,7 @@ function data_1() {
         skill_content: "8-11",
       },
       {
-        Axis: "Álgebra",
+        thematic_area: "Álgebra",
         Content: "Ecuaciones",
         Objective: "Resolver ecuaciones",
         performed_classes: "5",

@@ -23,12 +23,6 @@ function Question_Content_Item({
         <div className="badge-container">
           <span
             className="badge rounded-pill badge-primary hint--bottom hint--rounded"
-            aria-label={subject}
-          >
-            {subject}
-          </span>
-          <span
-            className="badge rounded-pill badge-secondary hint--bottom hint--rounded"
             aria-label={thematic_area}
           >
             {thematic_area}

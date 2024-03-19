@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import Table_Item from "./table_item.jsx";
 import "@styles/table.css";
 
@@ -54,7 +55,10 @@ function Custom_table() {
     });
     return;
   }
-
+  useEffect(() => {
+    Handle_Item_Total_All_questions_Change();
+    Handle_Class_Item_Change();
+  }, []);
   return (
     <table className="table align-middle mb-0 bg-white table-hover table-bordered align-middle caption-top">
       <caption>
@@ -165,7 +169,7 @@ function Custom_table() {
 
           <Table_Item
             td_class="cell patron-cell "
-            item_title="Ingresa la cantidad de preguntas que tendra este item. Ej: 3"
+            item_title="Ingresa la cantidad de preguntas que tendrá este item. Ej: 3"
             contains_input="true"
             input_class="text-center number-cell item-skill"
             input_placeholder="-"
@@ -173,7 +177,7 @@ function Custom_table() {
           />
           <Table_Item
             td_class="cell patron-cell"
-            item_title="Ingresa la cantidad de preguntas que tendra este item. Ej: 3"
+            item_title="Ingresa la cantidad de preguntas que tendrá este item. Ej: 3"
             contains_input="true"
             input_class="text-center number-cell item-skill"
             input_placeholder="-"
@@ -181,7 +185,7 @@ function Custom_table() {
           />
           <Table_Item
             td_class="cell patron-cell"
-            item_title="Ingresa la cantidad de preguntas que tendra este item. Ej: 3"
+            item_title="Ingresa la cantidad de preguntas que tendrá este item. Ej: 3"
             contains_input="true"
             input_class="text-center number-cell item-skill"
             input_placeholder="-"
@@ -225,7 +229,7 @@ function Custom_table() {
 
           <Table_Item
             td_class="cell patron-cell"
-            item_title="Ingresa la cantidad de preguntas que tendra este item. Ej: 3"
+            item_title="Ingresa la cantidad de preguntas que tendrá este item. Ej: 3"
             contains_input="true"
             input_class="text-center number-cell item-skill"
             input_placeholder="-"
@@ -233,7 +237,7 @@ function Custom_table() {
           />
           <Table_Item
             td_class="cell patron-cell"
-            item_title="Ingresa la cantidad de preguntas que tendra este item. Ej: 3"
+            item_title="Ingresa la cantidad de preguntas que tendrá este item. Ej: 3"
             contains_input="true"
             input_class="text-center number-cell item-skill"
             input_placeholder="-"
@@ -241,7 +245,7 @@ function Custom_table() {
           />
           <Table_Item
             td_class="cell patron-cell"
-            item_title="Ingresa la cantidad de preguntas que tendra este item. Ej: 3"
+            item_title="Ingresa la cantidad de preguntas que tendrá este item. Ej: 3"
             contains_input="true"
             input_class="text-center number-cell item-skill"
             input_placeholder="-"
@@ -276,7 +280,7 @@ function Custom_table() {
 
           <Table_Item
             td_class="cell patron-cell"
-            item_title="Ingresa la cantidad de preguntas que tendra este item. Ej: 3"
+            item_title="Ingresa la cantidad de preguntas que tendrá este item. Ej: 3"
             contains_input="true"
             input_class="text-center number-cell item-skill"
             input_placeholder="-"
@@ -284,7 +288,7 @@ function Custom_table() {
           />
           <Table_Item
             td_class="cell patron-cell"
-            item_title="Ingresa la cantidad de preguntas que tendra este item. Ej: 3"
+            item_title="Ingresa la cantidad de preguntas que tendrá este item. Ej: 3"
             contains_input="true"
             input_class="text-center number-cell item-skill"
             input_placeholder="-"
@@ -292,7 +296,7 @@ function Custom_table() {
           />
           <Table_Item
             td_class="cell patron-cell"
-            item_title="Ingresa la cantidad de preguntas que tendra este item. Ej: 3"
+            item_title="Ingresa la cantidad de preguntas que tendrá este item. Ej: 3"
             contains_input="true"
             input_class="text-center number-cell item-skill"
             input_placeholder="-"
@@ -345,7 +349,7 @@ function Custom_table() {
 
           <Table_Item
             td_class="cell patron-cell"
-            item_title="Ingresa la cantidad de preguntas que tendra este item. Ej: 3"
+            item_title="Ingresa la cantidad de preguntas que tendrá este item. Ej: 3"
             contains_input="true"
             input_class="text-center number-cell item-skill"
             input_placeholder="-"
@@ -353,7 +357,7 @@ function Custom_table() {
           />
           <Table_Item
             td_class="cell patron-cell"
-            item_title="Ingresa la cantidad de preguntas que tendra este item. Ej: 3"
+            item_title="Ingresa la cantidad de preguntas que tendrá este item. Ej: 3"
             contains_input="true"
             input_class="text-center number-cell item-skill"
             input_placeholder="-"
@@ -361,7 +365,7 @@ function Custom_table() {
           />
           <Table_Item
             td_class="cell patron-cell"
-            item_title="Ingresa la cantidad de preguntas que tendra este item. Ej: 3"
+            item_title="Ingresa la cantidad de preguntas que tendrá este item. Ej: 3"
             contains_input="true"
             input_class="text-center number-cell item-skill"
             input_placeholder="-"
@@ -405,7 +409,7 @@ function Custom_table() {
 
           <Table_Item
             td_class="cell patron-cell"
-            item_title="Ingresa la cantidad de preguntas que tendra este item. Ej: 3"
+            item_title="Ingresa la cantidad de preguntas que tendrá este item. Ej: 3"
             contains_input="true"
             input_class="text-center number-cell item-skill"
             input_placeholder="-"
@@ -413,7 +417,7 @@ function Custom_table() {
           />
           <Table_Item
             td_class="cell patron-cell"
-            item_title="Ingresa la cantidad de preguntas que tendra este item. Ej: 3"
+            item_title="Ingresa la cantidad de preguntas que tendrá este item. Ej: 3"
             contains_input="true"
             input_class="text-center number-cell item-skill"
             input_placeholder="-"
@@ -421,7 +425,7 @@ function Custom_table() {
           />
           <Table_Item
             td_class="cell patron-cell"
-            item_title="Ingresa la cantidad de preguntas que tendra este item. Ej: 3"
+            item_title="Ingresa la cantidad de preguntas que tendrá este item. Ej: 3"
             contains_input="true"
             input_class="text-center number-cell item-skill"
             input_placeholder="-"
