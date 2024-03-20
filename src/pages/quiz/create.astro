@@ -157,9 +157,7 @@ import Modal from "@components/modal.astro";
 </style>
 <script>
   import { quiz_data } from "@content/quiz_data.ts";
-  import {test_1} from "@content/test.ts"
 
-  test_1()
   var use_specification_data = new CustomEvent("use_specification_data", {
     detail: { miDato: "valor" },
   });
@@ -348,4 +346,12 @@ import Modal from "@components/modal.astro";
 
     return;
   }
+</script>
+
+<script>
+  import { test_1 } from "@content/test.ts";
+  document.addEventListener("DOMContentLoaded", test_1);
+
+  const button_next_part = document.querySelector("#button-next-part");
+  button_next_part?.addEventListener("click", () => setTimeout(test_1, 10));
 </script>

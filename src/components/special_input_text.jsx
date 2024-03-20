@@ -29,9 +29,9 @@ function Special_Input_Text({
       <span className="highlight"></span>
       <span className="bar"></span>
       <label className={label_class}>
-        {input_icon_class && <i className={input_icon_class}></i>}
+        {input_icon_class != "false" && <i className={input_icon_class}></i>}
         <span> {input_label}</span>
-        {input_icon_right_class && <i className={input_icon_right_class}></i>}
+        {input_icon_right_class != "false" && <i className={input_icon_right_class}></i>}
       </label>
     </div>
   );

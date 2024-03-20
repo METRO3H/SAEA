@@ -1,25 +1,25 @@
 import SpecialInputText from "../special_input_text.jsx";
 function Item_Answer({
-  check_box_key,
+  answer_key,
   check_box_id,
-  check_box_label,
-  handleItemDelete,
+  answer_input_label,
+  Remove_Answer,
   add_style = {},
   add_class = "",
 }) {
   return (
     <div className={`answer-item ${add_class}`} style={add_style}>
       <input
-        className="answer-item-input answer-input-box form-check-input"
+        className="answer-input-checkbox answer-input-box form-check-input"
         type="checkbox"
         value=""
         id={check_box_id}
       />
       <SpecialInputText
-        input_label={check_box_label}
+        input_label={answer_input_label}
         input_width="300px"
-        input_font_size="21px"
-        add_class="answer-input-text"
+        input_font_size="18px"
+        input_class="answer-input-text"
         /* input_focus_color="var(--main-color-blue)" */
       />
       <button
@@ -27,7 +27,7 @@ function Item_Answer({
         className="btn btn-secondary btn-floating btn-sm remove-button"
         data-mdb-ripple-init
       >
-        <i className="fas fa-trash-can" onClick={() => handleItemDelete(check_box_key)}></i>
+        <i className="fas fa-trash-can" onClick={() => Remove_Answer(answer_key)}></i>
       </button>
     </div>
   );

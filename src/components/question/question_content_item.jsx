@@ -34,14 +34,14 @@ function Question_Content_Item({
             <span className="badge rounded-pill badge-success">{skills}</span>
           </li>
         </ul>
-        
+
         <div className="question-content-title-container">
           <Special_Input_Text
             input_label={`Pregunta ${question_content_item_number}`}
             label_class="fw-bold"
             bar_thickness="1px"
             input_width="95%"
-            input_font_size="31px"
+            input_font_size="22px"
             input_focus_color="var(--main-color-google-form)"
             input_class="fw-bold"
             input_icon_class="fas fa-circle-question trailing"

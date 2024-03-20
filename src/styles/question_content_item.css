@@ -51,7 +51,7 @@
   display: flex;
   justify-content: flex-end;
   gap: 11px;
-  margin-bottom: 11px;
+  margin-bottom: 5px;
 }
 .badge {
   cursor: pointer;
@@ -78,7 +78,7 @@
   opacity: 100%;
 }
 
-.answer-item-input {
+.answer-input-checkbox {
   margin-top: 0;
 }
 .form-outline {
@@ -88,7 +88,5 @@ ul {
   list-style-type: none;
 }
 li {
-  display: flex;
+  display: flex !important;
 }
-
-

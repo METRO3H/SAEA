@@ -6,28 +6,28 @@ import { useState, useEffect } from "react";
 function Questions_Data() {
   let [question_items, set_question_items] = useState([{}]);
 
-  useEffect(() => {
-    document.addEventListener("use_specification_data", () => {
-      const table_body = quiz_data.specifications_table.table_body;
-      const skills = quiz_data.specifications_table.skills
-      let new_question_items = [];
-      table_body.forEach((tr, index) => {
-
-        new_question_items.push({
-          subject: quiz_data.specifications_table.subject,
-          thematic_area: tr.thematic_area,
-          content: tr.content,
-          objective: tr.objective,
-          skills: skills[0],
-        });
-
+  function get_specification_data() {
+    const table_body = quiz_data.specifications_table.table_body;
+    const skills = quiz_data.specifications_table.skills;
+    let new_question_items = [];
+    table_body.forEach((tr) => {
+      
+      new_question_items.push({
+        subject: quiz_data.specifications_table.subject,
+        thematic_area: tr.thematic_area,
+        content: tr.content,
+        objective: tr.objective,
+        skills: skills[0],
       });
-
-      set_question_items(new_question_items)
     });
 
+    set_question_items(new_question_items);
+  }
+  useEffect(() => {
+    document.addEventListener("use_specification_data", get_specification_data);
+
     return () => {
-      document.removeEventListener("use_specification_data", manejadorEvento);
+      document.removeEventListener("use_specification_data", get_specification_data);
     };
   }, []);
   return (
