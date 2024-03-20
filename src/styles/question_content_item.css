@@ -56,8 +56,8 @@
 .badge {
   cursor: pointer;
   max-width: 113px;
-
   text-overflow: ellipsis !important;
+  overflow: hidden;
 }
 
 .answer-item {
@@ -84,3 +84,11 @@
 .form-outline {
   padding-top: 8px;
 }
+ul {
+  list-style-type: none;
+}
+li {
+  display: flex;
+}
+
+

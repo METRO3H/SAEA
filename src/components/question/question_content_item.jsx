@@ -20,32 +20,21 @@ function Question_Content_Item({
       aria-label={`question-list-item-${question_content_item_number}`}
     >
       <div className="question-content-item-main">
-        <div className="badge-container">
-          <span
-            className="badge rounded-pill badge-primary hint--bottom hint--rounded"
-            aria-label={thematic_area}
-          >
-            {thematic_area}
-          </span>
-          <span
-            className="badge rounded-pill badge-warning hint--bottom hint--rounded"
-            aria-label={content}
-          >
-            {content}
-          </span>
-          <span
-            className="badge rounded-pill badge-danger hint--bottom hint--rounded"
-            aria-label={objective}
-          >
-            {objective}
-          </span>
-          <span
-            className="badge rounded-pill badge-success hint--bottom hint--rounded"
-            aria-label={skills}
-          >
-            {skills}
-          </span>
-        </div>
+        <ul className="badge-container">
+          <li className="hint--bottom hint--rounded" aria-label={thematic_area}>
+            <span className="badge rounded-pill badge-primary">{thematic_area}</span>
+          </li>
+          <li className="hint--bottom hint--rounded" aria-label={content}>
+            <span className="badge rounded-pill badge-warning">{content}</span>
+          </li>
+          <li className="hint--bottom hint--rounded" aria-label={objective}>
+            <span className="badge rounded-pill badge-danger">{objective}</span>
+          </li>
+          <li className="hint--bottom hint--rounded" aria-label={skills}>
+            <span className="badge rounded-pill badge-success">{skills}</span>
+          </li>
+        </ul>
+        
         <div className="question-content-title-container">
           <Special_Input_Text
             input_label={`Pregunta ${question_content_item_number}`}

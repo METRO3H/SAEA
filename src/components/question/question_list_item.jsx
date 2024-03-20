@@ -3,6 +3,7 @@ function question_list_item({ question_list_item_number, add_class = "" }) {
     <a
       className={`list-group-item list-group-item-action ${add_class} px-3 border-0`}
       id={`question-list-item-${question_list_item_number}`}
+      type="button"
       data-mdb-list-init
       href={`#question-content-item-${question_list_item_number}`}
       role="tab"
