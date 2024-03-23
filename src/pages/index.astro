@@ -4,7 +4,7 @@ import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import { SITE_TITLE, SITE_DESCRIPTION } from "../const";
 import { Image } from "astro:assets";
-import add_file from "../assets/svg/add_file.svg";
+import google_form_icon_240px from "../assets/svg/google-form-icon-240px.svg";
 ---
 
 <!doctype html>
@@ -15,11 +15,28 @@ import add_file from "../assets/svg/add_file.svg";
   <body>
     <Header />
     <main>
-      <Image src={add_file} alt="add-quiz" width="200" />
-      <a type="button" href="/create_quiz" class="btn btn-primary btn-lg" data-mdb-ripple-init
-        >Crear quiz</a
+      <Image src={google_form_icon_240px} alt="add-quiz" width="200" />
+      <a
+        type="button"
+        href="/quiz/create"
+        id="create-form-button"
+        class="btn btn-lg"
+        data-mdb-ripple-init>Crear quiz</a
       >
     </main>
     <Footer />
+    <style>
+      main {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+      }
+      #create-form-button {
+        /* background: var(--main-color-blue) !important; */
+        border: 2px solid var(--accent);
+        color: var(--accent);
+      }
+    </style>
   </body>
 </html>

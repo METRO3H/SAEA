@@ -180,8 +180,7 @@ import Modal from "@components/modal.astro";
 
   button_save_form?.addEventListener("click", () => {
     Update_Questions_Data();
-    console.log(quiz_data);
-    /* Save_Form(); */
+    Save_Form();
   });
 
   button_generate_google_form!.addEventListener("click", Generate_Google_Form);
@@ -301,6 +300,32 @@ import Modal from "@components/modal.astro";
     document.dispatchEvent(update_questions_metadata);
     Move_Container("-50%");
   }
+  function Save_Form() {
+    button_generate_google_form?.removeAttribute("disabled");
+    button_save_form.setAttribute("disabled", "");
+    console.log(quiz_data);
+
+    fetch("/request/save_form", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify(quiz_data),
+    })
+      .then(async (response) => {
+        if (!response.ok) {
+          const errorResponse = await response.json();
+          throw errorResponse || "Error en la solicitud";
+        }
+        return response.json();
+      })
+      .then((response) => {
+        End_Animation(response, false);
+      })
+      .catch((error) => {
+        console.error(error);
+        End_Animation(error, true);
+      });
+  }
+  function Generate_Google_Form() {}
 
   function Update_Questions_Data() {
     const questions = document.querySelectorAll(
@@ -341,32 +366,6 @@ import Modal from "@components/modal.astro";
     });
   }
 
-  function Save_Form() {
-    /*     button_generate_google_form?.removeAttribute("disabled");
-    button_save_form.setAttribute("disabled", ""); */
-    /* console.log(quiz_data); */
-
-    fetch("/request/save_form", {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify(quiz_data),
-    })
-      .then(async (response) => {
-        if (!response.ok) {
-          const errorResponse = await response.json();
-          throw errorResponse || "Error en la solicitud";
-        }
-        return response.json();
-      })
-      .then((response) => {
-        End_Animation(response, false);
-      })
-      .catch((error) => {
-        console.error(error);
-        End_Animation(error, true);
-      });
-  }
-  function Generate_Google_Form() {}
   function End_Animation(response, is_error) {
     (document.querySelector(".check-mark") as HTMLDivElement).style.display = "block";
 

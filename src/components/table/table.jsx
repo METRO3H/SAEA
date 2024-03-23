@@ -95,7 +95,7 @@ function Custom_table() {
             title="Ingresa una habilidad que quieras evaluar. Ej: Aplicación, Conocimiento, Análisis, etc."
           >
             <input
-              className="text-white text-center"
+              className="text-center"
               type="text"
               placeholder="Habilidad"
               required
@@ -106,7 +106,7 @@ function Custom_table() {
             title="Ingresa una habilidad que quieras evaluar. Ej: Aplicación, Conocimiento, Análisis, etc."
           >
             <input
-              className="text-white text-center"
+              className="text-center"
               type="text"
               placeholder="Habilidad"
               required
@@ -117,7 +117,7 @@ function Custom_table() {
             title="Ingresa una habilidad que quieras evaluar. Ej: Aplicación, Conocimiento, Análisis, etc."
           >
             <input
-              className="text-white text-center"
+              className="text-center"
               type="text"
               placeholder="Habilidad"
               required
@@ -170,7 +170,7 @@ function Custom_table() {
 
           <Table_Item
             td_class="cell patron-cell "
-            item_title="Ingresa la cantidad de preguntas que tendrá este item. Ej: 3"
+            item_title="Ingresa la pregunta o el rango de preguntas que tendrá este item. Ej: 3, 5-9, etc"
             contains_input="true"
             input_class="text-center number-cell item-skill"
             input_placeholder="-"
@@ -178,7 +178,7 @@ function Custom_table() {
           />
           <Table_Item
             td_class="cell patron-cell"
-            item_title="Ingresa la cantidad de preguntas que tendrá este item. Ej: 3"
+            item_title="Ingresa la pregunta o el rango de preguntas que tendrá este item. Ej: 3, 5-9, etc"
             contains_input="true"
             input_class="text-center number-cell item-skill"
             input_placeholder="-"
@@ -186,7 +186,7 @@ function Custom_table() {
           />
           <Table_Item
             td_class="cell patron-cell"
-            item_title="Ingresa la cantidad de preguntas que tendrá este item. Ej: 3"
+            item_title="Ingresa la pregunta o el rango de preguntas que tendrá este item. Ej: 3, 5-9, etc"
             contains_input="true"
             input_class="text-center number-cell item-skill"
             input_placeholder="-"
@@ -230,7 +230,7 @@ function Custom_table() {
 
           <Table_Item
             td_class="cell patron-cell"
-            item_title="Ingresa la cantidad de preguntas que tendrá este item. Ej: 3"
+            item_title="Ingresa la pregunta o el rango de preguntas que tendrá este item. Ej: 3, 5-9, etc"
             contains_input="true"
             input_class="text-center number-cell item-skill"
             input_placeholder="-"
@@ -238,7 +238,7 @@ function Custom_table() {
           />
           <Table_Item
             td_class="cell patron-cell"
-            item_title="Ingresa la cantidad de preguntas que tendrá este item. Ej: 3"
+            item_title="Ingresa la pregunta o el rango de preguntas que tendrá este item. Ej: 3, 5-9, etc"
             contains_input="true"
             input_class="text-center number-cell item-skill"
             input_placeholder="-"
@@ -246,7 +246,7 @@ function Custom_table() {
           />
           <Table_Item
             td_class="cell patron-cell"
-            item_title="Ingresa la cantidad de preguntas que tendrá este item. Ej: 3"
+            item_title="Ingresa la pregunta o el rango de preguntas que tendrá este item. Ej: 3, 5-9, etc"
             contains_input="true"
             input_class="text-center number-cell item-skill"
             input_placeholder="-"
@@ -281,7 +281,7 @@ function Custom_table() {
 
           <Table_Item
             td_class="cell patron-cell"
-            item_title="Ingresa la cantidad de preguntas que tendrá este item. Ej: 3"
+            item_title="Ingresa la pregunta o el rango de preguntas que tendrá este item. Ej: 3, 5-9, etc"
             contains_input="true"
             input_class="text-center number-cell item-skill"
             input_placeholder="-"
@@ -289,7 +289,7 @@ function Custom_table() {
           />
           <Table_Item
             td_class="cell patron-cell"
-            item_title="Ingresa la cantidad de preguntas que tendrá este item. Ej: 3"
+            item_title="Ingresa la pregunta o el rango de preguntas que tendrá este item. Ej: 3, 5-9, etc"
             contains_input="true"
             input_class="text-center number-cell item-skill"
             input_placeholder="-"
@@ -297,7 +297,7 @@ function Custom_table() {
           />
           <Table_Item
             td_class="cell patron-cell"
-            item_title="Ingresa la cantidad de preguntas que tendrá este item. Ej: 3"
+            item_title="Ingresa la pregunta o el rango de preguntas que tendrá este item. Ej: 3, 5-9, etc"
             contains_input="true"
             input_class="text-center number-cell item-skill"
             input_placeholder="-"
@@ -350,7 +350,7 @@ function Custom_table() {
 
           <Table_Item
             td_class="cell patron-cell"
-            item_title="Ingresa la cantidad de preguntas que tendrá este item. Ej: 3"
+            item_title="Ingresa la pregunta o el rango de preguntas que tendrá este item. Ej: 3, 5-9, etc"
             contains_input="true"
             input_class="text-center number-cell item-skill"
             input_placeholder="-"
@@ -358,7 +358,7 @@ function Custom_table() {
           />
           <Table_Item
             td_class="cell patron-cell"
-            item_title="Ingresa la cantidad de preguntas que tendrá este item. Ej: 3"
+            item_title="Ingresa la pregunta o el rango de preguntas que tendrá este item. Ej: 3, 5-9, etc"
             contains_input="true"
             input_class="text-center number-cell item-skill"
             input_placeholder="-"
@@ -366,7 +366,7 @@ function Custom_table() {
           />
           <Table_Item
             td_class="cell patron-cell"
-            item_title="Ingresa la cantidad de preguntas que tendrá este item. Ej: 3"
+            item_title="Ingresa la pregunta o el rango de preguntas que tendrá este item. Ej: 3, 5-9, etc"
             contains_input="true"
             input_class="text-center number-cell item-skill"
             input_placeholder="-"
@@ -410,7 +410,7 @@ function Custom_table() {
 
           <Table_Item
             td_class="cell patron-cell"
-            item_title="Ingresa la cantidad de preguntas que tendrá este item. Ej: 3"
+            item_title="Ingresa la pregunta o el rango de preguntas que tendrá este item. Ej: 3, 5-9, etc"
             contains_input="true"
             input_class="text-center number-cell item-skill"
             input_placeholder="-"
@@ -418,7 +418,7 @@ function Custom_table() {
           />
           <Table_Item
             td_class="cell patron-cell"
-            item_title="Ingresa la cantidad de preguntas que tendrá este item. Ej: 3"
+            item_title="Ingresa la pregunta o el rango de preguntas que tendrá este item. Ej: 3, 5-9, etc"
             contains_input="true"
             input_class="text-center number-cell item-skill"
             input_placeholder="-"
@@ -426,7 +426,7 @@ function Custom_table() {
           />
           <Table_Item
             td_class="cell patron-cell"
-            item_title="Ingresa la cantidad de preguntas que tendrá este item. Ej: 3"
+            item_title="Ingresa la pregunta o el rango de preguntas que tendrá este item. Ej: 3, 5-9, etc"
             contains_input="true"
             input_class="text-center number-cell item-skill"
             input_placeholder="-"

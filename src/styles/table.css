@@ -20,7 +20,6 @@ caption {
   height: 100%;
   width: 100%;
   background: transparent;
-  color: white;
   padding-left: 0.7rem;
   outline: 0;
   border: 0;
@@ -120,7 +119,10 @@ thead > tr > :last-child > div {
 thead > tr > .cell {
   min-width: 80px;
 }
-
+#table-subject > input,
+.thead-input > input {
+  color: var(--main-color-blue-contrast);
+}
 tfoot > tr > td {
   padding: 0 !important;
   background: rgba(34, 41, 57, 0.851) !important;
