@@ -6,11 +6,10 @@ import Special_Input_Text from "@components/special_input_text";
 function Question_Content_Item({
   question_content_item_number,
   add_class = "",
-  subject,
   thematic_area,
   content,
   objective,
-  skills,
+  skill,
 }) {
   return (
     <div
@@ -30,8 +29,8 @@ function Question_Content_Item({
           <li className="hint--bottom hint--rounded" aria-label={objective}>
             <span className="badge rounded-pill badge-danger">{objective}</span>
           </li>
-          <li className="hint--bottom hint--rounded" aria-label={skills}>
-            <span className="badge rounded-pill badge-success">{skills}</span>
+          <li className="hint--bottom hint--rounded" aria-label={skill}>
+            <span className="badge rounded-pill badge-success">{skill}</span>
           </li>
         </ul>
 

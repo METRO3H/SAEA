@@ -156,9 +156,17 @@ import Modal from "@components/modal.astro";
   }
 </style>
 <script>
+  import { test_1 } from "@content/test.ts";
+  document.addEventListener("DOMContentLoaded", test_1);
+
+  const button_next_part = document.querySelector("#button-next-part");
+  button_next_part?.addEventListener("click", () => setTimeout(test_1, 50));
+</script>
+
+<script>
   import { quiz_data } from "@content/quiz_data.ts";
 
-  var use_specification_data = new CustomEvent("use_specification_data", {
+  var update_questions_metadata = new CustomEvent("update_questions_metadata", {
     detail: { miDato: "valor" },
   });
 
@@ -179,15 +187,10 @@ import Modal from "@components/modal.astro";
   button_generate_google_form!.addEventListener("click", Generate_Google_Form);
 
   document.querySelector("#button-back-part")?.addEventListener("click", () => {
-    const movable_container = document.querySelector("#movable-container") as HTMLDivElement;
-    movable_container.style.transform = "translateX(0%)";
+    Move_Container("0%");
   });
 
   function Update_Specification_Data() {
-    const movable_container = document.querySelector("#movable-container") as HTMLDivElement;
-
-    movable_container.style.transform = "translateX(-50%)";
-
     const table = document.querySelector(".custom-container");
 
     const quiz_title = (table?.querySelector("#quiz-title div input")! as HTMLInputElement).value;
@@ -237,7 +240,105 @@ import Modal from "@components/modal.astro";
         ),
       });
     });
-    document.dispatchEvent(use_specification_data);
+
+    Verify_table_data();
+  }
+
+  function Verify_table_data() {
+    try {
+      let questions_length = parseInt(quiz_data.specifications_table.total_questions);
+
+      interface Metadata {
+        thematic_area: string;
+        content: string;
+        objective: string;
+        skill: string;
+      }
+
+      const metadata: Metadata[] = Array(questions_length).fill(null);
+
+      quiz_data.specifications_table.table_body.forEach((tr, index) => {
+        tr.skills.forEach((skill, index_2) => {
+          const comma_split = skill.split(",");
+
+          comma_split.forEach((item) => {
+            const interval = item.split("-");
+            let iterator: number = parseInt(interval[0]);
+            let end: number = parseInt(interval[0]);
+            if (isNaN(iterator)) {
+              return;
+            }
+            if (interval.length > 1) {
+              end = parseInt(interval[1]);
+            }
+
+            do {
+              metadata[iterator - 1] = {
+                thematic_area: quiz_data.specifications_table.table_body[index].thematic_area,
+                content: quiz_data.specifications_table.table_body[index].content,
+                objective: quiz_data.specifications_table.table_body[index].objective,
+                skill: quiz_data.specifications_table.skills[index_2],
+              };
+
+              iterator++;
+            } while (iterator <= end);
+          });
+        });
+      });
+      const contains_null = metadata.some((item) => item === null);
+      if (contains_null) {
+        throw new Error("No se han clasificado todas las preguntas!");
+      }
+      Update_Questions_Metadata(metadata);
+    } catch (error) {
+      console.log(error);
+      alert("No se han clasificado todas las preguntas!");
+    }
+  }
+
+  function Update_Questions_Metadata(metadata) {
+    quiz_data.questions.metadata = metadata;
+    document.dispatchEvent(update_questions_metadata);
+    Move_Container("-50%");
+  }
+
+  function Update_Questions_Data() {
+    const questions = document.querySelectorAll(
+      ".question-content-item .question-content-item-main"
+    );
+    quiz_data.questions.content = [];
+
+    questions.forEach((question_item) => {
+      const question_text = (
+        question_item.querySelector(
+          ".question-content-title-container input"
+        ) as HTMLTextAreaElement
+      ).value;
+      question_item.removeAttribute;
+      const answers = question_item.querySelectorAll(".answer-items-section .answer-item");
+
+      const answers_data: {
+        text: string;
+        is_correct: boolean;
+      }[] = [];
+
+      answers.forEach((answer, index) => {
+        const answer_text = (answer.querySelector(".answer-input-text") as HTMLInputElement).value;
+        const answer_value = (answer.querySelector(".answer-input-box") as HTMLInputElement)
+          .checked;
+
+        // Agregar la pregunta y si es correcta al array de datos
+        answers_data.push({
+          text: answer_text,
+          is_correct: answer_value,
+        });
+      });
+
+      quiz_data.questions.content.push({
+        text: question_text,
+        answers: answers_data,
+      });
+    });
   }
 
   function Save_Form() {
@@ -266,46 +367,6 @@ import Modal from "@components/modal.astro";
       });
   }
   function Generate_Google_Form() {}
-
-  function Update_Questions_Data() {
-    const questions = document.querySelectorAll(
-      ".question-content-item .question-content-item-main"
-    );
-    quiz_data.questions = [];
-
-    questions.forEach((question_item) => {
-      const question_text = (
-        question_item.querySelector(
-          ".question-content-title-container input"
-        ) as HTMLTextAreaElement
-      ).value;
-      question_item.removeAttribute;
-      const answers = question_item.querySelectorAll(".answer-items-section .answer-item");
-
-      const answers_data: {
-        text: string;
-        is_correct: boolean;
-      }[] = [];
-
-      answers.forEach((answer, index) => {
-        const answer_text = (answer.querySelector(".answer-input-text") as HTMLInputElement).value;
-        const answer_value = (answer.querySelector(".answer-input-box") as HTMLInputElement)
-          .checked;
-
-        // Agregar la pregunta y si es correcta al array de datos
-        answers_data.push({
-          text: answer_text,
-          is_correct: answer_value,
-        });
-      });
-
-      quiz_data.questions.push({
-        text: question_text,
-        answers: answers_data,
-      });
-    });
-  }
-
   function End_Animation(response, is_error) {
     (document.querySelector(".check-mark") as HTMLDivElement).style.display = "block";
 
@@ -346,12 +407,9 @@ import Modal from "@components/modal.astro";
 
     return;
   }
-</script>
+  function Move_Container(movement) {
+    const movable_container = document.querySelector("#movable-container") as HTMLDivElement;
 
-<script>
-  import { test_1 } from "@content/test.ts";
-  document.addEventListener("DOMContentLoaded", test_1);
-
-  const button_next_part = document.querySelector("#button-next-part");
-  button_next_part?.addEventListener("click", () => setTimeout(test_1, 10));
+    movable_container.style.transform = `translateX(${movement})`;
+  }
 </script>

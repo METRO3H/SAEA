@@ -8,26 +8,26 @@ function Questions_Data() {
 
   function get_specification_data() {
     const table_body = quiz_data.specifications_table.table_body;
-    const skills = quiz_data.specifications_table.skills;
+
     let new_question_items = [];
-    table_body.forEach((tr) => {
-      
+
+    quiz_data.questions.metadata.forEach((question) => {
       new_question_items.push({
-        subject: quiz_data.specifications_table.subject,
-        thematic_area: tr.thematic_area,
-        content: tr.content,
-        objective: tr.objective,
-        skills: skills[0],
+        thematic_area: question.thematic_area,
+        content: question.content,
+        objective: question.objective,
+        skill: question.skill,
       });
     });
 
     set_question_items(new_question_items);
+
   }
   useEffect(() => {
-    document.addEventListener("use_specification_data", get_specification_data);
+    document.addEventListener("update_questions_metadata", get_specification_data);
 
     return () => {
-      document.removeEventListener("use_specification_data", get_specification_data);
+      document.removeEventListener("update_questions_metadata", get_specification_data);
     };
   }, []);
   return (
@@ -50,11 +50,10 @@ function Questions_Data() {
               key={`question_content_key_${index + 1}`}
               question_content_item_number={index + 1}
               add_class={index === 0 ? "active" : ""}
-              subject={item.subject}
               thematic_area={item.thematic_area}
               content={item.content}
               objective={item.objective}
-              skills={item.skills}
+              skill={item.skill}
             />
           ))}
         </div>

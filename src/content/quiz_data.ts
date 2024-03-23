@@ -14,12 +14,20 @@ interface Quiz {
     }[];
   };
   questions: {
-    text: String;
-    answers: {
-      text: String;
-      is_correct: boolean;
+    metadata: {
+      thematic_area: string;
+      content: string;
+      objective: string;
+      skill: string;
     }[];
-  }[];
+    content: {
+      text: String;
+      answers: {
+        text: String;
+        is_correct: boolean;
+      }[];
+    }[];
+  };
 }
 
 export let quiz_data: Quiz = {
@@ -29,20 +37,10 @@ export let quiz_data: Quiz = {
     subject: "",
     skills: [],
     total_questions: "",
-    table_body: [
-      {
-        thematic_area: "",
-        content: "",
-        objective: "",
-        performed_classes: "",
-        skills: [],
-      },
-    ],
+    table_body: [],
   },
-  questions: [
-    {
-      text: "",
-      answers: [],
-    },
-  ],
+  questions: {
+    metadata: [],
+    content: [],
+  },
 };

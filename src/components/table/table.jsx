@@ -24,6 +24,7 @@ function Custom_table() {
     return;
   }
   function Handle_Skill_Item_Change(event) {
+    event.target.value = event.target.value.replace(/[^0-9,\-]/g, "");
     const tr_element = event.target.closest("tr");
     const item_skill_elements = tr_element.querySelectorAll(".item-skill");
 
