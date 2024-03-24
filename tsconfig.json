@@ -9,10 +9,11 @@
       "@layouts/*": ["src/layouts/*"],
       "@pages/*": ["src/pages/*"],
       "@styles/*": ["src/styles/*"],
+      "@server/*": ["/server/*"],
+      "@util/*": ["/util/*"]
     },
     "strictNullChecks": true,
     "jsx": "react-jsx",
     "jsxImportSource": "react"
-  },
-
+  }
 }

@@ -8,7 +8,6 @@ export async function Save_Form(data_form) {
   const data_base_path = path.join(process.cwd(), "server", "database", "database.db");
   const date_time = moment().format("YYYY-MM-DD HH:mm:ss");
   const db = new sqlite3.Database(data_base_path);
-  console.log("\nGuardando Form en la base de datos...");
   try {
     return new Promise((resolve, reject) => {
       db.serialize(async () => {
@@ -28,7 +27,7 @@ export async function Save_Form(data_form) {
           const test_id = (await Get_Query(get_test_id, [data_form.title, data_form.created_by]))
             .id;
 
-          for (let question of data_form.questions) {
+          for (let question of data_form.questions.content) {
             await Run_Query(insert_question, [question.text, data_form.created_by, date_time]);
 
             const question_id = (
@@ -62,19 +61,19 @@ export async function Save_Form(data_form) {
 
           db.run("COMMIT");
           db.close();
-          resolve("\nForm guardado en la base de datos con éxito!!");
+          resolve("Form guardado en la base de datos con éxito!!");
         } catch (error) {
           console.error(error);
           db.run("ROLLBACK");
           db.close();
-          resolve("\nError al guardar form en la base de datos!!");
+          resolve("Error al guardar form en la base de datos!!");
         }
       });
     });
   } catch (error) {
     db.close();
     console.error(error);
-    return "\nError al guardar form en la base de datos!!";
+    return "Error al guardar form en la base de datos!!";
   }
 }
 
