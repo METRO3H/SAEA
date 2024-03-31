@@ -12,7 +12,7 @@ CREATE TABLE test (
 	"creation_date" DATETIME NOT NULL,
 	/* "designed_for" INTEGER, */
 	
-	UNIQUE(title, created_by),
+	UNIQUE(title, created_by, creation_date),
 	FOREIGN KEY (created_by) REFERENCES teacher(id),
 	PRIMARY KEY("id" AUTOINCREMENT)
 	/* FOREIGN KEY (designed_for) REFERENCES grade(id), */
@@ -33,40 +33,28 @@ CREATE TABLE test_question (
 	"id"	INTEGER NOT NULL UNIQUE,
 	"test_id"	INTEGER NOT NULL,
 	"question_id" INTEGER NOT NULL,
-	"question_preference_id" INTEGER /*NOT NULL*/,
+	"thematic_area_id" INTEGER,
+	"content_id" INTEGER,
+	"objetive_id" INTEGER,
+	"skill_id" INTEGER,
 	
 	FOREIGN KEY (test_id) REFERENCES test(id),
-	FOREIGN KEY (question_id) REFERENCES question(id),
-	FOREIGN KEY (question_preference_id) REFERENCES question_preference(id),
-	
-	UNIQUE(test_id, question_id),
-	PRIMARY KEY("id" AUTOINCREMENT)
-); 
-
-CREATE TABLE question_preference(
-	"id"		  INTEGER NOT NULL UNIQUE,
-	"teacher_id"  INTEGER NOT NULL,
-	"question_id" INTEGER NOT NULL,
-	"thematic_area_id" INTEGER NOT NULL,
-	"content_id" INTEGER NOT NULL,
-	"objetive_id" INTEGER NOT NULL,
-	"skill_id" INTEGER NOT NULL,
-	
-	FOREIGN KEY (teacher_id) REFERENCES teacher(id),
 	FOREIGN KEY (question_id) REFERENCES question(id),
 	FOREIGN KEY (thematic_area_id) REFERENCES question_thematic_area(id),
 	FOREIGN KEY (content_id) REFERENCES question_content_area(id),
 	FOREIGN KEY (objetive_id) REFERENCES question_objetive(id),
 	FOREIGN KEY (skill_id) REFERENCES question_skill(id),
 	
+	UNIQUE(test_id, question_id),
 	PRIMARY KEY("id" AUTOINCREMENT)
-);
+); 
+
 CREATE TABLE question_thematic_area (
 	"id"	INTEGER NOT NULL UNIQUE,
 	"text"	TEXT NOT NULL,
 	"created_by" INTEGER NOT NULL,
 	"creation_date"	DATETIME NOT NULL,
-	
+	UNIQUE(text, created_by),
 	FOREIGN KEY (created_by) REFERENCES teacher(id),
 	PRIMARY KEY("id" AUTOINCREMENT)
 ); 
@@ -76,6 +64,7 @@ CREATE TABLE question_content_area (
 	"created_by" INTEGER NOT NULL,
 	"creation_date"	DATETIME NOT NULL,
 	
+	UNIQUE(text, created_by),
 	FOREIGN KEY (created_by) REFERENCES teacher(id),
 	PRIMARY KEY("id" AUTOINCREMENT)
 ); 
@@ -86,6 +75,7 @@ CREATE TABLE question_objetive (
 	"created_by" INTEGER NOT NULL,
 	"creation_date"	DATETIME NOT NULL,
 	
+	UNIQUE(text, created_by),
 	FOREIGN KEY (created_by) REFERENCES teacher(id),
 	PRIMARY KEY("id" AUTOINCREMENT)
 ); 
@@ -95,6 +85,7 @@ CREATE TABLE question_skill (
 	"created_by" INTEGER NOT NULL,
 	"creation_date"	DATETIME NOT NULL,
 	
+	UNIQUE(text, created_by),
 	FOREIGN KEY (created_by) REFERENCES teacher(id),
 	PRIMARY KEY("id" AUTOINCREMENT)
 ); 
