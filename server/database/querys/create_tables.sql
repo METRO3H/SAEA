@@ -1,3 +1,10 @@
+CREATE TABLE teacher (
+	"id"	INTEGER NOT NULL UNIQUE,
+	"name"	TEXT NOT NULL UNIQUE,
+	
+	PRIMARY KEY("id" AUTOINCREMENT)
+); 
+INSERT INTO teacher (name) VALUES ("Bob");
 CREATE TABLE test (
 	"id"	INTEGER NOT NULL UNIQUE,
 	"title"	TEXT NOT NULL,
@@ -26,13 +33,71 @@ CREATE TABLE test_question (
 	"id"	INTEGER NOT NULL UNIQUE,
 	"test_id"	INTEGER NOT NULL,
 	"question_id" INTEGER NOT NULL,
+	"question_preference_id" INTEGER /*NOT NULL*/,
 	
-	UNIQUE(test_id, question_id),
 	FOREIGN KEY (test_id) REFERENCES test(id),
 	FOREIGN KEY (question_id) REFERENCES question(id),
+	FOREIGN KEY (question_preference_id) REFERENCES question_preference(id),
+	
+	UNIQUE(test_id, question_id),
 	PRIMARY KEY("id" AUTOINCREMENT)
 ); 
 
+CREATE TABLE question_preference(
+	"id"		  INTEGER NOT NULL UNIQUE,
+	"teacher_id"  INTEGER NOT NULL,
+	"question_id" INTEGER NOT NULL,
+	"thematic_area_id" INTEGER NOT NULL,
+	"content_id" INTEGER NOT NULL,
+	"objetive_id" INTEGER NOT NULL,
+	"skill_id" INTEGER NOT NULL,
+	
+	FOREIGN KEY (teacher_id) REFERENCES teacher(id),
+	FOREIGN KEY (question_id) REFERENCES question(id),
+	FOREIGN KEY (thematic_area_id) REFERENCES question_thematic_area(id),
+	FOREIGN KEY (content_id) REFERENCES question_content_area(id),
+	FOREIGN KEY (objetive_id) REFERENCES question_objetive(id),
+	FOREIGN KEY (skill_id) REFERENCES question_skill(id),
+	
+	PRIMARY KEY("id" AUTOINCREMENT)
+);
+CREATE TABLE question_thematic_area (
+	"id"	INTEGER NOT NULL UNIQUE,
+	"text"	TEXT NOT NULL,
+	"created_by" INTEGER NOT NULL,
+	"creation_date"	DATETIME NOT NULL,
+	
+	FOREIGN KEY (created_by) REFERENCES teacher(id),
+	PRIMARY KEY("id" AUTOINCREMENT)
+); 
+CREATE TABLE question_content_area (
+	"id"	INTEGER NOT NULL UNIQUE,
+	"text"	TEXT NOT NULL,
+	"created_by" INTEGER NOT NULL,
+	"creation_date"	DATETIME NOT NULL,
+	
+	FOREIGN KEY (created_by) REFERENCES teacher(id),
+	PRIMARY KEY("id" AUTOINCREMENT)
+); 
+
+CREATE TABLE question_objetive (
+	"id"	INTEGER NOT NULL UNIQUE,
+	"text"	TEXT NOT NULL,
+	"created_by" INTEGER NOT NULL,
+	"creation_date"	DATETIME NOT NULL,
+	
+	FOREIGN KEY (created_by) REFERENCES teacher(id),
+	PRIMARY KEY("id" AUTOINCREMENT)
+); 
+CREATE TABLE question_skill (
+	"id"	INTEGER NOT NULL UNIQUE,
+	"text"	TEXT NOT NULL,
+	"created_by" INTEGER NOT NULL,
+	"creation_date"	DATETIME NOT NULL,
+	
+	FOREIGN KEY (created_by) REFERENCES teacher(id),
+	PRIMARY KEY("id" AUTOINCREMENT)
+); 
 CREATE TABLE answer (
 	"id"	INTEGER NOT NULL UNIQUE,
 	"text" TEXT NOT NULL,
@@ -57,58 +122,6 @@ CREATE TABLE test_question_answer (
 	FOREIGN KEY (answer_id) REFERENCES answer(id),
 	PRIMARY KEY("id" AUTOINCREMENT)
 );
-
-CREATE TABLE teacher (
-	"id"	INTEGER NOT NULL UNIQUE,
-	"name"	TEXT NOT NULL UNIQUE,
-	
-	PRIMARY KEY("id" AUTOINCREMENT)
-); 
-INSERT INTO teacher (name) VALUES ("Bob")
-
-/* 
-CREATE TABLE question_objetive_preference (
-	"id"		  INTEGER NOT NULL UNIQUE,
-	"teacher_id"  INTEGER NOT NULL,
-	"question_id" INTEGER NOT NULL,
-	"objetive_id" INTEGER NOT NULL,
-	
-	FOREIGN KEY (teacher_id) REFERENCES teacher(id),
-	FOREIGN KEY (question_id) REFERENCES question(id),
-	FOREIGN KEY (objetive_id) REFERENCES objetive(id),
-	PRIMARY KEY("id" AUTOINCREMENT)
-); 
-
-CREATE TABLE question_skill_preference (
-	"id"	INTEGER NOT NULL UNIQUE,
-	"teacher_id"	INTEGER NOT NULL,
-	"question_id" INTEGER NOT NULL,
-	"skill_id" INTEGER NOT NULL,
-	
-	FOREIGN KEY (teacher_id) REFERENCES teacher(id),
-	FOREIGN KEY (question_id) REFERENCES question(id),
-	FOREIGN KEY (skill_id) REFERENCES skill(id),
-	PRIMARY KEY("id" AUTOINCREMENT)
-); 
-
-CREATE TABLE objetive (
-	"id"	INTEGER NOT NULL UNIQUE,
-	"text"	TEXT NOT NULL,
-	"created_by" INTEGER NOT NULL,
-	"creation_date"	DATETIME NOT NULL,
-	
-	FOREIGN KEY (created_by) REFERENCES teacher(id),
-	PRIMARY KEY("id" AUTOINCREMENT)
-); 
-CREATE TABLE skill (
-	"id"	INTEGER NOT NULL UNIQUE,
-	"text"	TEXT NOT NULL,
-	"created_by" INTEGER NOT NULL,
-	"creation_date"	DATETIME NOT NULL,
-	
-	FOREIGN KEY (created_by) REFERENCES teacher(id),
-	PRIMARY KEY("id" AUTOINCREMENT)
-); 
 
 CREATE TABLE grade (
 	"id"	INTEGER NOT NULL UNIQUE,
@@ -165,4 +178,4 @@ CREATE TABLE test_result (
 	FOREIGN KEY (student_id) REFERENCES student(id),
 	FOREIGN KEY (question_id) REFERENCES question(id),
 	PRIMARY KEY("id" AUTOINCREMENT)
-);  */
+);

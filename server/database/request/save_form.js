@@ -11,37 +11,31 @@ export async function Save_Form(data_form) {
   try {
     return new Promise((resolve, reject) => {
       db.serialize(async () => {
-        const insert_test = db.prepare(query.insert_test);
-        const insert_question = db.prepare(query.insert_question);
-        const insert_test_question = db.prepare(query.insert_test_question);
-        const insert_answer = db.prepare(query.insert_answer);
-        const insert_test_question_answer = db.prepare(query.insert_test_question_answer);
-        const get_test_id = db.prepare(query.select_test_id);
-        const get_question_id = db.prepare(query.select_question_id);
-        const get_answer_id = db.prepare(query.select_answer_id);
+        const sql = new Query(db);
 
         db.run("BEGIN TRANSACTION");
 
         try {
-          await Run_Query(insert_test, [data_form.title, data_form.created_by, date_time]);
-          const test_id = (await Get_Query(get_test_id, [data_form.title, data_form.created_by]))
-            .id;
+          await Run_Query(sql.Insert.test, [data_form.title, data_form.created_by, date_time]);
+          const test_id = (
+            await Get_Query(sql.Get.test_id, [data_form.title, data_form.created_by])
+          ).id;
 
           for (let question of data_form.questions.content) {
-            await Run_Query(insert_question, [question.text, data_form.created_by, date_time]);
+            await Run_Query(sql.Insert.question, [question.text, data_form.created_by, date_time]);
 
             const question_id = (
-              await Get_Query(get_question_id, [question.text, data_form.created_by])
+              await Get_Query(sql.Get.question_id, [question.text, data_form.created_by])
             ).id;
 
-            await Run_Query(insert_test_question, [test_id, question_id]);
+            await Run_Query(sql.Insert.test_question, [test_id, question_id]);
 
             for (let answer of question.answers) {
-              await Run_Query(insert_answer, [answer.text, data_form.created_by, date_time]);
+              await Run_Query(sql.Insert.answer, [answer.text, data_form.created_by, date_time]);
               const answer_id = (
-                await Get_Query(get_answer_id, [answer.text, data_form.created_by])
+                await Get_Query(sql.Get.answer_id, [answer.text, data_form.created_by])
               ).id;
-              await Run_Query(insert_test_question_answer, [
+              await Run_Query(sql.Insert.test_question_answer, [
                 test_id,
                 question_id,
                 answer_id,
@@ -50,14 +44,7 @@ export async function Save_Form(data_form) {
             }
           }
 
-          insert_test.finalize();
-          insert_question.finalize();
-          insert_test_question.finalize();
-          insert_answer.finalize();
-          insert_test_question_answer.finalize();
-          get_test_id.finalize();
-          get_question_id.finalize();
-          get_answer_id.finalize();
+          sql.Finalize();
 
           db.run("COMMIT");
           db.close();
@@ -66,7 +53,7 @@ export async function Save_Form(data_form) {
           console.error(error);
           db.run("ROLLBACK");
           db.close();
-          resolve("Error al guardar form en la base de datos!!");
+          reject("Error al guardar form en la base de datos!!");
         }
       });
     });
@@ -101,32 +88,56 @@ function Get_Query(query, parameters = []) {
   });
 }
 
-const query = {
-  insert_test: /*sql*/ `
-  INSERT OR IGNORE INTO test (title, created_by, creation_date) 
-  VALUES (?, ?, ?);
-  `,
+class Query {
+  Insert = {};
+  Get = {};
+  constructor(db) {
+    this.prepare(db);
+    return;
+  }
+  prepare(db) {
+    this.Insert = {
+      test: db.prepare(/*sql*/ `
+      INSERT OR IGNORE INTO test (title, created_by, creation_date) 
+      VALUES (?, ?, ?);
+      `),
+      question: db.prepare(/*sql*/ `
+      INSERT OR IGNORE INTO question (text, created_by, creation_date) VALUES (?, ?, ?);
+      `),
+      test_question: db.prepare(/*sql*/ `
+      INSERT OR IGNORE INTO test_question (test_id, question_id) 
+      VALUES (?, ?);
+      `),
+      answer: db.prepare(/*sql*/ `
+      INSERT OR IGNORE INTO answer (text, created_by, creation_date)
+      VALUES (?, ?, ?)
+      `),
+      test_question_answer: db.prepare(/*sql*/ `
+      INSERT OR IGNORE INTO test_question_answer (test_id, question_id, answer_id, is_correct)
+      VALUES (?, ?, ?, ?)
+      `),
+    };
 
-  insert_question: /*sql*/ `
-  INSERT OR IGNORE INTO question (text, created_by, creation_date) VALUES (?, ?, ?);
-  `,
+    this.Get = {
+      test_id: db.prepare(/*sql*/ `SELECT id FROM test WHERE title = ? AND created_by = ?`),
+      question_id: db.prepare(/*sql*/ `SELECT id FROM question WHERE text = ? AND created_by = ?`),
+      answer_id: db.prepare(/*sql*/ `SELECT id FROM answer WHERE text = ? AND created_by = ?`),
+    };
+    return;
+  }
 
-  insert_answer: /*sql*/ `
-  INSERT OR IGNORE INTO answer (text, created_by, creation_date)
-  VALUES (?, ?, ?)
-  `,
+  Finalize() {
+    for (let key in this.Insert) {
+      if (this.Insert.hasOwnProperty(key)) {
+        this.Insert[key].finalize();
+      }
+    }
 
-  select_test_id: /*sql*/ `SELECT id FROM test WHERE title = ? AND created_by = ?`,
-  select_question_id: /*sql*/ `SELECT id FROM question WHERE text = ? AND created_by = ?`,
-  select_answer_id: /*sql*/ `SELECT id FROM answer WHERE text = ? AND created_by = ?`,
-
-  insert_test_question: /*sql*/ `
-  INSERT OR IGNORE INTO test_question (test_id, question_id) 
-  VALUES (?, ?);
-  `,
-
-  insert_test_question_answer: /*sql*/ `
-  INSERT OR IGNORE INTO test_question_answer (test_id, question_id, answer_id, is_correct)
-  VALUES (?, ?, ?, ?)
-  `,
-};
+    for (let key in this.Get) {
+      if (this.Get.hasOwnProperty(key)) {
+        this.Get[key].finalize();
+      }
+    }
+    return;
+  }
+}

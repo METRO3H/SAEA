@@ -301,8 +301,8 @@ import Modal from "@components/modal.astro";
     Move_Container("-50%");
   }
   function Save_Form() {
-    button_generate_google_form?.removeAttribute("disabled");
-    button_save_form.setAttribute("disabled", "");
+    // button_generate_google_form?.removeAttribute("disabled");
+    // button_save_form.setAttribute("disabled", "");
     console.log(quiz_data);
 
     fetch("/request/save_form", {
