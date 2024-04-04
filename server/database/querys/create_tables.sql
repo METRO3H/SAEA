@@ -8,6 +8,7 @@ INSERT INTO teacher (name) VALUES ("Bob");
 CREATE TABLE test (
 	"id"	INTEGER NOT NULL UNIQUE,
 	"title"	TEXT NOT NULL,
+	"subject_id" INTEGER NOT NULL,N
 	"created_by" INTEGER NOT NULL,
 	"creation_date" DATETIME NOT NULL,
 	/* "designed_for" INTEGER, */
@@ -170,3 +171,41 @@ CREATE TABLE test_result (
 	FOREIGN KEY (question_id) REFERENCES question(id),
 	PRIMARY KEY("id" AUTOINCREMENT)
 );
+
+CREATE TABLE subject(
+	"id"	INTEGER NOT NULL UNIQUE,
+	"text" TEXT NOT NULL UNIQUE,
+	"created_by" INTEGER NOT NULL,
+	"creation_date"	DATETIME NOT NULL,
+	
+	FOREIGN KEY (created_by) REFERENCES teacher(id),
+	PRIMARY KEY("id" AUTOINCREMENT)
+	);
+	
+CREATE TABLE specifications_table(
+	"id"	INTEGER NOT NULL UNIQUE,
+	"test_id" INTEGER NOT NULL,
+	
+	"thematic_area_id" INTEGER NOT NULL,
+	"content_id" INTEGER NOT NULL,
+	"objective_id" INTEGER NOT NULL,
+	"performed_classes" INTEGER NOT NULL,
+	
+	FOREIGN KEY (test_id) REFERENCES test(id),
+	PRIMARY KEY("id" AUTOINCREMENT)
+  );
+  
+  CREATE TABLE specifications_table_skill(
+	"id"	INTEGER NOT NULL UNIQUE,
+	"specifications_table_id" INTEGER NOT NULL,
+	"question_skill_id" INTEGER NOT NULL,
+	"position" INTEGER NOT NULL,
+	"questions_range" TEXT,
+	
+	
+	FOREIGN KEY (specifications_table_id) REFERENCES specifications_table(id),
+	FOREIGN KEY (question_skill_id) REFERENCES question_skill(id),
+	PRIMARY KEY("id" AUTOINCREMENT)
+  );
+  
+  
