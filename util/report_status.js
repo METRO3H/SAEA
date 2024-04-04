@@ -3,11 +3,11 @@ import chalk from "chalk";
 export default function Report_Status(status, message) {
   switch (status) {
     case "status":
-      console.log(chalk.magenta(`[Status]`), message);
+      console.log(chalk.magentaBright(`[Status]`), chalk.whiteBright(message));
       break;
 
     case "success":
-      console.log(chalk.green(`[Status]`, message));
+      console.log(chalk.greenBright(`[Status]`, message));
       break;
 
     case "error":

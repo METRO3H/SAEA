@@ -16,5 +16,10 @@ app.use(bodyParser.json());
 app.use("/request", router);
 
 app.listen(8080, () => {
-  console.log(chalk.magenta(`\n[Status]`),"Listening on", chalk.hex("#2337ff")("http://localhost:8080"), "...");
+  
+  console.log(
+    chalk.bgGreen.hex("#ffffff")("\n Server "),
+    chalk.whiteBright("Listening on"),
+    chalk.blueBright("http://localhost:8080...")
+  );
 });
