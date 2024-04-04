@@ -8,7 +8,7 @@ INSERT INTO teacher (name) VALUES ("Bob");
 CREATE TABLE test (
 	"id"	INTEGER NOT NULL UNIQUE,
 	"title"	TEXT NOT NULL,
-	"subject_id" INTEGER NOT NULL,N
+	"subject_id" INTEGER NOT NULL,
 	"created_by" INTEGER NOT NULL,
 	"creation_date" DATETIME NOT NULL,
 	/* "designed_for" INTEGER, */
@@ -191,6 +191,7 @@ CREATE TABLE specifications_table(
 	"objective_id" INTEGER NOT NULL,
 	"performed_classes" INTEGER NOT NULL,
 	
+	UNIQUE(test_id, thematic_area_id, content_id, objective_id, performed_classes),
 	FOREIGN KEY (test_id) REFERENCES test(id),
 	PRIMARY KEY("id" AUTOINCREMENT)
   );
