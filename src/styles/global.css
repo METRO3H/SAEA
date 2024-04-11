@@ -20,6 +20,7 @@
   --finalBorder: rgb(215, 215, 231) transparent rgb(215, 215, 231) transparent;
   --h1Animation: h1-animation-1;
   --main-color-blue: rgb(34, 41, 57);
+  --main-color-blue-hover: rgba(34, 41, 57, 95%);
   --main-color-blue-light: #455b84;
   --main-color-blue-contrast: rgb(121, 141, 255);
   --main-color-google-form: #6200ee;
