@@ -1,77 +1,77 @@
 ---
-import Document from "../../../layouts/document.astro";
+import Document from "@layouts/document.astro";
+import Search_Input from "@components/search_input.astro"
 ---
 
 <Document title="Cuestionarios" description="Lista de cuestionarios">
-  <div id="card-container">
+  <div id="main-container">
     <div id="filter-container">
       <div id="searcher-container" class="input-group rounded">
-        <input
-          type="search"
-          class="form-control rounded"
-          placeholder="Search"
-          aria-label="Search"
-          aria-describedby="search-addon"
-        />
-        <span class="input-group-text border-0" id="search-addon">
-          <i class="fas fa-search"></i>
-        </span>
+        <Search_Input/>
       </div>
       <div id="filter"></div>
     </div>
 
-    <table class="table table-hover align-middle mb-0 bg-white">
-      <thead class="table-dark">
-        <tr>
-          <th class="text-center">#</th>
-          <th>Name</th>
-          <th class="text-center">Status</th>
-          <th class="text-center">Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <th class="checkbox-item" scope="row">
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" />
-            </div>
-          </th>
-          <td>
-            <div class="d-flex align-items-center">
-              <div>
-                <p class="fw-bold mb-1">John Doe</p>
-                <p class="text-muted mb-0">john.doe@gmail.com</p>
+    <div id="card-container">
+      <table class="table table-sm table-hover align-middle mb-0 bg-white">
+        <thead class="">
+          <tr>
+            <th class="text-center">#</th>
+            <th>Titulo</th>
+            <th class="text-center">Estado</th>
+            <th class="text-center">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th class="checkbox-item" scope="row">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" />
               </div>
-            </div>
-          </td>
+            </th>
+            <td>
+              <div class="d-flex align-items-center">
+                <div>
+                  <p class="fw-bold mb-1">John Doe</p>
+                  <!-- <p class="text-muted mb-0">john.doe@gmail.com</p> -->
+                </div>
+              </div>
+            </td>
 
-          <td class="status">
-            <div>
-              <span class="badge badge-success rounded-pill d-inline text-center">Active</span>
-            </div>
-          </td>
-          <td>
-            <div class="actions-container">
-              <button type="button" class="btn btn-primary btn-floating" data-mdb-ripple-init>
-                <i class="far fa-pen-to-square"></i>
-              </button>
-              <button type="button" class="btn btn-danger btn-floating" data-mdb-ripple-init>
-                <i class="fas fa-trash"></i>
-              </button>
-            </div>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+            <td class="status">
+              <div>
+                <span class="badge badge-success rounded-pill d-inline text-center">Active</span>
+              </div>
+            </td>
+            <td>
+              <div class="actions-container">
+                <button type="button" class="btn btn-primary btn-floating" data-mdb-ripple-init>
+                  <i class="far fa-pen-to-square"></i>
+                </button>
+                <button type="button" class="btn btn-danger btn-floating" data-mdb-ripple-init>
+                  <i class="fas fa-trash"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </Document>
 
-<style is:inline>
-  main {
+<style>
+  #main-container {
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
+
+    height: 100%;
+    width: 100%;
+    overflow: auto;
+
+    padding: 15px 0 15px 0;
   }
   #card-container {
     display: flex;
@@ -87,12 +87,13 @@ import Document from "../../../layouts/document.astro";
   }
   #filter-container {
     display: flex;
-    width: 100%;
+    width: 705px;
     margin-bottom: 15px;
   }
   #searcher-container {
     display: flex;
     width: 300px;
+    
   }
   .actions-container {
     display: flex;
@@ -133,7 +134,6 @@ import Document from "../../../layouts/document.astro";
     const checkbox = container.querySelector(".form-check-input") as HTMLInputElement;
 
     container.addEventListener("click", (event) => {
-
       if (!checkbox.contains(event.target as Node)) {
         checkbox.checked = !checkbox.checked;
       }

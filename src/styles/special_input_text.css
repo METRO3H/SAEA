@@ -2,6 +2,7 @@
   position: relative;
   padding-top: 5px;
   min-width: fit-content;
+  
 }
 
 .input-container > input {
@@ -11,11 +12,12 @@
   width: 100%;
   border: none;
   border-bottom: var(--bar-thickness) solid var(--input-no-focus-color, #bdbdbd) !important;
-  background: transparent;
+  background: var(--input-background, transparent);
   text-overflow: ellipsis;
   line-height: 1;
   padding: 4px;
   padding-top: 7px;
+  border-radius: 11px;
 }
 .input-container > input:focus {
   outline: none;
@@ -38,6 +40,7 @@
 
   font-size: calc(var(--input-font-size, 16px) - 3px);
   color: var(--input-no-focus-color, #bdbdbd);
+  background: white;
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow-x: hidden;

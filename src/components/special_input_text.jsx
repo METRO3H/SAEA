@@ -12,6 +12,7 @@ function Special_Input_Text({
   input_icon_class = "false",
   input_icon_right_class = "false",
   fix_label_position = "0px",
+  input_background = "transparent",
 }) {
   const input_style = {
     width: input_width,
@@ -22,6 +23,7 @@ function Special_Input_Text({
     "--bar-thickness": bar_thickness,
 
     "--fix-label-position": fix_label_position,
+    "--input-background": input_background,
   };
   return (
     <div className="input-container" style={input_style}>
