@@ -22,4 +22,5 @@ app.listen(8080, () => {
     chalk.whiteBright("Listening on"),
     chalk.blueBright("http://localhost:8080...")
   );
+  Report_Status("divider")
 });

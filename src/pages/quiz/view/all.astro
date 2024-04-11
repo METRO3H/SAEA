@@ -1,13 +1,18 @@
 ---
 import Document from "@layouts/document.astro";
-import Search_Input from "@components/search_input.astro"
+import Search_Input from "@components/search_input.astro";
+import Quiz_View_Item from "@components/quiz/quiz_view_item.astro";
+const SERVER_URL = import.meta.env.SERVER_URL;
+
+const response = await fetch(`${SERVER_URL}/request/get/quiz/all`);
+const data = await response.json();
 ---
 
 <Document title="Cuestionarios" description="Lista de cuestionarios">
   <div id="main-container">
     <div id="filter-container">
       <div id="searcher-container" class="input-group rounded">
-        <Search_Input/>
+        <Search_Input />
       </div>
       <div id="filter"></div>
     </div>
@@ -18,42 +23,22 @@ import Search_Input from "@components/search_input.astro"
           <tr>
             <th class="text-center">#</th>
             <th>Titulo</th>
+            <th class="text-center">Asignatura</th>
             <th class="text-center">Estado</th>
+            <th class="text-center">Fecha</th>
             <th class="text-center">Acciones</th>
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <th class="checkbox-item" scope="row">
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" />
-              </div>
-            </th>
-            <td>
-              <div class="d-flex align-items-center">
-                <div>
-                  <p class="fw-bold mb-1">John Doe</p>
-                  <!-- <p class="text-muted mb-0">john.doe@gmail.com</p> -->
-                </div>
-              </div>
-            </td>
-
-            <td class="status">
-              <div>
-                <span class="badge badge-success rounded-pill d-inline text-center">Active</span>
-              </div>
-            </td>
-            <td>
-              <div class="actions-container">
-                <button type="button" class="btn btn-primary btn-floating" data-mdb-ripple-init>
-                  <i class="far fa-pen-to-square"></i>
-                </button>
-                <button type="button" class="btn btn-danger btn-floating" data-mdb-ripple-init>
-                  <i class="fas fa-trash"></i>
-                </button>
-              </div>
-            </td>
-          </tr>
+          {
+            data.map((item) => (
+              <Quiz_View_Item
+                title={item.test_title}
+                subject={item.subject}
+                creation_date={item.creation_date}
+              />
+            ))
+          }
         </tbody>
       </table>
     </div>
@@ -71,7 +56,7 @@ import Search_Input from "@components/search_input.astro"
     width: 100%;
     overflow: auto;
 
-    padding: 15px 0 15px 0;
+    padding: 15px;
   }
   #card-container {
     display: flex;
@@ -83,7 +68,7 @@ import Search_Input from "@components/search_input.astro"
     background: white;
     box-shadow: 0 2px 8px rgba(var(--black), 5%);
     border-radius: 11px;
-    overflow: hidden;
+    overflow: auto;
   }
   #filter-container {
     display: flex;
@@ -93,40 +78,7 @@ import Search_Input from "@components/search_input.astro"
   #searcher-container {
     display: flex;
     width: 300px;
-    
   }
-  .actions-container {
-    display: flex;
-    justify-content: center;
-    gap: 5px;
-  }
-  .status > div {
-    display: flex;
-    justify-content: center;
-    width: 100%;
-    height: 100%;
-  }
-  .form-check,
-  .form-check-input {
-    margin: 0 !important;
-    padding: 0 !important;
-  }
-  .form-check {
-    display: flex;
-    justify-content: center;
-  }
-  .table {
-    padding-inline: 15px;
-    border-radius: 11px;
-  }
-  /*   .actions-container > button{
-
-    transition: transform 300ms ease;
-  }
-  .actions-container > button:hover{
-    transform: scale(1.1);
-    
-  } */
 </style>
 <script>
   const checkbox_containers = document.querySelectorAll(".checkbox-item");

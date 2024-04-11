@@ -10,22 +10,20 @@ import chalk from "chalk";
 const router = express.Router();
 router.post("/", async function (request, response) {
   const data = request.body;
-  /*   Print_JSON_Table(data); */
+    Print_JSON_Table(data);
 
   try {
     /* const form_URL = (await Generate_Form(data)) || "Bob"; */
-    console.log(
-      chalk.grey("--------------------------------------------------------------------")
-    );
     Report_Status("status", "Guardando Form en la base de datos...");
     const save_form_result = await Save_Form(data);
     // Print_JSON_Table(data);
     Report_Status("success", save_form_result);
-
+    Report_Status("divider")
     // Enviar una respuesta
     return response.status(200).send({ message: "Cuestionario guardado con éxito!" });
   } catch (error) {
     Report_Status("error", error.message);
+    Report_Status("divider")
     return response.status(400).send({ message: "Error al ingresar los datos" });
   }
 });

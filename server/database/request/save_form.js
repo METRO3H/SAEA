@@ -124,14 +124,14 @@ export async function Save_Form(data_form) {
             }
           }
 
-          sql.Finalize();
-
           db.run("COMMIT");
+          sql.Finalize();
           db.close();
           resolve("Form guardado en la base de datos con éxito!!");
         } catch (error) {
           console.error(error);
           db.run("ROLLBACK");
+          sql.Finalize();
           db.close();
           reject("Error al guardar form en la base de datos!!");
         }

@@ -13,6 +13,12 @@ export default function Report_Status(status, message) {
     case "error":
       console.log(chalk.red(`[Status]`, message));
       break;
+    case "divider":
+      console.log(
+        chalk.grey("--------------------------------------------------------------------")
+      );
+      break;
+
     default:
       console.log("Status no encontrado");
       break;
