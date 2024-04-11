@@ -1,7 +1,7 @@
 ---
 import Document from "@layouts/document.astro";
 import Search_Input from "@components/search_input.astro";
-import Quiz_View_Item from "@components/quiz/quiz_view_item.astro";
+import Quiz_List_Item from "@components/quiz/quiz_list_item.jsx";
 const SERVER_URL = import.meta.env.SERVER_URL;
 
 const response = await fetch(`${SERVER_URL}/request/get/quiz/all`);
@@ -9,75 +9,105 @@ const data = await response.json();
 ---
 
 <Document title="Cuestionarios" description="Lista de cuestionarios">
-  <div id="main-container">
-    <div id="filter-container">
-      <div id="searcher-container" class="input-group rounded">
-        <Search_Input />
+  <div id="main">
+    <div id="main-container">
+      <div id="filter-container">
+        <div id="searcher-container" class="input-group rounded">
+          <Search_Input />
+        </div>
+        <div id="filter"></div>
       </div>
-      <div id="filter"></div>
-    </div>
 
-    <div id="card-container">
-      <table class="table table-sm table-hover align-middle mb-0 bg-white">
-        <thead class="">
-          <tr>
-            <th class="text-center">#</th>
-            <th>Titulo</th>
-            <th class="text-center">Asignatura</th>
-            <th class="text-center">Estado</th>
-            <th class="text-center">Fecha</th>
-            <th class="text-center">Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          {
-            data.map((item) => (
-              <Quiz_View_Item
-                title={item.test_title}
-                subject={item.subject}
-                creation_date={item.creation_date}
-              />
-            ))
-          }
-        </tbody>
-      </table>
+      <div id="content-container">
+        <h4 id="content-title">Plantillas de cuestionarios</h4>
+        <div id="card-container">
+          <table class="table table-sm table-hover align-middle mb-0 bg-white">
+            <thead id="table-head">
+              <tr>
+                <th class="text-center fw-bold">#</th>
+                <th class="fw-bold">Titulo</th>
+                <th class="text-center fw-bold">Asignatura</th>
+                <th class="text-center fw-bold">Estado</th>
+                <th class="text-center fw-bold">Fecha</th>
+                <th class="text-center fw-bold">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              {
+                data.map((item) => (
+                  <Quiz_List_Item
+                    title={item.test_title}
+                    subject={item.subject}
+                    creation_date={item.creation_date}
+                    client:visible
+                  />
+                ))
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   </div>
 </Document>
 
 <style>
-  #main-container {
+  #main {
     display: flex;
     justify-content: center;
     align-items: center;
-    flex-direction: column;
-
     height: 100%;
-    width: 100%;
-    overflow: auto;
-
-    padding: 15px;
   }
-  #card-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    height: 95%;
-    width: 705px;
-    padding: 15px;
-    background: white;
-    box-shadow: 0 2px 8px rgba(var(--black), 5%);
-    border-radius: 11px;
-    overflow: auto;
+  #main-container {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    grid-template-areas: "list content";
+    padding: 15px 15px 0 15px;
+    width: 1000px;
+    height: 100%;
   }
   #filter-container {
     display: flex;
-    width: 705px;
+    flex-direction: column;
+    justify-content: flex-start;
     margin-bottom: 15px;
+    padding-inline: 11px;
+    grid-area: list;
   }
   #searcher-container {
     display: flex;
-    width: 300px;
+    width: 100%;
+  }
+  #content-container {
+    display: flex;
+    flex-direction: column;
+    padding-inline: 15px;
+    padding-bottom: 11px;
+    grid-area: content;
+    overflow: auto;
+  }
+  #content-title {
+    color: var(--main-color-blue);
+  }
+  #card-container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    background: white;
+    box-shadow: 0 2px 8px rgba(var(--black), 21%);
+    border-radius: 11px;
+    overflow: auto;
+  }
+  #table-head {
+    position: sticky;
+    top: 0;
+    z-index: 9999;
+    --mdb-table-bg: var(--main-color-blue);
+    --mdb-table-color: white;
+    /* background: blue; */
+  }
+  .table {
+    --mdb-table-color: var(--main-color-blue) !important;
   }
 </style>
 <script>

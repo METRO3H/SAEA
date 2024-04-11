@@ -13,7 +13,7 @@ export default async function get_quiz_all() {
         FROM test 
         JOIN subject ON subject.id = test.subject_id 
         WHERE test.created_by = ? 
-        ORDER BY test.creation_date DESC;
+        ORDER BY test.creation_date DESC LIMIT 11;
         `);
 
       try {
