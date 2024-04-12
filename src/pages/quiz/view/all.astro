@@ -18,7 +18,7 @@ const SERVER_URL = import.meta.env.SERVER_URL;
       <div id="content-container">
         <h4 id="content-title">Plantillas de cuestionarios</h4>
         <div id="card-container">
-          <Quiz_Table_List SERVER_URL={SERVER_URL} client:load/>
+          <Quiz_Table_List SERVER_URL={SERVER_URL} client:load />
         </div>
       </div>
     </div>
@@ -45,7 +45,7 @@ const SERVER_URL = import.meta.env.SERVER_URL;
     flex-direction: column;
     justify-content: flex-start;
     margin-bottom: 15px;
-    padding-inline: 11px;
+    
     grid-area: list;
   }
   #searcher-container {
@@ -71,17 +71,7 @@ const SERVER_URL = import.meta.env.SERVER_URL;
     box-shadow: 0 2px 8px rgba(var(--black), 21%);
     border-radius: 11px;
     overflow: auto;
+    height: 100%;
   }
 </style>
-<script>
-  const checkbox_containers = document.querySelectorAll(".checkbox-item");
-  checkbox_containers.forEach((container) => {
-    const checkbox = container.querySelector(".form-check-input") as HTMLInputElement;
 
-    container.addEventListener("click", (event) => {
-      if (!checkbox.contains(event.target as Node)) {
-        checkbox.checked = !checkbox.checked;
-      }
-    });
-  });
-</script>

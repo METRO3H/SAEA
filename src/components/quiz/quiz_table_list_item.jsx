@@ -1,10 +1,27 @@
 import "@styles/quiz_table_list_item.css";
+import { useState } from "react";
 export default function quiz_table_list_item({ title, subject, creation_date }) {
+  const [is_checked, set_is_checked] = useState(false);
+
+  function Handle_Checkbox_Click() {
+    set_is_checked(!is_checked);
+  }
+  const Handle_Checkbox_Direct_Click = (event) => {
+    // Detener la propagación del evento para evitar que llegue al contenedor padre
+    event.stopPropagation();
+  };
+
   return (
     <tr>
-      <th className="checkbox-item" scope="row">
+      <th className="checkbox-item" scope="row" onClick={Handle_Checkbox_Click}>
         <div className="form-check">
-          <input className="form-check-input" type="checkbox" value="" id="flexCheckDefault" />
+          <input
+            className="form-check-input"
+            type="checkbox"
+            checked={is_checked}
+            id="flexCheckDefault"
+            onChange={Handle_Checkbox_Direct_Click}
+          />
         </div>
       </th>
       <td>

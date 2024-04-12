@@ -21,7 +21,7 @@ export default function quiz_table_list({ SERVER_URL }) {
     search_input.addEventListener("input", Filter_Data);
 
     return () => {
-      document.removeEventListener("update_questions_metadata", get_specification_data);
+      document.removeEventListener("input", Filter_Data);
     };
   }, []);
 
