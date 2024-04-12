@@ -24,22 +24,22 @@ export default function quiz_table_list_item({ title, subject, creation_date }) 
           />
         </div>
       </th>
-      <td>
+      <td onDoubleClick={Handle_Checkbox_Click}>
         <div className="d-flex align-items-center">
           <div>
             <p className="mb-1">{title}</p>
           </div>
         </div>
       </td>
-      <td>
+      <td onDoubleClick={Handle_Checkbox_Click}>
         <div className="align-items-center text-center mb-1">{subject}</div>
       </td>
-      <td className="status">
+      <td className="status" onClick={Handle_Checkbox_Click}>
         <div className="mb-1">
           <span className="badge badge-success rounded-pill d-inline text-center">Active</span>
         </div>
       </td>
-      <td>
+      <td onDoubleClick={Handle_Checkbox_Click}>
         <div className="creation_date_item align-items-center text-center mb-1">
           {creation_date}
         </div>

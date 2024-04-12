@@ -8,12 +8,10 @@ export default function quiz_table_list({ SERVER_URL }) {
   async function Fetch_Data() {
     const response = await fetch(`${SERVER_URL}/request/get/quiz/all`);
     const data = await response.json();
-    console.log(data);
     set_data_list(data);
   }
   function Filter_Data(event) {
-    console.log(event.target.value);
-    set_input_value(event.target.value.toLowerCase())
+    set_input_value(event.target.value.toLowerCase());
   }
   useEffect(() => {
     Fetch_Data();
