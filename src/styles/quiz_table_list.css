@@ -1,0 +1,15 @@
+#table-head {
+    position: sticky;
+    top: 0;
+    z-index: 9999;
+    --mdb-table-bg: var(--main-color-blue);
+    --mdb-table-color: white;
+    /* background: blue; */
+  }
+  .table {
+    padding-inline: 15px;
+    border-radius: 11px;
+    --mdb-table-color: var(--main-color-blue) !important;
+    --mdb-table-hover-bg: #0000000d;
+    --mdb-table-hover-color: var(--main-color-blue);
+  }

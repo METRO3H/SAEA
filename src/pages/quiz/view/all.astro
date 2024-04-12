@@ -1,11 +1,8 @@
 ---
 import Document from "@layouts/document.astro";
 import Search_Input from "@components/search_input.astro";
-import Quiz_List_Item from "@components/quiz/quiz_list_item.jsx";
+import Quiz_Table_List from "@components/quiz/quiz_table_list.jsx";
 const SERVER_URL = import.meta.env.SERVER_URL;
-
-const response = await fetch(`${SERVER_URL}/request/get/quiz/all`);
-const data = await response.json();
 ---
 
 <Document title="Cuestionarios" description="Lista de cuestionarios">
@@ -21,30 +18,7 @@ const data = await response.json();
       <div id="content-container">
         <h4 id="content-title">Plantillas de cuestionarios</h4>
         <div id="card-container">
-          <table class="table table-sm table-hover align-middle mb-0 bg-white">
-            <thead id="table-head">
-              <tr>
-                <th class="text-center fw-bold">#</th>
-                <th class="fw-bold">Titulo</th>
-                <th class="text-center fw-bold">Asignatura</th>
-                <th class="text-center fw-bold">Estado</th>
-                <th class="text-center fw-bold">Fecha</th>
-                <th class="text-center fw-bold">Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              {
-                data.map((item) => (
-                  <Quiz_List_Item
-                    title={item.test_title}
-                    subject={item.subject}
-                    creation_date={item.creation_date}
-                    client:visible
-                  />
-                ))
-              }
-            </tbody>
-          </table>
+          <Quiz_Table_List SERVER_URL={SERVER_URL} client:load/>
         </div>
       </div>
     </div>
@@ -97,21 +71,6 @@ const data = await response.json();
     box-shadow: 0 2px 8px rgba(var(--black), 21%);
     border-radius: 11px;
     overflow: auto;
-  }
-  #table-head {
-    position: sticky;
-    top: 0;
-    z-index: 9999;
-    --mdb-table-bg: var(--main-color-blue);
-    --mdb-table-color: white;
-    /* background: blue; */
-  }
-  .table {
-    padding-inline: 15px;
-    border-radius: 11px;
-    --mdb-table-color: var(--main-color-blue) !important;
-    --mdb-table-hover-bg: #0000000d;
-    --mdb-table-hover-color: var(--main-color-blue);
   }
 </style>
 <script>

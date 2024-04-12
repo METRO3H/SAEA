@@ -1,5 +1,5 @@
-import "@styles/quiz_list_item.css";
-export default function quiz_list_item({ title, subject, creation_date }) {
+import "@styles/quiz_table_list_item.css";
+export default function quiz_table_list_item({ title, subject, creation_date }) {
   return (
     <tr>
       <th className="checkbox-item" scope="row">
