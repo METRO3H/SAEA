@@ -14,6 +14,8 @@ function Special_Input_Text({
   fix_label_position = "0px",
   input_background = "transparent",
 }) {
+
+  console.log(fix_label_position);
   const input_style = {
     width: input_width,
     height: input_height,

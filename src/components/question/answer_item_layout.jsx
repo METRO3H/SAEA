@@ -45,7 +45,7 @@ function CheckboxGenerator() {
   }, []);
   return (
     <div className="answer-items-section" ref={answerItemsSectionRef}>
-      <StrictMode>
+
         {answers_items.map((item, index) => (
           <Item_Answer
             key={item.key}
@@ -56,7 +56,6 @@ function CheckboxGenerator() {
             add_class={show_answer_items.includes(item.key) ? "show-answer-item" : ""} // Comprueba si la clave está en el array
           />
         ))}
-      </StrictMode>
 
       <button
         type="button"

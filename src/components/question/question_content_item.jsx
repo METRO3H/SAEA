@@ -40,11 +40,11 @@ function Question_Content_Item({
             label_class="fw-bold"
             bar_thickness="1px"
             input_width="95%"
-            input_font_size="22px"
+            input_font_size="25px"
             input_focus_color="var(--main-color-google-form)"
             input_class="fw-bold"
             input_icon_class="fas fa-circle-question trailing"
-            fix_label_position="15px"
+            fix_label_position="5px"
           />
           <i className="fas fa-pencil"></i>
         </div>

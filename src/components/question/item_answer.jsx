@@ -20,6 +20,7 @@ function Item_Answer({
         input_width="300px"
         input_font_size="18px"
         input_class="answer-input-text"
+        
         /* input_focus_color="var(--main-color-blue)" */
       />
       <button

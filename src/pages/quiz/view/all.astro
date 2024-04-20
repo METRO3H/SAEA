@@ -12,7 +12,23 @@ const SERVER_URL = import.meta.env.SERVER_URL;
         <div id="searcher-container" class="input-group rounded">
           <Search_Input />
         </div>
-        <div id="filter"></div>
+        <div id="filter-options">
+          Cuestionarios
+          <ul id="quiz-type-options">
+            <li class="quiz-type-options-item-active">
+              <span>Todos</span>
+              <span>15</span>
+            </li>
+            <li>
+              <span>Plantillas</span>
+              <span>15</span>
+            </li>
+            <li>
+              <span>Realizados</span>
+              <span>15</span>
+            </li>
+          </ul>
+        </div>
       </div>
 
       <div id="content-container">
@@ -44,7 +60,7 @@ const SERVER_URL = import.meta.env.SERVER_URL;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
-    margin-bottom: 15px;
+    gap: 15px;
 
     grid-area: list;
   }
@@ -52,6 +68,29 @@ const SERVER_URL = import.meta.env.SERVER_URL;
     display: flex;
     width: 100%;
   }
+  #quiz-type-options {
+    list-style-type: none;
+
+    padding-left: 5px;
+  }
+  #quiz-type-options > li {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    cursor: pointer;
+    padding-inline: 11px;
+    font-size: 19px;
+    transition: all 150ms linear;
+    opacity: 60%;
+  }
+
+  .quiz-type-options-item-active {
+    background: white;
+    border-radius: 11px;
+    box-shadow: 0 2px 8px rgba(var(--black), 21%);
+    opacity: 100%!important;
+  }
+
   #content-container {
     display: flex;
     flex-direction: column;
@@ -74,3 +113,21 @@ const SERVER_URL = import.meta.env.SERVER_URL;
     height: 100%;
   }
 </style>
+
+<script>
+  // Obtener todos los botones
+  const buttons = document.querySelectorAll("#quiz-type-options li");
+
+  // Agregar un event listener a cada botón
+  buttons.forEach((button) => {
+    button.addEventListener("click", () => {
+      console.log("bob");
+      buttons.forEach((btn) => {
+        btn.classList.remove("quiz-type-options-item-active");
+      });
+
+      // Agregar la clase 'active' solo al botón clickeado
+      button.classList.add("quiz-type-options-item-active");
+    });
+  });
+</script>
