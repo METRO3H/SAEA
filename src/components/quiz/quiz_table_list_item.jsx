@@ -46,10 +46,10 @@ export default function quiz_table_list_item({ title, subject, creation_date }) 
       </td>
       <td>
         <div className="actions-container">
-          <button type="button" className="btn btn-primary btn-floating" data-mdb-ripple-init>
+          <button type="button" className="btn btn-primary btn-floating edit-button" data-mdb-ripple-init>
             <i className="far fa-pen-to-square"></i>
           </button>
-          <button type="button" className="btn btn-danger btn-floating" data-mdb-ripple-init>
+          <button type="button" className="btn btn-danger btn-floating remove-button" data-mdb-ripple-init>
             <i className="fas fa-trash"></i>
           </button>
         </div>

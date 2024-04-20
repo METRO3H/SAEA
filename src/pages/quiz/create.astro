@@ -155,19 +155,17 @@ import Modal from "@components/modal.astro";
   }
 </style>
 <script>
-  import { test_1 } from "@content/test.ts";
-  document.addEventListener("DOMContentLoaded", test_1);
+  import { fill_data_table, Fill_Questions } from "@content/Test/create_quiz/fill_dom";
+  document.addEventListener("DOMContentLoaded", fill_data_table);
 
   const button_next_part = document.querySelector("#button-next-part");
-  button_next_part?.addEventListener("click", () => setTimeout(test_1, 50));
+  button_next_part?.addEventListener("click", () => setTimeout(Fill_Questions, 50));
 </script>
 
 <script>
   import { quiz_data } from "@content/quiz_data.ts";
 
-  var update_questions_metadata = new CustomEvent("update_questions_metadata", {
-    detail: { miDato: "valor" },
-  });
+  var update_questions_metadata = new CustomEvent("update_questions_metadata");
 
   const button_next_part = document.querySelector("#button-next-part");
   button_next_part?.addEventListener("click", Update_Specification_Data);

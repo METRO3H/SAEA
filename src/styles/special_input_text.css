@@ -2,7 +2,6 @@
   position: relative;
   padding-top: 5px;
   min-width: fit-content;
-  
 }
 
 .input-container > input {
@@ -19,8 +18,10 @@
   padding-top: 7px;
   border-radius: 11px;
 }
-.input-container > input:focus {
+.input-container > input:focus,
+.input-container > input:valid {
   outline: none;
+  border-bottom-color: transparent !important;
 }
 
 .input-container > label {
@@ -40,7 +41,7 @@
 
   font-size: calc(var(--input-font-size, 16px) - 3px);
   color: var(--input-no-focus-color, #bdbdbd);
-  background: white;
+  background: transparent;
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow-x: hidden;

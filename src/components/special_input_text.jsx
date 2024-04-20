@@ -27,7 +27,7 @@ function Special_Input_Text({
   };
   return (
     <div className="input-container" style={input_style}>
-      <input required type="text" className={`input ${input_class}`} autoComplete="no" />
+      <input required type="text" className={`${input_class}`} autoComplete="no" />
       <span className="highlight"></span>
       <span className="bar"></span>
       <label className={label_class}>
