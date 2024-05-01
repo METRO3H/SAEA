@@ -1,7 +1,9 @@
 import sqlite3 from "sqlite3";
 import path from "path";
 import moment from "moment";
+import { randomUUID } from "crypto";
 import Query from "../querys/Query.js";
+
 /* import { data } from "../data_test.js"; */
 
 sqlite3.verbose();
@@ -15,6 +17,7 @@ export async function Save_Form(data_form) {
     objetive_id: {},
     skills_id: {},
   };
+  const UNIQUE_ID = randomUUID()
   const title = data_form.title;
   const created_by = data_form.created_by;
   const subject = data_form.specifications_table.subject;
@@ -35,7 +38,7 @@ export async function Save_Form(data_form) {
           await Run_Query(sql.Insert.subject, [subject, created_by, date_time]);
           const subject_id = (await Get_Query(sql.Get.subject_id, [subject, created_by])).id;
 
-          await Run_Query(sql.Insert.test, [title, subject_id, created_by, date_time]);
+          await Run_Query(sql.Insert.test, [UNIQUE_ID, title, subject_id, created_by, date_time]);
           const test_id = (await Get_Query(sql.Get.test_id, [title, created_by, date_time])).id;
 
           skills.forEach(async (skill) => {

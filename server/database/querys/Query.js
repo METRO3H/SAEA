@@ -8,8 +8,8 @@ export default class Query {
   prepare(db) {
     this.Insert = {
       test: db.prepare(/*sql*/ `
-        INSERT OR IGNORE INTO test (title, subject_id, created_by, creation_date) 
-        VALUES (?, ?, ?, ?);
+        INSERT OR IGNORE INTO test (unique_id, title, subject_id, created_by, creation_date) 
+        VALUES (?, ?, ?, ?, ?);
         `),
       subject: db.prepare(this.Frequent_Insertion("subject")),
       question: db.prepare(this.Frequent_Insertion("question")),

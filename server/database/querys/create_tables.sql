@@ -7,6 +7,7 @@ CREATE TABLE teacher (
 INSERT INTO teacher (name) VALUES ("Bob");
 CREATE TABLE test (
 	"id"	INTEGER NOT NULL UNIQUE,
+	"unique_id" TEXT NOT NULL UNIQUE,
 	"title"	TEXT NOT NULL,
 	"subject_id" INTEGER NOT NULL,
 	"created_by" INTEGER NOT NULL,
