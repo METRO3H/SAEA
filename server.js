@@ -23,7 +23,7 @@ app.listen(8080, () => {
   console.log(
     chalk.bgGreen.hex("#ffffff")("\n Server "),
     chalk.whiteBright("Listening on"),
-    chalk.blueBright("http://localhost:8080...")
+    chalk.blueBright("http://localhost:8080/")
   );
   Report_Status("divider")
 });

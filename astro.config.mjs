@@ -12,5 +12,19 @@ export default defineConfig({
   output: "server",
   adapter: node({
     mode: "middleware"
-  })
+  }),
+  
+  vite:{
+    server:{
+      proxy:{
+        "/request":{
+          target: "http://localhost:8080",
+          changeOrigin: true,
+          secure: false,
+        }
+      }
+    }
+  }
+
+
 });
