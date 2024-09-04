@@ -1,10 +1,14 @@
 ---
-const { modal_id } = Astro.props;
+import GoogleFormBtn from "@components/google_form_btn.astro";
+import Google_Icon from "@assets/svg/google-icon.svg";
+import { Image } from "astro:assets";
+// const { modal_id } = Astro.props;
+import "../styles/bootstrap.scss";
 ---
 
 <div
   class="modal fade"
-  id={modal_id}
+  id="staticBackdrop"
   data-mdb-backdrop="static"
   data-mdb-keyboard="false"
   tabindex="-1"
@@ -33,13 +37,13 @@ const { modal_id } = Astro.props;
         >
         <a
           role="button"
-          class="btn btn-primary btn-link-form btn-lg text-white"
+          class="btn btn-link-form btn-lg text-white"
           data-mdb-ripple-init
           target="_blank"
           title="Quiz URL"
           aria-disabled="true"
         >
-          <i class="fab fa-google me-2 fa-2x"></i>
+          <Image src={Google_Icon} alt="Google icon" />
           <span> Link del formulario</span>
         </a>
       </div>
@@ -48,15 +52,23 @@ const { modal_id } = Astro.props;
 </div>
 
 <script>
-  /*   const myModalEl = document.querySelector(".modal");
-  console.log(myModalEl);
-  myModalEl.addEventListener("show.mdb.modal", (e) => {
-    console.log("XD");
-  }); */
+  import Modal from "bootstrap/js/dist/modal";
+  const myModalEl = document.querySelector("#staticBackdrop");
+//https://stackoverflow.com/questions/65493353/how-to-disposedestroy-bootstrap-5-modal
+  const modal_instance = new Modal("#staticBackdrop");
+
+  myModalEl?.addEventListener("hidden.bs.modal", (event) => {
+    console.log(modal_instance)
+    modal_instance.dispose()
+    console.log(modal_instance)
+
+  });
+
 </script>
 <style>
   .fade {
     transition: opacity 300ms linear;
+    backdrop-filter: blur(2.5px);
   }
   .modal-dialog-centered {
     justify-content: center;
@@ -74,6 +86,7 @@ const { modal_id } = Astro.props;
     row-gap: 30px;
     align-items: center;
     background: transparent;
+
     box-shadow: none !important;
   }
   .modal-content-gap {
@@ -84,27 +97,32 @@ const { modal_id } = Astro.props;
     /* height: 0; */
     padding-bottom: 0;
     overflow: hidden;
-    transition: all 500ms ease;
+    transition: all 500ms ease-in;
   }
 
   .btn-link-form {
     display: flex;
     align-items: center;
-    transition: all 500ms ease;
+    background: var(--main-color-google-form);
+    transition: all 500ms ease-in;
     height: 0;
     padding: 0;
     width: 0;
     overflow: hidden;
+    gap: 6px;
   }
   .btn-link-form ~ span {
     font-size: larger;
+  }
+  .btn-link-form > img {
+    width: 25px;
   }
   .btn-close-modal {
     display: flex;
     align-items: center;
     height: 0px;
     overflow: hidden;
-    transition: all 500ms ease;
+    transition: all 500ms ease-in;
     padding-top: 0;
     padding-bottom: 0;
   }
@@ -138,6 +156,8 @@ const { modal_id } = Astro.props;
 
     100% {
       opacity: 1;
+      text-shadow: 0px 0px 26px darkblue;
+      transform: scale(104%, 104%);
     }
   }
   .lds-dual-ring:after {
@@ -180,7 +200,7 @@ const { modal_id } = Astro.props;
     }
   }
   .modal-backdrop.show {
-    opacity: 88%;
+    opacity: 58%;
   }
   .check-mark {
     display: none;

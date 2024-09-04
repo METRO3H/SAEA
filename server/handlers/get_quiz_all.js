@@ -1,6 +1,6 @@
 import sqlite3 from "sqlite3";
 import path from "path";
-import Report_Status from "../../../util/report_status.js";
+import Report_Status from "../../util/report_status.js";
 export default async function get_quiz_all() {
   return new Promise((resolve, reject) => {
     const data_base_path = path.join(process.cwd(), "server", "database", "database.db");

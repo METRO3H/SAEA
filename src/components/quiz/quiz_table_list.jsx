@@ -2,11 +2,11 @@ import "@styles/quiz_table_list.css";
 import { useEffect, useState } from "react";
 import Quiz_Table_List_Item from "./quiz_table_list_item";
 
-export default function quiz_table_list({ SERVER_URL }) {
+export default function quiz_table_list() {
   const [data_list, set_data_list] = useState([]);
   const [input_value, set_input_value] = useState("");
   async function Fetch_Data() {
-    const response = await fetch(`${SERVER_URL}/request/get/quiz/all`);
+    const response = await fetch("/request/get/quiz/all");
     const data = await response.json();
     set_data_list(data);
   }

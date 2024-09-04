@@ -2,7 +2,7 @@ import sqlite3 from "sqlite3";
 import path from "path";
 import moment from "moment";
 import { randomUUID } from "crypto";
-import Query from "../querys/Query.js";
+import Query from "../database/querys/Query.js";
 
 /* import { data } from "../data_test.js"; */
 
@@ -17,7 +17,7 @@ export async function Save_Form(data_form) {
     objetive_id: {},
     skills_id: {},
   };
-  const UNIQUE_ID = randomUUID()
+  const UNIQUE_ID = randomUUID();
   const title = data_form.title;
   const created_by = data_form.created_by;
   const subject = data_form.specifications_table.subject;
@@ -130,20 +130,20 @@ export async function Save_Form(data_form) {
           db.run("COMMIT");
           sql.Finalize();
           db.close();
-          resolve("Form guardado en la base de datos con éxito!!");
+          resolve({ status: true, message: "Form guardado en la base de datos con éxito!!" });
         } catch (error) {
           console.error(error);
           db.run("ROLLBACK");
           sql.Finalize();
           db.close();
-          reject("Error al guardar form en la base de datos!!");
+          reject({ status: false, message: "Error al guardar form en la base de datos!!" });
         }
       });
     });
   } catch (error) {
     db.close();
     console.error(error);
-    return "Error al guardar form en la base de datos!!";
+    return { status: false, message: "Error al guardar form en la base de datos!!" };
   }
 }
 

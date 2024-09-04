@@ -6,6 +6,7 @@ import Document from "@layouts/document.astro";
 import Specifications from "@layouts/specifications.astro";
 import Questions_Data from "@components/question/questions_data.jsx";
 import Modal from "@components/modal.astro";
+import GoogleFormBtn from "@components/google_form_btn.astro";
 ---
 
 <Document title="Crear Quiz" description="Crear Quiz">
@@ -30,25 +31,14 @@ import Modal from "@components/modal.astro";
                 <span> Guardar</span>
               </button>
 
-              <button
-                type="button"
-                id="button-generate-google-form"
-                class="btn btn-lg btn-rounded"
-                data-mdb-ripple-init
-                data-mdb-modal-init
-                data-mdb-target="#staticBackdrop"
-                disabled
-              >
-                <Image src={Google_Icon} alt="Google icon" />
-                <span>GENERAR FORMULARIO</span>
-              </button>
+              <GoogleFormBtn/>
             </div>
           </div>
         </div>
       </div>
     </div>
 
-    <Modal modal_id="staticBackdrop" />
+    <Modal />
   </div>
 </Document>
 
@@ -137,16 +127,6 @@ import Modal from "@components/modal.astro";
   #button-save-data-form > i {
     padding-bottom: 2.2px;
   }
-  #button-generate-google-form {
-    display: flex;
-    justify-content: center;
-    gap: 4px;
-    background: var(--main-color-google-form);
-    color: white;
-  }
-  #button-generate-google-form > img {
-    width: 20px;
-  }
 
   @media (max-width: 805px) {
     #question-card-container {
@@ -169,7 +149,6 @@ import Modal from "@components/modal.astro";
 
   const button_next_part = document.querySelector("#button-next-part");
   button_next_part?.addEventListener("click", Update_Specification_Data);
-
   const button_save_form = document.querySelector("#button-save-data-form") as HTMLInputElement;
   const button_generate_google_form = document.querySelector(
     "#button-generate-google-form"
@@ -298,11 +277,28 @@ import Modal from "@components/modal.astro";
     Move_Container("-50%");
   }
   function Save_Form() {
-    // button_generate_google_form?.removeAttribute("disabled");
-    // button_save_form.setAttribute("disabled", "");
+    button_generate_google_form?.removeAttribute("disabled");
+    button_save_form.setAttribute("disabled", "");
     console.log(quiz_data);
 
-    fetch("/request/save_form", {
+    fetch("/request/quiz/save", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify(quiz_data),
+    })
+      .then(async (response) => {
+        if (!response.ok) {
+          const errorResponse = await response.json();
+          throw errorResponse || "Error en la solicitud";
+        }
+        return response.json();
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }
+  function Generate_Google_Form() {
+    fetch("/request/quiz/generate", {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify(quiz_data),
@@ -322,7 +318,6 @@ import Modal from "@components/modal.astro";
         End_Animation(error, true);
       });
   }
-  function Generate_Google_Form() {}
 
   function Update_Questions_Data() {
     const questions = document.querySelectorAll(
@@ -364,6 +359,7 @@ import Modal from "@components/modal.astro";
   }
 
   function End_Animation(response, is_error) {
+    console.log(response);
     (document.querySelector(".check-mark") as HTMLDivElement).style.display = "block";
 
     document.documentElement.style.setProperty("--cicleFlow", "forwards");
@@ -375,11 +371,11 @@ import Modal from "@components/modal.astro";
 
     const modal_message_container = document.querySelector(
       "#modal-message-container"
-    ) as HTMLElement;
+    ) as HTMLDivElement;
 
-    modal_message_container.innerHTML = `
-            <h3 id="modal-message-text"> ${response.message} </h3>
-          `;
+    const modal_message_text = (document.querySelector("#modal-message-text") as HTMLDivElement)
+    modal_message_text.textContent = response.message
+
 
     const btn_close_modal = document.querySelector(".btn-close-modal") as HTMLElement;
 
@@ -389,17 +385,17 @@ import Modal from "@components/modal.astro";
     btn_close_modal.style.paddingTop = "var(--mdb-btn-padding-top)";
     btn_close_modal.style.paddingBottom = "var(--mdb-btn-padding-bottom)";
 
-    if (!is_error) {
-      const btn_link_form = document.querySelector(".btn-link-form") as HTMLLinkElement;
-      btn_link_form.href = response.URL;
-      btn_link_form.style.height = "51px";
-      btn_link_form.style.width = "auto";
-      btn_link_form.style.paddingTop = "var(--mdb-btn-padding-top)";
-      btn_link_form.style.paddingBottom = "var(--mdb-btn-padding-bottom)";
-      btn_link_form.style.paddingLeft = "var(--mdb-btn-padding-x)";
-      btn_link_form.style.paddingRight = "var(--mdb-btn-padding-x)";
-      return;
-    }
+    if (is_error) return
+
+    const btn_link_form = document.querySelector(".btn-link-form") as HTMLLinkElement;
+    btn_link_form.href = response.data;
+    btn_link_form.style.height = "51px";
+    btn_link_form.style.width = "auto";
+    btn_link_form.style.paddingTop = "var(--mdb-btn-padding-top)";
+    btn_link_form.style.paddingBottom = "var(--mdb-btn-padding-bottom)";
+    btn_link_form.style.paddingLeft = "var(--mdb-btn-padding-x)";
+    btn_link_form.style.paddingRight = "var(--mdb-btn-padding-x)";
+
 
     return;
   }

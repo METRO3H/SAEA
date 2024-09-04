@@ -4,18 +4,21 @@ import google from "@googleapis/forms";
 import { authenticate } from "@google-cloud/local-auth";
 
 export default async function (data_form) {
-  console.log("\nGenerando Form...\n");
-  const access_form_response = await User_Authentication();
-  const create_form_response = await Create_Form(access_form_response, data_form.title);
+  try {
+    const access_form_response = await User_Authentication();
+    const create_form_response = await Create_Form(access_form_response, data_form.title);
+    await Fill_Form(access_form_response, create_form_response, data_form);
 
-  await Fill_Form(access_form_response, create_form_response, data_form);
+    const quiz_URL = create_form_response.data.responderUri;
 
-  const form_URL = create_form_response.data.responderUri;
+    return { status: true, message: "Quiz generado con éxito!", data: quiz_URL };
 
-  console.log("\nForm generado con éxito!!");
-  console.log(`\nURL : ${form_URL}`);
-
-  return form_URL;
+  } catch (error) {
+    return {
+      status: false,
+      message: error,
+    };
+  }
 }
 
 async function User_Authentication() {
@@ -68,7 +71,7 @@ async function Create_Form(form_access, form_title) {
 }
 
 async function Fill_Form(access_form_response, create_form_response, data_form) {
-  const questions = data_form.questions;
+  const questions = data_form.questions.content;
   for (let i = 0; i < questions.length; i++) {
     const answers = [];
     const correct_answers = [];

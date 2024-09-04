@@ -7,7 +7,7 @@ export default function Report_Status(status, message) {
       break;
 
     case "success":
-      console.log(chalk.greenBright(`[Status]`, message));
+      console.log(chalk.greenBright(`[Status]`, chalk.whiteBright(message)));
       break;
 
     case "error":
