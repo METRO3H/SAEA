@@ -130,7 +130,7 @@ export async function Save_Form(data_form) {
           db.run("COMMIT");
           sql.Finalize();
           db.close();
-          resolve({ status: true, message: "Form guardado en la base de datos con éxito!!" });
+          resolve({ status: true, message: "Form guardado en la base de datos con éxito!!", data: UNIQUE_ID });
         } catch (error) {
           console.error(error);
           db.run("ROLLBACK");

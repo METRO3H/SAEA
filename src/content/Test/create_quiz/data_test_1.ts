@@ -1,5 +1,7 @@
+
+
 export const data_test_1 = {
-  quiz_title: "Test 1",
+  quiz_title: "Test "+ (Math.floor(Math.random() * (1000 - 2 + 1)) + 2),
   quiz_subject: "Matemáticas",
   quiz_total_questions: "15",
   quiz_skills: ["Comprensión", "Aplicación", "Evaluación"],

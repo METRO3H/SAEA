@@ -1,15 +1,23 @@
 import "@styles/quiz_table_list_item.css";
-import { useState } from "react";
-export default function quiz_table_list_item({ title, subject, creation_date }) {
+import { useEffect, useState } from "react";
+export default function quiz_table_list_item({ title, subject, form_url, creation_date }) {
   const [is_checked, set_is_checked] = useState(false);
 
   function Handle_Checkbox_Click() {
     set_is_checked(!is_checked);
   }
-  const Handle_Checkbox_Direct_Click = (event) => {
+  function Handle_Checkbox_Direct_Click(event){
     // Detener la propagación del evento para evitar que llegue al contenedor padre
     event.stopPropagation();
   };
+
+  function Handle_Link_button(){
+    let btn_class = "btn btn-primary btn-floating edit-button"
+    if(!form_url) btn_class = btn_class + " disabled"
+
+    return btn_class
+  }
+  
 
   return (
     <tr>
@@ -46,10 +54,18 @@ export default function quiz_table_list_item({ title, subject, creation_date }) 
       </td>
       <td>
         <div className="actions-container">
-          <button type="button" className="btn btn-primary btn-floating edit-button" data-mdb-ripple-init>
+          <a
+            href={form_url}
+            target="_blank"
+            className={Handle_Link_button()}
+            tabIndex={-1}
+            role="button"
+            aria-disabled="true"
+
+          >
             <i className="far fa-pen-to-square"></i>
-          </button>
-          <button type="button" className="btn btn-danger btn-floating remove-button" data-mdb-ripple-init>
+          </a>
+          <button type="button" className="btn btn-danger btn-floating remove-button" disabled>
             <i className="fas fa-trash"></i>
           </button>
         </div>

@@ -150,15 +150,16 @@ CREATE TABLE student (
 
 CREATE TABLE test_performed (
 	"id"	INTEGER NOT NULL UNIQUE,
-	"test_id"	INTEGER NOT NULL,
-	"generation_id" INTEGER NOT NULL,
+	"test_id"	INTEGER DEFAULT NULL,
+	-- "generation_id" INTEGER NULL,
 	"form_id" TEXT NOT NULL,
+	"form_url" TEXT NOT NULL,
 	"date" DATETIME NOT NULL,
 	
 	FOREIGN KEY (test_id) REFERENCES test(id),
-	FOREIGN KEY (generation_id) REFERENCES generation(id),
+	-- FOREIGN KEY (generation_id) REFERENCES generation(id),
 	PRIMARY KEY("id" AUTOINCREMENT)
-); 
+);
 
 CREATE TABLE test_result (
 	"id"	INTEGER NOT NULL UNIQUE,

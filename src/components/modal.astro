@@ -3,7 +3,7 @@ import GoogleFormBtn from "@components/google_form_btn.astro";
 import Google_Icon from "@assets/svg/google-icon.svg";
 import { Image } from "astro:assets";
 // const { modal_id } = Astro.props;
-import "../styles/bootstrap.scss";
+// import "../styles/bootstrap.scss";
 ---
 
 <div
@@ -52,17 +52,17 @@ import "../styles/bootstrap.scss";
 </div>
 
 <script>
-  import Modal from "bootstrap/js/dist/modal";
-  const myModalEl = document.querySelector("#staticBackdrop");
-//https://stackoverflow.com/questions/65493353/how-to-disposedestroy-bootstrap-5-modal
-  const modal_instance = new Modal("#staticBackdrop");
+//   import Modal from "bootstrap/js/dist/modal";
+//   const myModalEl = document.querySelector("#staticBackdrop");
+// //https://stackoverflow.com/questions/65493353/how-to-disposedestroy-bootstrap-5-modal
+//   const modal_instance = new Modal("#staticBackdrop");
 
-  myModalEl?.addEventListener("hidden.bs.modal", (event) => {
-    console.log(modal_instance)
-    modal_instance.dispose()
-    console.log(modal_instance)
+//   myModalEl?.addEventListener("hidden.bs.modal", (event) => {
+//     console.log(modal_instance)
+//     modal_instance.dispose()
+//     console.log(modal_instance)
 
-  });
+//   });
 
 </script>
 <style>

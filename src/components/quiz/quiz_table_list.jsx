@@ -45,6 +45,7 @@ export default function quiz_table_list() {
               key={item.test_id}
               title={item.test_title}
               subject={item.subject}
+              form_url={item.form_url}
               creation_date={item.creation_date}
             />
           ))}

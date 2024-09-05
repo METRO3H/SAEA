@@ -9,13 +9,14 @@ export default async function get_quiz_all() {
     const user_id = 1;
     db.serialize(async () => {
       const get_all_test = db.prepare(/*sql*/ `
-        SELECT test.id AS "test_id", test.title AS "test_title", subject.text AS "subject", test.creation_date AS "creation_date"
+        SELECT 
+        test.id AS "test_id", test.title AS "test_title", subject.text AS "subject", test.creation_date AS "creation_date", test_performed.form_id, test_performed.form_url
         FROM test 
-        JOIN subject ON subject.id = test.subject_id 
+        JOIN subject ON subject.id = test.subject_id
+        LEFT JOIN test_performed ON test_id = test.unique_id 
         WHERE test.created_by = ? 
         ORDER BY test.creation_date DESC;
         `);
-
       try {
         const data = await Get_All_Query(get_all_test, [user_id]);
         get_all_test.finalize();

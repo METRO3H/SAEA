@@ -293,15 +293,20 @@ import GoogleFormBtn from "@components/google_form_btn.astro";
         }
         return response.json();
       })
+      .then((response)=>{
+        localStorage.setItem("test_id", response.data)
+      })
       .catch((error) => {
         console.error(error);
       });
   }
   function Generate_Google_Form() {
+    const test_id = localStorage.getItem("test_id")
+
     fetch("/request/quiz/generate", {
       method: "POST",
       headers: { "content-type": "application/json" },
-      body: JSON.stringify(quiz_data),
+      body: JSON.stringify({quiz_data: quiz_data, test_id: test_id}),
     })
       .then(async (response) => {
         if (!response.ok) {
