@@ -15,17 +15,13 @@ import Quiz_Table_List from "@components/quiz/quiz_table_list.jsx";
         <div id="filter-options">
           Cuestionarios
           <ul id="quiz-type-options">
-            <li class="quiz-type-options-item-active">
-              <span>Todos</span>
-              <span>15</span>
-            </li>
-            <li>
+            <li class="quiz-type-options-item-active" id="templates">
               <span>Plantillas</span>
-              <span>15</span>
+              <span class="type-counter">-</span>
             </li>
-            <li>
+            <li id="perform">
               <span>Realizados</span>
-              <span>15</span>
+              <span class="type-counter">-</span>
             </li>
           </ul>
         </div>
@@ -121,7 +117,6 @@ import Quiz_Table_List from "@components/quiz/quiz_table_list.jsx";
   // Agregar un event listener a cada botón
   buttons.forEach((button) => {
     button.addEventListener("click", () => {
-      console.log("bob");
       buttons.forEach((btn) => {
         btn.classList.remove("quiz-type-options-item-active");
       });

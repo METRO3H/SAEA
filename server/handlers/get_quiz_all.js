@@ -9,13 +9,14 @@ export default async function get_quiz_all() {
     const user_id = 1;
     db.serialize(async () => {
       const get_all_test = db.prepare(/*sql*/ `
-        SELECT 
-        test.id AS "test_id", test.title AS "test_title", subject.text AS "subject", test.creation_date AS "creation_date", test_performed.form_id, test_performed.form_url
-        FROM test 
-        JOIN subject ON subject.id = test.subject_id
-        LEFT JOIN test_performed ON test_id = test.unique_id 
-        WHERE test.created_by = ? 
-        ORDER BY test.creation_date DESC;
+    SELECT 
+        test.id, test.unique_id,test.title AS "test_title", subject.text AS "subject", test.creation_date AS "creation_date",  test_performed.test_id AS "template_id",  test_performed.form_id, test_performed.form_url,
+        test_performed.date AS "generated_date"
+    FROM test 
+    JOIN subject ON subject.id = test.subject_id
+    LEFT JOIN test_performed ON test_performed.test_id = test.unique_id 
+    WHERE test.created_by = ?
+    ORDER BY test.creation_date DESC;
         `);
       try {
         const data = await Get_All_Query(get_all_test, [user_id]);
@@ -23,8 +24,7 @@ export default async function get_quiz_all() {
         db.close();
         resolve(data)
       } catch (error) {
-        Report_Status("Error", error.message);
-
+        Report_Status("error", error.message);
         get_all_test.finalize();
         db.close();
         reject()

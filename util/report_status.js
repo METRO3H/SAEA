@@ -11,7 +11,7 @@ export default function Report_Status(status, message) {
       break;
 
     case "error":
-      console.log(chalk.red(`[Status]`, message));
+      console.error(chalk.red(`[Status]`, message));
       break;
     case "divider":
       console.log(

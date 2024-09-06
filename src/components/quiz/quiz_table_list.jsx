@@ -5,23 +5,61 @@ import Quiz_Table_List_Item from "./quiz_table_list_item";
 export default function quiz_table_list() {
   const [data_list, set_data_list] = useState([]);
   const [input_value, set_input_value] = useState("");
+  const [quiz_type, set_quiz_type] = useState("templates");
   async function Fetch_Data() {
     const response = await fetch("/request/get/quiz/all");
     const data = await response.json();
     set_data_list(data);
+    console.log(data);
   }
   function Filter_Data(event) {
     set_input_value(event.target.value.toLowerCase());
   }
+  function Filter_Type(type) {
+    set_quiz_type(type);
+  }
   useEffect(() => {
     Fetch_Data();
     const search_input = document.querySelector("#input-search");
+    const templates_element = document.querySelector("#templates");
+    const perform_element = document.querySelector("#perform");
+
+    templates_element.addEventListener("click", () => Filter_Type("templates"));
+    perform_element.addEventListener("click", () => Filter_Type("perform"));
     search_input.addEventListener("input", Filter_Data);
 
     return () => {
       document.removeEventListener("input", Filter_Data);
+      templates_element.removeEventListener("click", () => Filter_By_Type("Plantillas"));
+      perform_element.removeEventListener("click", () => Filter_By_Type("Realizados"));
     };
   }, []);
+
+  const filtered_data = data_list
+    .filter((item, index, self) => {
+      if (quiz_type == "perform") {
+        return item.form_id != null;
+      }
+      return index != self.findIndex((t) => t.template_id === item.template_id);
+    })
+    .filter((item) => {
+      return input_value === "" ? item : item.test_title.toLowerCase().includes(input_value);
+    });
+
+    const templates_length = data_list.filter(
+      (item, index, self) => index !== self.findIndex((t) => t.template_id === item.template_id)
+    ).length;
+
+    const perform_length = data_list.filter((item) => item.form_id !== null).length;
+
+    useEffect(() => {
+      const templates_element = document.querySelector("#templates");
+      const perform_element = document.querySelector("#perform");
+
+      if(templates_length) templates_element.querySelector(".type-counter").textContent = templates_length;
+      if(perform_length) perform_element.querySelector(".type-counter").textContent = perform_length;
+
+    }, [templates_length, perform_length])
 
   return (
     <table className="table table-sm table-hover align-middle mb-0 bg-white">
@@ -36,19 +74,17 @@ export default function quiz_table_list() {
         </tr>
       </thead>
       <tbody>
-        {data_list
-          .filter((item) => {
-            return input_value === "" ? item : item.test_title.toLowerCase().includes(input_value);
-          })
-          .map((item) => (
-            <Quiz_Table_List_Item
-              key={item.test_id}
-              title={item.test_title}
-              subject={item.subject}
-              form_url={item.form_url}
-              creation_date={item.creation_date}
-            />
-          ))}
+        {filtered_data.map((item) => (
+          <Quiz_Table_List_Item
+            key={item.unique_id + (item.form_id || "")}
+            title={item.test_title}
+            subject={item.subject}
+            form_url={item.form_url}
+            creation_date={item.creation_date}
+            quiz_type={quiz_type}
+            generated_date={item.generated_date}
+          />
+        ))}
       </tbody>
     </table>
   );
