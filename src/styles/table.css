@@ -54,7 +54,7 @@ caption {
 .cell > input {
   background-color: transparent;
   width: 100%;
-  height: 100%;
+  /* height: 100%; */
   border: none;
   outline: none;
 }

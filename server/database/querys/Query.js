@@ -19,20 +19,40 @@ export default class Query {
       objective: db.prepare(this.Frequent_Insertion("question_objetive")),
       skill: db.prepare(this.Frequent_Insertion("question_skill")),
       specifications_table: db.prepare(/*sql*/ `
-        INSERT OR IGNORE
+    INSERT OR IGNORE
         INTO specifications_table (test_id, thematic_area_id, content_id, objective_id, performed_classes)
-        VALUES (?,?,?,?,?)
+        VALUES (?,
+          (SELECT id FROM question_thematic_area WHERE text = ?), 
+          (SELECT id FROM question_content_area WHERE text = ?), 
+          (SELECT id FROM question_objetive WHERE text = ?),
+          ?)
       `),
       specifications_table_skill: db.prepare(/*sql*/ `
       INSERT OR IGNORE
       INTO specifications_table_skill 
       (specifications_table_id, question_skill_id, position, questions_range)
-      VALUES (?,?,?,?)
+      VALUES (
+      (
+        SELECT id 
+        FROM specifications_table
+        WHERE 
+          test_id = ? AND 
+          thematic_area_id = ? AND 
+          content_id = ? AND 
+          objective_id = ? AND 
+          performed_classes = ?
+      ),
+      (SELECT id FROM question_objetive WHERE text = ?),
+      ?,?)
     `),
-      test_question: db.prepare(/*sql*/ `
-        INSERT OR IGNORE 
-        INTO test_question (test_id, question_id, thematic_area_id, content_id, objetive_id, skill_id) 
-        VALUES (?, ?, ?, ?, ?, ?);
+      test_question_metadata: db.prepare(/*sql*/ `
+    INSERT OR IGNORE 
+        INTO test_question_metadata (test_id, question_id, thematic_area_id, content_id, objetive_id, skill_id) 
+        VALUES (?, ?, 
+          (SELECT id FROM question_thematic_area WHERE text = ?), 
+          (SELECT id FROM question_content_area WHERE text = ?), 
+          (SELECT id FROM question_objetive WHERE text = ?),
+          (SELECT id FROM question_skill WHERE text = ?));
         `),
       test_question_answer: db.prepare(/*sql*/ `
         INSERT OR IGNORE INTO test_question_answer (test_id, question_id, answer_id, is_correct)
@@ -55,11 +75,11 @@ export default class Query {
       SELECT id 
       FROM specifications_table
       WHERE 
-      test_id = ? AND 
-      thematic_area_id = ? AND 
-      content_id = ? AND 
-      objective_id = ? AND 
-      performed_classes = ?
+        test_id = ? AND 
+        thematic_area_id = ? AND 
+        content_id = ? AND 
+        objective_id = ? AND 
+        performed_classes = ?
       `),
     };
     return;

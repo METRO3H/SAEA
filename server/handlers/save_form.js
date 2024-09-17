@@ -11,12 +11,6 @@ sqlite3.verbose();
 export async function Save_Form(data_form) {
   const data_base_path = path.join(process.cwd(), "server", "database", "database.db");
   const date_time = moment().format("YYYY-MM-DD HH:mm:ss");
-  let metadata_map = {
-    thematic_area_id: {},
-    content_id: {},
-    objetive_id: {},
-    skills_id: {},
-  };
   const UNIQUE_ID = randomUUID();
   const title = data_form.title;
   const created_by = data_form.created_by;
@@ -41,52 +35,32 @@ export async function Save_Form(data_form) {
           await Run_Query(sql.Insert.test, [UNIQUE_ID, title, subject_id, created_by, date_time]);
           const test_id = (await Get_Query(sql.Get.test_id, [title, created_by, date_time])).id;
 
-          skills.forEach(async (skill) => {
-            await Run_Query(sql.Insert.skill, [skill, created_by, date_time]);
-            metadata_map.skills_id[skill] = (
-              await Get_Query(sql.Get.skill_id, [skill, created_by])
-            ).id;
-          });
+          skills.forEach(
+            async (skill) => await Run_Query(sql.Insert.skill, [skill, created_by, date_time])
+          );
 
           table_body.forEach(async (row) => {
             await Run_Query(sql.Insert.thematic_area, [row.thematic_area, created_by, date_time]);
             await Run_Query(sql.Insert.content_area, [row.content, created_by, date_time]);
             await Run_Query(sql.Insert.objective, [row.objective, created_by, date_time]);
 
-            const thematic_area_id = (
-              await Get_Query(sql.Get.axis_id, [row.thematic_area, created_by])
-            ).id;
-            const content_id = (await Get_Query(sql.Get.content_id, [row.content, created_by])).id;
-            const objetive_id = (await Get_Query(sql.Get.objetive_id, [row.objective, created_by]))
-              .id;
-
             await Run_Query(sql.Insert.specifications_table, [
               test_id,
-              thematic_area_id,
-              content_id,
-              objetive_id,
+              row.thematic_area,
+              row.content,
+              row.objective,
               row.performed_classes,
             ]);
-            const specifications_table_id = (
-              await Get_Query(sql.Get.specifications_table_id, [
-                test_id,
-                thematic_area_id,
-                content_id,
-                objetive_id,
-                row.performed_classes,
-              ])
-            ).id;
-
-            metadata_map.thematic_area_id[row.thematic_area] = thematic_area_id;
-            metadata_map.content_id[row.content] = content_id;
-            metadata_map.objetive_id[row.objetive] = objetive_id;
 
             row.skills.forEach(async (question_range, index) => {
               if (question_range.trim() !== "") {
-                const question_skill_id = metadata_map.skills_id[skills[index]];
                 await Run_Query(sql.Insert.specifications_table_skill, [
-                  specifications_table_id,
-                  question_skill_id,
+                  test_id,
+                  row.thematic_area,
+                  row.content,
+                  row.objective,
+                  row.performed_classes,
+                  skills[index],
                   index,
                   question_range,
                 ]);
@@ -96,23 +70,19 @@ export async function Save_Form(data_form) {
 
           for (const [index, question] of data_form.questions.content.entries()) {
             const { thematic_area, content, objective, skill } = metadata[index];
-            const thematic_area_id = metadata_map.thematic_area_id[thematic_area];
-            const content_id = metadata_map.thematic_area_id[content];
-            const objetive_id = metadata_map.thematic_area_id[objective];
-            const skill_id = metadata_map.thematic_area_id[skill];
 
             await Run_Query(sql.Insert.question, [question.text, created_by, date_time]);
 
             const question_id = (await Get_Query(sql.Get.question_id, [question.text, created_by]))
               .id;
 
-            await Run_Query(sql.Insert.test_question, [
+            await Run_Query(sql.Insert.test_question_metadata, [
               test_id,
               question_id,
-              thematic_area_id,
-              content_id,
-              objetive_id,
-              skill_id,
+              thematic_area,
+              content,
+              objective,
+              skill,
             ]);
 
             for (let answer of question.answers) {
@@ -130,7 +100,11 @@ export async function Save_Form(data_form) {
           db.run("COMMIT");
           sql.Finalize();
           db.close();
-          resolve({ status: true, message: "Form guardado en la base de datos con éxito!!", data: UNIQUE_ID });
+          resolve({
+            status: true,
+            message: "Form guardado en la base de datos con éxito!!",
+            data: UNIQUE_ID,
+          });
         } catch (error) {
           console.error(error);
           db.run("ROLLBACK");
