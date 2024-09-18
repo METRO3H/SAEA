@@ -59,7 +59,6 @@ export async function Save_Form(data_form) {
                   row.thematic_area,
                   row.content,
                   row.objective,
-                  row.performed_classes,
                   skills[index],
                   index,
                   question_range,
@@ -76,7 +75,7 @@ export async function Save_Form(data_form) {
             const question_id = (await Get_Query(sql.Get.question_id, [question.text, created_by]))
               .id;
 
-            await Run_Query(sql.Insert.test_question_metadata, [
+            await Run_Query(sql.Insert.test_question_metadata_2, [
               test_id,
               question_id,
               thematic_area,
@@ -84,6 +83,18 @@ export async function Save_Form(data_form) {
               objective,
               skill,
             ]);
+
+            await Run_Query(sql.Insert.test_question_metadata, [
+              test_id,
+              question_id,
+              test_id,
+              thematic_area,
+              content,
+              objective,
+              (index + 1)
+            ]);
+
+            
 
             for (let answer of question.answers) {
               await Run_Query(sql.Insert.answer, [answer.text, created_by, date_time]);

@@ -37,7 +37,7 @@ CREATE TABLE
 	);
 
 CREATE TABLE
-	test_question_metadata (
+	test_question_metadata_2 (
 		"id" INTEGER NOT NULL UNIQUE,
 		"test_id" INTEGER NOT NULL,
 		"question_id" INTEGER NOT NULL,
@@ -52,6 +52,21 @@ CREATE TABLE
 		FOREIGN KEY (objetive_id) REFERENCES question_objetive (id),
 		FOREIGN KEY (skill_id) REFERENCES question_skill (id),
 		UNIQUE (test_id, question_id),
+		PRIMARY KEY ("id" AUTOINCREMENT)
+	);
+
+CREATE TABLE
+	test_question_metadata (
+		"id" INTEGER NOT NULL UNIQUE,
+		"test_id" INTEGER NOT NULL,
+		"question_id" INTEGER NOT NULL,
+		"specifications_table_id" INTEGER NOT NULL,
+		"question_number" INTEGER NOT NULL,
+		
+		FOREIGN KEY (test_id) REFERENCES test (id),
+		FOREIGN KEY (question_id) REFERENCES question (id),
+		FOREIGN KEY (specifications_table_id) REFERENCES specifications_table (id),
+		UNIQUE (test_id, question_id, specifications_table_id),
 		PRIMARY KEY ("id" AUTOINCREMENT)
 	);
 
@@ -204,8 +219,7 @@ CREATE TABLE
 			test_id,
 			thematic_area_id,
 			content_id,
-			objective_id,
-			performed_classes
+			objective_id
 		),
 		FOREIGN KEY (test_id) REFERENCES test (id),
 		PRIMARY KEY ("id" AUTOINCREMENT)

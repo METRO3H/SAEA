@@ -28,7 +28,7 @@ export default class Query {
           ?)
       `),
       specifications_table_skill: db.prepare(/*sql*/ `
-      INSERT OR IGNORE
+      INSERT
       INTO specifications_table_skill 
       (specifications_table_id, question_skill_id, position, questions_range)
       VALUES (
@@ -37,23 +37,36 @@ export default class Query {
         FROM specifications_table
         WHERE 
           test_id = ? AND 
-          thematic_area_id = ? AND 
-          content_id = ? AND 
-          objective_id = ? AND 
-          performed_classes = ?
+          thematic_area_id = (SELECT id FROM question_thematic_area WHERE text = ?) AND 
+          content_id = (SELECT id FROM question_content_area WHERE text = ?) AND 
+          objective_id = (SELECT id FROM question_objetive WHERE text = ?)
       ),
-      (SELECT id FROM question_objetive WHERE text = ?),
+      (SELECT id FROM question_skill WHERE text = ?),
       ?,?)
     `),
-      test_question_metadata: db.prepare(/*sql*/ `
+      test_question_metadata_2: db.prepare(/*sql*/ `
     INSERT OR IGNORE 
-        INTO test_question_metadata (test_id, question_id, thematic_area_id, content_id, objetive_id, skill_id) 
+        INTO test_question_metadata_2 (test_id, question_id, thematic_area_id, content_id, objetive_id, skill_id) 
         VALUES (?, ?, 
           (SELECT id FROM question_thematic_area WHERE text = ?), 
           (SELECT id FROM question_content_area WHERE text = ?), 
           (SELECT id FROM question_objetive WHERE text = ?),
           (SELECT id FROM question_skill WHERE text = ?));
         `),
+
+      test_question_metadata: db.prepare(/*sql*/ `
+        INSERT
+        INTO test_question_metadata (test_id, question_id, specifications_table_id, question_number) 
+        VALUES (?, ?, (
+          SELECT id 
+          FROM specifications_table
+          WHERE 
+            test_id = ? AND 
+            thematic_area_id = (SELECT id FROM question_thematic_area WHERE text = ?) AND 
+            content_id = (SELECT id FROM question_content_area WHERE text = ?) AND 
+            objective_id = (SELECT id FROM question_objetive WHERE text = ?))
+            ,?);
+            `),
       test_question_answer: db.prepare(/*sql*/ `
         INSERT OR IGNORE INTO test_question_answer (test_id, question_id, answer_id, is_correct)
         VALUES (?, ?, ?, ?)
