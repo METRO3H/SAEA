@@ -1,11 +1,10 @@
 ---
-import Index from "@pages/index.astro";
 
 const { template_id } = Astro.params;
 const response = await fetch(`http://localhost:8080/request/get/quiz/template/${template_id}`);
-const data = await response.json();
-const show_data = JSON.stringify(data, null, 4)
----
-<h1>{template_id}</h1>
+const response_json = await response.json();
+const show_data = JSON.stringify(response_json.data, null, 4)
 
-<h2>{show_data}</h2>
+---
+
+<pre>{show_data}</pre>

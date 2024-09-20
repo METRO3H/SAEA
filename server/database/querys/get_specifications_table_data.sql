@@ -42,5 +42,14 @@ WHERE
 
 /*GET questions*/
 SELECT
-    *
+    test_question_answer.question_number,
+    question.text AS question,
+    answer.text AS answer,
+    test_question_answer.is_correct
 FROM
+    test
+    JOIN test_question_answer ON test_question_answer.test_id = test.id
+    JOIN question ON question.id = test_question_answer.question_id
+    JOIN answer ON answer.id = test_question_answer.answer_id
+WHERE
+    test.unique_id = "e2d176bd-d27b-4ca8-8443-b84c40c9d7fb"

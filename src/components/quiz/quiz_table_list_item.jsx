@@ -1,6 +1,6 @@
 import "@styles/quiz_table_list_item.css";
 import { useEffect, useState } from "react";
-export default function quiz_table_list_item({ title, subject, form_url, creation_date, quiz_type, generated_date }) {
+export default function quiz_table_list_item({ title, subject, quiz_url, creation_date, quiz_type, generated_date }) {
   const [is_checked, set_is_checked] = useState(false);
 
   function Handle_Checkbox_Click() {
@@ -13,7 +13,7 @@ export default function quiz_table_list_item({ title, subject, form_url, creatio
 
   function Handle_Link_button(){
     let btn_class = "btn btn-primary btn-floating edit-button"
-    if(!form_url || quiz_type == "templates") btn_class = btn_class + " disabled"
+    if(!quiz_url) btn_class = btn_class + " disabled"
 
     return btn_class
   }
@@ -55,7 +55,7 @@ export default function quiz_table_list_item({ title, subject, form_url, creatio
       <td>
         <div className="actions-container">
           <a
-            href={form_url}
+            href={quiz_url}
             target="_blank"
             className={Handle_Link_button()}
             tabIndex={-1}

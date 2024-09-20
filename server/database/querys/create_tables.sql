@@ -130,6 +130,7 @@ CREATE TABLE
 		"id" INTEGER NOT NULL UNIQUE,
 		"test_id" INTEGER NOT NULL,
 		"question_id" INTEGER NOT NULL,
+		"question_number" INTEGER NOT NULL,
 		"answer_id" INTEGER NOT NULL,
 		"is_correct" INTEGER,
 		UNIQUE (test_id, question_id, answer_id) FOREIGN KEY (test_id) REFERENCES test (id),

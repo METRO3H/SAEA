@@ -68,8 +68,8 @@ export default class Query {
             ,?);
             `),
       test_question_answer: db.prepare(/*sql*/ `
-        INSERT OR IGNORE INTO test_question_answer (test_id, question_id, answer_id, is_correct)
-        VALUES (?, ?, ?, ?)
+        INSERT OR IGNORE INTO test_question_answer (test_id, question_id, question_number, answer_id, is_correct)
+        VALUES (?, ?, ?, ?, ?)
         `),
     };
 

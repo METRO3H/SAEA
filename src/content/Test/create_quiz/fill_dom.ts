@@ -17,9 +17,9 @@ export function fill_data_table() {
 
   quiz_title.value = data.quiz_title;
   quiz_subject.value = data.quiz_subject;
-  quiz_total_questions.value = data.quiz_total_questions;
+  quiz_total_questions.value = data.questions.length.toString();
 
-  quiz_skills.forEach((skill, index) => (skill.value = data.quiz_skills[index]));
+  quiz_skills.forEach((skill, index) => (skill.value = data.specifications_table.quiz_skills[index]));
 
   const tr_all = table?.querySelectorAll("tbody tr") as NodeListOf<HTMLElement>;
 
@@ -30,18 +30,18 @@ export function fill_data_table() {
     let performed_classes = tr.querySelector(".item-class") as HTMLInputElement;
     let skills = tr.querySelectorAll(".item-skill") as NodeListOf<HTMLInputElement>;
 
-    if (thematic_area) thematic_area.value = data.items[index].thematic_area;
-    if (content) content.value = data.items[index].Content;
-    if (objective) objective.value = data.items[index].Objective;
+    if (thematic_area) thematic_area.value = data.specifications_table.items[index].thematic_area;
+    if (content) content.value = data.specifications_table.items[index].Content;
+    if (objective) objective.value = data.specifications_table.items[index].Objective;
 
-    performed_classes.value = data.items[index].performed_classes;
-    skills[data.items[index].Skill_index].value = data.items[index].skill_content;
+    performed_classes.value = data.specifications_table.items[index].performed_classes;
+    skills[data.specifications_table.items[index].Skill_index].value = data.specifications_table.items[index].skill_content;
   });
 }
 
 export function Fill_Questions() {
   const question_content_items = document.querySelectorAll(".question-content-item");
-  const questions = data.items.flatMap((item) => item.questions);
+  const questions = data.questions
 
   question_content_items.forEach((question_content_item, index) => {
     const question_data = questions[index];

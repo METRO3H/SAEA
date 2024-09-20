@@ -17,6 +17,7 @@ export default function quiz_table_list() {
     async function Fetch_Data() {
       const response = await fetch("/request/get/quiz/all");
       const data = await response.json();
+      console.log(data)
       set_data_list(data);
     }
     Fetch_Data();
@@ -74,7 +75,7 @@ export default function quiz_table_list() {
             key={item.unique_id + (item.form_id || "")}
             title={item.test_title}
             subject={item.subject}
-            form_url={item.form_url}
+            quiz_url={quiz_type == "templates" ? "template/"+item.unique_id : "performed/"+item.unique_id}
             creation_date={item.creation_date}
             quiz_type={quiz_type}
             generated_date={item.generated_date}

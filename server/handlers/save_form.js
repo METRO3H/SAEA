@@ -102,6 +102,7 @@ export async function Save_Form(data_form) {
               await Run_Query(sql.Insert.test_question_answer, [
                 test_id,
                 question_id,
+                (index + 1),
                 answer_id,
                 answer.is_correct,
               ]);
