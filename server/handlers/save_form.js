@@ -4,7 +4,6 @@ import moment from "moment";
 import { randomUUID } from "crypto";
 import Query from "../database/querys/Query.js";
 
-/* import { data } from "../data_test.js"; */
 
 sqlite3.verbose();
 

@@ -16,7 +16,7 @@ export default class Query {
       answer: db.prepare(this.Frequent_Insertion("answer")),
       thematic_area: db.prepare(this.Frequent_Insertion("question_thematic_area")),
       content_area: db.prepare(this.Frequent_Insertion("question_content_area")),
-      objective: db.prepare(this.Frequent_Insertion("question_objetive")),
+      objective: db.prepare(this.Frequent_Insertion("question_objective")),
       skill: db.prepare(this.Frequent_Insertion("question_skill")),
       specifications_table: db.prepare(/*sql*/ `
     INSERT OR IGNORE
@@ -24,7 +24,7 @@ export default class Query {
         VALUES (?,
           (SELECT id FROM question_thematic_area WHERE text = ?), 
           (SELECT id FROM question_content_area WHERE text = ?), 
-          (SELECT id FROM question_objetive WHERE text = ?),
+          (SELECT id FROM question_objective WHERE text = ?),
           ?)
       `),
       specifications_table_skill: db.prepare(/*sql*/ `
@@ -39,18 +39,18 @@ export default class Query {
           test_id = ? AND 
           thematic_area_id = (SELECT id FROM question_thematic_area WHERE text = ?) AND 
           content_id = (SELECT id FROM question_content_area WHERE text = ?) AND 
-          objective_id = (SELECT id FROM question_objetive WHERE text = ?)
+          objective_id = (SELECT id FROM question_objective WHERE text = ?)
       ),
       (SELECT id FROM question_skill WHERE text = ?),
       ?,?)
     `),
       test_question_metadata_2: db.prepare(/*sql*/ `
     INSERT OR IGNORE 
-        INTO test_question_metadata_2 (test_id, question_id, thematic_area_id, content_id, objetive_id, skill_id) 
+        INTO test_question_metadata_2 (test_id, question_id, thematic_area_id, content_id, objective_id, skill_id) 
         VALUES (?, ?, 
           (SELECT id FROM question_thematic_area WHERE text = ?), 
           (SELECT id FROM question_content_area WHERE text = ?), 
-          (SELECT id FROM question_objetive WHERE text = ?),
+          (SELECT id FROM question_objective WHERE text = ?),
           (SELECT id FROM question_skill WHERE text = ?));
         `),
 
@@ -64,7 +64,7 @@ export default class Query {
             test_id = ? AND 
             thematic_area_id = (SELECT id FROM question_thematic_area WHERE text = ?) AND 
             content_id = (SELECT id FROM question_content_area WHERE text = ?) AND 
-            objective_id = (SELECT id FROM question_objetive WHERE text = ?))
+            objective_id = (SELECT id FROM question_objective WHERE text = ?))
             ,?);
             `),
       test_question_answer: db.prepare(/*sql*/ `
@@ -81,7 +81,7 @@ export default class Query {
       answer_id: db.prepare(this.Frequent_Get("answer")),
       axis_id: db.prepare(this.Frequent_Get("question_thematic_area")),
       content_id: db.prepare(this.Frequent_Get("question_content_area")),
-      objetive_id: db.prepare(this.Frequent_Get("question_objetive")),
+      objective_id: db.prepare(this.Frequent_Get("question_objective")),
       skill_id: db.prepare(this.Frequent_Get("question_skill")),
       subject_id: db.prepare(this.Frequent_Get("subject")),
       specifications_table_id: db.prepare(/*sql*/ `

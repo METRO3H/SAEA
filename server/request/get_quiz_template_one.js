@@ -60,7 +60,7 @@ async function Get_Template_Data(test_id) {
         SELECT
             question_thematic_area.text AS thematic_area,
             question_content_area.text AS content,
-            question_objetive.text as objetive,
+            question_objective.text as objective,
             specifications_table.performed_classes,
             specifications_table_skill.position AS skill_index,
             specifications_table_skill.questions_range AS skill_content
@@ -69,7 +69,7 @@ async function Get_Template_Data(test_id) {
             JOIN specifications_table ON specifications_table.test_id = test.id
             JOIN question_thematic_area ON question_thematic_area.id = specifications_table.thematic_area_id
             JOIN question_content_area ON question_content_area.id = specifications_table.content_id
-            JOIN question_objetive ON question_objetive.id = specifications_table.objective_id
+            JOIN question_objective ON question_objective.id = specifications_table.objective_id
             JOIN specifications_table_skill ON specifications_table_skill.specifications_table_id = specifications_table.id
         WHERE
             Test.unique_id = ?;
@@ -109,19 +109,18 @@ async function Get_Template_Data(test_id) {
             questions_map[question_number] = {
               question: question,
               answers: [],
-              is_correct: null,
+              correct_answer_index: null,
             };
           }
           questions_map[question_number].answers.push(answer);
 
           if (is_correct) {
-            questions_map[question_number].is_correct =
+            questions_map[question_number].correct_answer_index =
               questions_map[question_number].answers.length - 1;
           }
         });
 
         const questions_list = Object.keys(questions_map).map((key) => questions_map[key]);
-
 
         const data = {
           quiz_title: test_title,
@@ -133,9 +132,7 @@ async function Get_Template_Data(test_id) {
           questions: questions_list,
         };
 
-
-        console.log(data);
-      
+        // console.log(data);
 
         title_subject_query.finalize();
         skills_list_query.finalize();

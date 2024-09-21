@@ -94,34 +94,19 @@ function Custom_table() {
             className="cell thead-input"
             title="Ingresa una habilidad que quieras evaluar. Ej: Aplicación, Conocimiento, Análisis, etc."
           >
-            <input
-              className="text-center"
-              type="text"
-              placeholder="Habilidad"
-              required
-            />
+            <input className="text-center" type="text" placeholder="Habilidad" required />
           </th>
           <th
             className="cell thead-input"
             title="Ingresa una habilidad que quieras evaluar. Ej: Aplicación, Conocimiento, Análisis, etc."
           >
-            <input
-              className="text-center"
-              type="text"
-              placeholder="Habilidad"
-              required
-            />
+            <input className="text-center" type="text" placeholder="Habilidad" required />
           </th>
           <th
             className="cell thead-input"
             title="Ingresa una habilidad que quieras evaluar. Ej: Aplicación, Conocimiento, Análisis, etc."
           >
-            <input
-              className="text-center"
-              type="text"
-              placeholder="Habilidad"
-              required
-            />
+            <input className="text-center" type="text" placeholder="Habilidad" required />
           </th>
           <th>
             <div className="text-center">Total preguntas</div>
@@ -153,7 +138,7 @@ function Custom_table() {
             item_title="Ingresa un objetivo. Ej: Componer rotaciones, traslaciones y reflexiones en el plano cartesiano"
             contains_input="true"
             input_placeholder="Ej: Efectuar rotaciones y traslaciones"
-            input_class="item-objetive"
+            input_class="item-objective"
           />
           <Table_Item
             td_class="cell patron-cell"
@@ -213,7 +198,7 @@ function Custom_table() {
             item_title="Ingresa un objetivo. Ej: Componer rotaciones, traslaciones y reflexiones en el plano cartesiano"
             contains_input="true"
             input_placeholder="Ej: Efectuar rotaciones y traslaciones"
-            input_class="item-objetive"
+            input_class="item-objective"
           />
           <Table_Item
             td_class="cell patron-cell"
@@ -264,7 +249,7 @@ function Custom_table() {
             item_title="Ingresa un objetivo. Ej: Componer rotaciones, traslaciones y reflexiones en el plano cartesiano"
             contains_input="true"
             input_placeholder="Ej: Efectuar rotaciones y traslaciones"
-            input_class="item-objetive"
+            input_class="item-objective"
           />
           <Table_Item
             td_class="cell patron-cell"
@@ -333,7 +318,7 @@ function Custom_table() {
             item_title="Ingresa un objetivo. Ej: Componer rotaciones, traslaciones y reflexiones en el plano cartesiano"
             contains_input="true"
             input_placeholder="Ej: Efectuar rotaciones y traslaciones"
-            input_class="item-objetive"
+            input_class="item-objective"
           />
           <Table_Item
             td_class="cell patron-cell"
@@ -393,7 +378,7 @@ function Custom_table() {
             item_title="Ingresa un objetivo. Ej: Componer rotaciones, traslaciones y reflexiones en el plano cartesiano"
             contains_input="true"
             input_placeholder="Ej: Efectuar rotaciones y traslaciones"
-            input_class="item-objetive"
+            input_class="item-objective"
           />
           <Table_Item
             td_class="cell patron-cell"

@@ -26,7 +26,7 @@ GROUP BY
 SELECT
     question_thematic_area.text AS thematic_area,
     question_content_area.text AS content,
-    question_objetive.text as objetive,
+    question_objective.text as objective,
     specifications_table.performed_classes,
     specifications_table_skill.position AS skill_index,
     specifications_table_skill.questions_range AS skill_content
@@ -35,7 +35,7 @@ FROM
     JOIN specifications_table ON specifications_table.test_id = test.id
     JOIN question_thematic_area ON question_thematic_area.id = specifications_table.thematic_area_id
     JOIN question_content_area ON question_content_area.id = specifications_table.content_id
-    JOIN question_objetive ON question_objetive.id = specifications_table.objective_id
+    JOIN question_objective ON question_objective.id = specifications_table.objective_id
     JOIN specifications_table_skill ON specifications_table_skill.specifications_table_id = specifications_table.id
 WHERE
     Test.unique_id = "9d798821-c8f3-4a55-8efb-d160e301879b";

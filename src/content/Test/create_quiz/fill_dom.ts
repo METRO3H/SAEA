@@ -1,10 +1,5 @@
-import { data_test_1 } from "./data_test_1.ts";
-
-const data = data_test_1;
-
-export function fill_data_table() {
+export function Fill_data_table(quiz_data) {
   const table = document.querySelector(".custom-container");
-
   const quiz_title = table?.querySelector("#quiz-title div input")! as HTMLInputElement;
   const quiz_subject = table?.querySelector("#table-subject input")! as HTMLInputElement;
   const quiz_total_questions = table?.querySelector(
@@ -15,36 +10,43 @@ export function fill_data_table() {
     ".thead-input input"
   )! as NodeListOf<HTMLInputElement>;
 
-  quiz_title.value = data.quiz_title;
-  quiz_subject.value = data.quiz_subject;
-  quiz_total_questions.value = data.questions.length.toString();
+  quiz_title.value = quiz_data.quiz_title;
+  quiz_subject.value = quiz_data.quiz_subject;
+  quiz_total_questions.value = quiz_data.questions.length.toString();
 
-  quiz_skills.forEach((skill, index) => (skill.value = data.specifications_table.quiz_skills[index]));
+  quiz_skills.forEach(
+    (skill, index) => (skill.value = quiz_data.specifications_table.quiz_skills[index])
+  );
 
   const tr_all = table?.querySelectorAll("tbody tr") as NodeListOf<HTMLElement>;
 
   tr_all.forEach((tr, index) => {
     let thematic_area = tr.querySelector(".item-thematic-area") as HTMLInputElement;
     let content = tr.querySelector(".item-content") as HTMLInputElement;
-    let objective = tr.querySelector(".item-objetive") as HTMLInputElement;
+    let objective = tr.querySelector(".item-objective") as HTMLInputElement;
     let performed_classes = tr.querySelector(".item-class") as HTMLInputElement;
     let skills = tr.querySelectorAll(".item-skill") as NodeListOf<HTMLInputElement>;
 
-    if (thematic_area) thematic_area.value = data.specifications_table.items[index].thematic_area;
-    if (content) content.value = data.specifications_table.items[index].Content;
-    if (objective) objective.value = data.specifications_table.items[index].Objective;
+    if (thematic_area)
+      thematic_area.value = quiz_data.specifications_table.items[index].thematic_area;
+    if (content) content.value = quiz_data.specifications_table.items[index].content;
+    if (objective) objective.value = quiz_data.specifications_table.items[index].objective;
 
-    performed_classes.value = data.specifications_table.items[index].performed_classes;
-    skills[data.specifications_table.items[index].Skill_index].value = data.specifications_table.items[index].skill_content;
+    performed_classes.value = quiz_data.specifications_table.items[index].performed_classes;
+    skills[quiz_data.specifications_table.items[index].skill_index].value =
+      quiz_data.specifications_table.items[index].skill_content;
   });
 }
 
-export function Fill_Questions() {
+export function Fill_Questions(data) {
   const question_content_items = document.querySelectorAll(".question-content-item");
-  const questions = data.questions
+  const questions = data.questions;
 
   question_content_items.forEach((question_content_item, index) => {
     const question_data = questions[index];
+
+    if (!question_data) return;
+
     const question_title = question_content_item.querySelector(
       ".question-content-title-container input"
     ) as HTMLInputElement;
@@ -63,7 +65,7 @@ export function Fill_Questions() {
 
       const answer_input_text = answer_item.querySelector(".answer-input-text") as HTMLInputElement;
 
-      answer_input_text.value = question_data.options[index_2];
+      answer_input_text.value = question_data.answers[index_2];
     });
   });
 }

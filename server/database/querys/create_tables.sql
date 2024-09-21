@@ -43,13 +43,13 @@ CREATE TABLE
 		"question_id" INTEGER NOT NULL,
 		"thematic_area_id" INTEGER NOT NULL,
 		"content_id" INTEGER NOT NULL,
-		"objetive_id" INTEGER NOT NULL,
+		"objective_id" INTEGER NOT NULL,
 		"skill_id" INTEGER NOT NULL,
 		FOREIGN KEY (test_id) REFERENCES test (id),
 		FOREIGN KEY (question_id) REFERENCES question (id),
 		FOREIGN KEY (thematic_area_id) REFERENCES question_thematic_area (id),
 		FOREIGN KEY (content_id) REFERENCES question_content_area (id),
-		FOREIGN KEY (objetive_id) REFERENCES question_objetive (id),
+		FOREIGN KEY (objective_id) REFERENCES question_objective (id),
 		FOREIGN KEY (skill_id) REFERENCES question_skill (id),
 		UNIQUE (test_id, question_id),
 		PRIMARY KEY ("id" AUTOINCREMENT)
@@ -62,7 +62,6 @@ CREATE TABLE
 		"question_id" INTEGER NOT NULL,
 		"specifications_table_id" INTEGER NOT NULL,
 		"question_number" INTEGER NOT NULL,
-		
 		FOREIGN KEY (test_id) REFERENCES test (id),
 		FOREIGN KEY (question_id) REFERENCES question (id),
 		FOREIGN KEY (specifications_table_id) REFERENCES specifications_table (id),
@@ -93,7 +92,7 @@ CREATE TABLE
 	);
 
 CREATE TABLE
-	question_objetive (
+	question_objective (
 		"id" INTEGER NOT NULL UNIQUE,
 		"text" TEXT NOT NULL UNIQUE,
 		"created_by" INTEGER NOT NULL,
