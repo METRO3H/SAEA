@@ -1,17 +1,20 @@
 import Question_Content_Item from "@components/question/question_content_item.jsx";
 import Question_List_Item from "@components/question/question_list_item.jsx";
-import { quiz_data } from "@content/quiz_data";
+import { useStore } from "@nanostores/react";
+import { quizDataStore } from "@content/quiz_data";
 import { useState, useEffect } from "react";
 
-function Questions_Data() {
+export default function Questions_Data() {
   let [question_items, set_question_items] = useState([{}]);
+  
+  const quiz_data = useStore(quizDataStore);
 
   function get_specification_data() {
     const table_body = quiz_data.specifications_table.table_body;
 
     let new_question_items = [];
 
-    quiz_data.questions.metadata.forEach((question) => {
+    quiz_data.questions.metadata.forEach((question, index) => {
       new_question_items.push({
         thematic_area: question.thematic_area,
         content: question.content,
@@ -39,6 +42,7 @@ function Questions_Data() {
               key={`question_list_key_${index + 1}`}
               question_list_item_number={index + 1}
               add_class={index === 0 ? "active" : ""}
+              item_data={item}
             />
           ))}
         </div>
@@ -62,4 +66,3 @@ function Questions_Data() {
   );
 }
 
-export default Questions_Data;

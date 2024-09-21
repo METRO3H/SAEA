@@ -1,4 +1,5 @@
-function question_list_item({ question_list_item_number, add_class = "" }) {
+function question_list_item({ question_list_item_number, add_class = "", item_data }) {
+  console.log(item_data)
   return (
     <a
       className={`list-group-item list-group-item-action ${add_class} px-3 border-0`}

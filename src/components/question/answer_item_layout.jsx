@@ -1,6 +1,7 @@
-import React, { useState, useEffect, useRef, StrictMode } from "react";
-
+import { useState, useEffect, useRef } from "react";
 import Item_Answer from "./item_answer.jsx";
+import { useStore } from "@nanostores/react";
+import { quizDataStore } from "@content/quiz_data";
 
 function CheckboxGenerator() {
   const [answers_items, set_answers_items] = useState([]);
@@ -41,7 +42,7 @@ function CheckboxGenerator() {
 
   useEffect(() => {
     Add_Answer();
-    setTimeout(Add_Answer, 0);
+    setTimeout(Add_Answer, 0);  
   }, []);
   return (
     <div className="answer-items-section" ref={answerItemsSectionRef}>

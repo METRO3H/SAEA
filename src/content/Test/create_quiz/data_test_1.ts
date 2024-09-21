@@ -141,7 +141,6 @@ export const data_test_2 = {
         performed_classes: "3",
         skill_index: 0,
         skill_content: "1-3",
-
       },
       {
         thematic_area: "Algebra lineal",
@@ -150,7 +149,6 @@ export const data_test_2 = {
         performed_classes: "3",
         skill_index: 0,
         skill_content: "4-6",
-
       },
       {
         thematic_area: "Algebra lineal",
@@ -178,7 +176,7 @@ export const data_test_2 = {
       },
     ],
   },
-  questions:[
+  questions: [
     {
       question: "¿Cuál de los siguientes es un número natural?",
       answers: ["3", "-2"],
@@ -254,31 +252,30 @@ export const data_test_2 = {
       answers: ["8", "2"],
       correct_answer_index: 0,
     },
-      {
-        question: "Energia nuclear o renovable",
-        answers: ["Nuclear", "Renovable", "No se XD"],
-        correct_answer_index: 0,
-      },
-      {
-        question: "¿A que hace referencia TTGL?",
-        answers: ["No se XD", "TENGEN TOPPA GURREN LAGANN", "Teta globo"],
-        correct_answer_index: 1,
-      },
-      {
-        question: "¿Pregunta?",
-        answers: ["What is bro even asking? lol", "No se XD", "Si"],
-        Correct_answer_index: 0,
-      },
-      {
-        question: "¿One piece tiene mas de 1000 capitulos?",
-        answers: ["No se XD", "No", "Si"],
-        Correct_answer_index: 2,
-      },
-      {
-        question: "¿Es bob el constructor un dios?",
-        answers: ["SI", "No", "XD"],
-        Correct_answer_index: 2,
-      },
-    ],
-  
+    {
+      question: "Energia nuclear o renovable",
+      answers: ["Nuclear", "Renovable", "No se XD"],
+      correct_answer_index: 0,
+    },
+    {
+      question: "¿A que hace referencia TTGL?",
+      answers: ["No se XD", "TENGEN TOPPA GURREN LAGANN", "Teta globo"],
+      correct_answer_index: 1,
+    },
+    {
+      question: "¿Pregunta?",
+      answers: ["What is bro even asking? lol", "No se XD", "Si"],
+      Correct_answer_index: 0,
+    },
+    {
+      question: "¿One piece tiene mas de 1000 capitulos?",
+      answers: ["No se XD", "No", "Si"],
+      Correct_answer_index: 2,
+    },
+    {
+      question: "¿Es bob el constructor un dios?",
+      answers: ["SI", "No", "XD"],
+      Correct_answer_index: 2,
+    },
+  ],
 };

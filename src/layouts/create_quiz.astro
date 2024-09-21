@@ -136,8 +136,11 @@ import GoogleFormBtn from "@components/google_form_btn.astro";
 </style>
 
 <script>
-  import { quiz_data } from "@content/quiz_data.ts";
+  import { quizDataStore } from "@content/quiz_data.ts";
 
+  const quiz_data = quizDataStore.get();
+
+  
   var update_questions_metadata = new CustomEvent("update_questions_metadata");
 
   const button_next_part = document.querySelector("#button-next-part");
@@ -272,7 +275,7 @@ import GoogleFormBtn from "@components/google_form_btn.astro";
   function Save_Form() {
     button_generate_google_form?.removeAttribute("disabled");
     button_save_form.setAttribute("disabled", "");
-    console.log(quiz_data);
+    // console.log(quiz_data);
 
     fetch("/request/quiz/save", {
       method: "POST",
@@ -354,6 +357,8 @@ import GoogleFormBtn from "@components/google_form_btn.astro";
         answers: answers_data,
       });
     });
+
+    // console.log(quiz_data)
   }
 
   function End_Animation(response, is_error) {
