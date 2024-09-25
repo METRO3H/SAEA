@@ -2,6 +2,7 @@ import express from "express";
 import Report_Status from "../../util/report_status.js";
 import sqlite3 from "sqlite3";
 import path from "path";
+import { create } from "domain";
 
 const router = express.Router();
 
@@ -93,10 +94,17 @@ async function Get_Template_Data(test_id) {
 
       try {
         const [{ test_title, test_subject }] = await Get_All_Query(title_subject_query, [test_id]);
-        const skills_list_query_data = await Get_All_Query(skills_list_query, [test_id]);
+        let skills_list_query_data = await Get_All_Query(skills_list_query, [test_id]);
         const specifications_table_query_data = await Get_All_Query(specifications_table_query, [
           test_id,
         ]);
+
+        skills_list_query_data = skills_list_query_data
+          .sort((a, b) => a.index - b.index)
+          .map((item) => item.skill);
+
+        console.log(skills_list_query_data);
+
 
         const questions_query_data = await Get_All_Query(questions_query, [test_id]);
 
@@ -124,9 +132,10 @@ async function Get_Template_Data(test_id) {
 
         const data = {
           quiz_title: test_title,
+          created_by: 1,
           quiz_subject: test_subject,
           specifications_table: {
-            quiz_skills: skills_list_query_data.map((skill) => skill.skill),
+            quiz_skills: skills_list_query_data,
             items: specifications_table_query_data,
           },
           questions: questions_list,

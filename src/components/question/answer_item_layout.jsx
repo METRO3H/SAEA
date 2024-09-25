@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import Item_Answer from "./item_answer.jsx";
 import { useStore } from "@nanostores/react";
-import { quizDataStore } from "@content/quiz_data";
+import { quiz_data_store } from "@content/quiz_data";
 
 function CheckboxGenerator() {
   const [answers_items, set_answers_items] = useState([]);

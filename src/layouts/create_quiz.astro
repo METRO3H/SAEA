@@ -136,230 +136,247 @@ import GoogleFormBtn from "@components/google_form_btn.astro";
 </style>
 
 <script>
-  import { quizDataStore } from "@content/quiz_data.ts";
+  import { quiz_data_store } from "@content/quiz_data.ts";
 
-  const quiz_data = quizDataStore.get();
+  const quiz_data = quiz_data_store.get();
+
+  // HAY QUE HACER REFACTOR DE ESTO
+
+
+
+
+
 
   
-  var update_questions_metadata = new CustomEvent("update_questions_metadata");
 
-  const button_next_part = document.querySelector("#button-next-part");
-  button_next_part?.addEventListener("click", Update_Specification_Data);
-  const button_save_form = document.querySelector("#button-save-data-form") as HTMLInputElement;
-  const button_generate_google_form = document.querySelector(
-    "#button-generate-google-form"
-  ) as HTMLInputElement;
+  // var update_questions_metadata = new CustomEvent("update_questions_metadata");
 
-  button_save_form?.addEventListener("click", () => {
-    Update_Questions_Data();
-    Save_Form();
-  });
+  // const button_next_part = document.querySelector("#button-next-part");
+  // button_next_part?.addEventListener("click", Update_Specification_Data);
+  // const button_save_form = document.querySelector("#button-save-data-form") as HTMLInputElement;
+  // const button_generate_google_form = document.querySelector(
+  //   "#button-generate-google-form"
+  // ) as HTMLInputElement;
 
-  button_generate_google_form!.addEventListener("click", Generate_Google_Form);
+  // button_save_form?.addEventListener("click", () => {
+  //   Update_Questions_Data();
+  //   Save_Form();
+  // });
 
-  document.querySelector("#button-back-part")?.addEventListener("click", () => {
-    Move_Container("0%");
-  });
+  // button_generate_google_form!.addEventListener("click", Generate_Google_Form);
 
-  function Update_Specification_Data() {
-    const table = document.querySelector(".custom-container");
+  // document.querySelector("#button-back-part")?.addEventListener("click", () => {
+  //   Move_Container("0%");
+  // });
 
-    const quiz_title = (table?.querySelector("#quiz-title div input")! as HTMLInputElement).value;
+  // function Update_Specification_Data() {
+  //   const table = document.querySelector(".custom-container");
 
-    const quiz_subject = (table?.querySelector("#table-subject input")! as HTMLInputElement).value;
+  //   const quiz_title = (table?.querySelector("#quiz-title div input")! as HTMLInputElement).value;
 
-    const quiz_skills = Array.from(
-      table?.querySelectorAll(".thead-input input")! as NodeListOf<HTMLInputElement>
-    ).map((input) => input.value);
+  //   const quiz_subject = (table?.querySelector("#table-subject input")! as HTMLInputElement).value;
 
-    const quiz_total_questions = (
-      table?.querySelector("#item-total-all-questions input")! as HTMLInputElement
-    ).value;
+  //   const quiz_skills = Array.from(
+  //     table?.querySelectorAll(".thead-input input")! as NodeListOf<HTMLInputElement>
+  //   ).map((input) => input.value);
 
-    quiz_data.title = quiz_title;
-    quiz_data.created_by = 1;
-    quiz_data.specifications_table.subject = quiz_subject;
-    quiz_data.specifications_table.skills = quiz_skills;
-    quiz_data.specifications_table.total_questions = quiz_total_questions;
-    quiz_data.specifications_table.table_body = [];
+  //   const quiz_total_questions = table?.querySelector(
+  //     "#item-total-all-questions input"
+  //   )! as HTMLInputElement;
 
-    const tr_all = table?.querySelectorAll("tbody tr") as NodeListOf<HTMLElement>;
+  //   quiz_data.quiz_title = quiz_title;
+  //   quiz_data.created_by = 1;
+  //   quiz_data.quiz_subject = quiz_subject;
+  //   quiz_data.specifications_table.quiz_skills = quiz_skills;
+  //   quiz_data.specifications_table.total_questions = parseInt(quiz_total_questions.value);
+  //   quiz_data.specifications_table.items = [];
 
-    let [thematic_area_aux, content_aux] = ["", ""];
+  //   const tr_all = table?.querySelectorAll("tbody tr") as NodeListOf<HTMLElement>;
 
-    tr_all.forEach((tr) => {
-      let thematic_area = (tr.querySelector(".item-thematic-area") as HTMLInputElement)?.value;
+  //   let [thematic_area_aux, content_aux] = ["", ""];
 
-      if (thematic_area || thematic_area == "") {
-        thematic_area_aux = thematic_area;
-      }
+  //   tr_all.forEach((tr) => {
+  //     let thematic_area = (tr.querySelector(".item-thematic-area") as HTMLInputElement)?.value;
 
-      let content = (tr.querySelector(".item-content") as HTMLInputElement)?.value;
+  //     if (thematic_area || thematic_area == "") {
+  //       thematic_area_aux = thematic_area;
+  //     }
 
-      if (content || content == "") {
-        content_aux = content;
-      }
+  //     let content = (tr.querySelector(".item-content") as HTMLInputElement)?.value;
 
-      /* const content */
-      quiz_data.specifications_table.table_body.push({
-        thematic_area: thematic_area ?? thematic_area_aux,
-        content: content ?? content_aux,
-        objective: (tr.querySelector(".item-objective") as HTMLInputElement).value,
-        performed_classes: (tr.querySelector(".item-class") as HTMLInputElement).value,
-        skills: Array.from(tr.querySelectorAll(".item-skill") as NodeListOf<HTMLInputElement>).map(
-          (item) => item.value
-        ),
-      });
-    });
+  //     if (content || content == "") {
+  //       content_aux = content;
+  //     }
+  //     const item_skill_element = tr.querySelectorAll(".item-skill") as NodeListOf<HTMLInputElement>;
 
-    Verify_table_data();
-  }
+  //     let skill_index =  0
+  //     let skill_content = ""
+  //     item_skill_element.forEach((item, index) => {
+  //       if (item.value != "") {
+  //         skill_index = index;
+  //         skill_content = item.value;
+  //       }
+  //     });
 
-  function Verify_table_data() {
-    try {
-      let questions_length = parseInt(quiz_data.specifications_table.total_questions);
+  //     /* const content */
+  //     quiz_data.specifications_table.items.push({
+  //       thematic_area: thematic_area ?? thematic_area_aux,
+  //       content: content ?? content_aux,
+  //       objective: (tr.querySelector(".item-objective") as HTMLInputElement).value,
+  //       performed_classes: (tr.querySelector(".item-class") as HTMLInputElement).value,
+  //       skill_index: skill_index,
+  //       skill_content: skill_content,
+  //     });
+  //   });
 
-      interface Metadata {
-        thematic_area: string;
-        content: string;
-        objective: string;
-        skill: string;
-      }
+  //   Verify_table_data();
+  // }
 
-      const metadata: Metadata[] = Array(questions_length).fill(null);
+  // function Verify_table_data() {
+  //   try {
+  //     let questions_length = quiz_data.specifications_table.items.length;
 
-      quiz_data.specifications_table.table_body.forEach((tr, index) => {
-        tr.skills.forEach((skill, index_2) => {
-          const comma_split = skill.split(",");
+  //     interface Metadata {
+  //       thematic_area: string;
+  //       content: string;
+  //       objective: string;
+  //       skill: string;
+  //     }
 
-          comma_split.forEach((item) => {
-            const interval = item.split("-");
-            let iterator: number = parseInt(interval[0]);
-            let end: number = parseInt(interval[0]);
-            if (isNaN(iterator)) {
-              return;
-            }
-            if (interval.length > 1) {
-              end = parseInt(interval[1]);
-            }
+  //     const metadata: Metadata[] = Array(questions_length).fill(null);
 
-            do {
-              metadata[iterator - 1] = {
-                thematic_area: quiz_data.specifications_table.table_body[index].thematic_area,
-                content: quiz_data.specifications_table.table_body[index].content,
-                objective: quiz_data.specifications_table.table_body[index].objective,
-                skill: quiz_data.specifications_table.skills[index_2],
-              };
+  //     quiz_data.specifications_table.items.forEach((tr, index) => {
+  //       tr.skills.forEach((skill, index_2) => {
+  //         const comma_split = skill.split(",");
 
-              iterator++;
-            } while (iterator <= end);
-          });
-        });
-      });
-      const contains_null = metadata.some((item) => item === null);
-      if (contains_null) {
-        throw new Error("No se han clasificado todas las preguntas!");
-      }
-      Update_Questions_Metadata(metadata);
-    } catch (error) {
-      console.log(error);
-      alert("No se han clasificado todas las preguntas!");
-    }
-  }
+  //         comma_split.forEach((item) => {
+  //           const interval = item.split("-");
+  //           let iterator: number = parseInt(interval[0]);
+  //           let end: number = parseInt(interval[0]);
+  //           if (isNaN(iterator)) {
+  //             return;
+  //           }
+  //           if (interval.length > 1) {
+  //             end = parseInt(interval[1]);
+  //           }
 
-  function Update_Questions_Metadata(metadata) {
-    quiz_data.questions.metadata = metadata;
-    document.dispatchEvent(update_questions_metadata);
-    Move_Container("-50%");
-  }
-  function Save_Form() {
-    button_generate_google_form?.removeAttribute("disabled");
-    button_save_form.setAttribute("disabled", "");
-    // console.log(quiz_data);
+  //           do {
+  //             metadata[iterator - 1] = {
+  //               thematic_area: quiz_data.specifications_table.table_body[index].thematic_area,
+  //               content: quiz_data.specifications_table.table_body[index].content,
+  //               objective: quiz_data.specifications_table.table_body[index].objective,
+  //               skill: quiz_data.specifications_table.skills[index_2],
+  //             };
 
-    fetch("/request/quiz/save", {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify(quiz_data),
-    })
-      .then(async (response) => {
-        if (!response.ok) {
-          const errorResponse = await response.json();
-          throw errorResponse || "Error en la solicitud";
-        }
-        return response.json();
-      })
-      .then((response) => {
-        localStorage.setItem("test_id", response.data);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  }
-  function Generate_Google_Form() {
-    const test_id = localStorage.getItem("test_id");
+  //             iterator++;
+  //           } while (iterator <= end);
+  //         });
+  //       });
+  //     });
+  //     const contains_null = metadata.some((item) => item === null);
+  //     if (contains_null) {
+  //       throw new Error("No se han clasificado todas las preguntas!");
+  //     }
+  //     Update_Questions_Metadata(metadata);
+  //   } catch (error) {
+  //     console.log(error);
+  //     alert("No se han clasificado todas las preguntas!");
+  //   }
+  // }
 
-    fetch("/request/quiz/generate", {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({ quiz_data: quiz_data, test_id: test_id }),
-    })
-      .then(async (response) => {
-        if (!response.ok) {
-          const errorResponse = await response.json();
-          throw errorResponse || "Error en la solicitud";
-        }
-        return response.json();
-      })
-      .then((response) => {
-        End_Animation(response, false);
-      })
-      .catch((error) => {
-        console.error(error);
-        End_Animation(error, true);
-      });
-  }
+  // function Update_Questions_Metadata(metadata) {
+  //   quiz_data.questions.metadata = metadata;
+  //   document.dispatchEvent(update_questions_metadata);
+  //   Move_Container("-50%");
+  // }
+  // function Save_Form() {
+  //   button_generate_google_form?.removeAttribute("disabled");
+  //   button_save_form.setAttribute("disabled", "");
+  //   // console.log(quiz_data);
 
-  function Update_Questions_Data() {
-    const questions = document.querySelectorAll(
-      ".question-content-item .question-content-item-main"
-    );
-    quiz_data.questions.content = [];
+  //   fetch("/request/quiz/save", {
+  //     method: "POST",
+  //     headers: { "content-type": "application/json" },
+  //     body: JSON.stringify(quiz_data),
+  //   })
+  //     .then(async (response) => {
+  //       if (!response.ok) {
+  //         const errorResponse = await response.json();
+  //         throw errorResponse || "Error en la solicitud";
+  //       }
+  //       return response.json();
+  //     })
+  //     .then((response) => {
+  //       localStorage.setItem("test_id", response.data);
+  //     })
+  //     .catch((error) => {
+  //       console.error(error);
+  //     });
+  // }
+  // function Generate_Google_Form() {
+  //   const test_id = localStorage.getItem("test_id");
 
-    questions.forEach((question_item) => {
-      const question_text = (
-        question_item.querySelector(
-          ".question-content-title-container input"
-        ) as HTMLTextAreaElement
-      ).value;
-      question_item.removeAttribute;
-      const answers = question_item.querySelectorAll(".answer-items-section .answer-item");
+  //   fetch("/request/quiz/generate", {
+  //     method: "POST",
+  //     headers: { "content-type": "application/json" },
+  //     body: JSON.stringify({ quiz_data: quiz_data, test_id: test_id }),
+  //   })
+  //     .then(async (response) => {
+  //       if (!response.ok) {
+  //         const errorResponse = await response.json();
+  //         throw errorResponse || "Error en la solicitud";
+  //       }
+  //       return response.json();
+  //     })
+  //     .then((response) => {
+  //       End_Animation(response, false);
+  //     })
+  //     .catch((error) => {
+  //       console.error(error);
+  //       End_Animation(error, true);
+  //     });
+  // }
 
-      const answers_data: {
-        text: string;
-        is_correct: boolean;
-      }[] = [];
+  // function Update_Questions_Data() {
+  //   const questions = document.querySelectorAll(
+  //     ".question-content-item .question-content-item-main"
+  //   );
+  //   quiz_data.questions.content = [];
 
-      answers.forEach((answer, index) => {
-        const answer_text = (answer.querySelector(".answer-input-text") as HTMLInputElement).value;
-        const answer_value = (answer.querySelector(".answer-input-box") as HTMLInputElement)
-          .checked;
+  //   questions.forEach((question_item) => {
+  //     const question_text = (
+  //       question_item.querySelector(
+  //         ".question-content-title-container input"
+  //       ) as HTMLTextAreaElement
+  //     ).value;
+  //     question_item.removeAttribute;
+  //     const answers = question_item.querySelectorAll(".answer-items-section .answer-item");
 
-        // Agregar la pregunta y si es correcta al array de datos
-        answers_data.push({
-          text: answer_text,
-          is_correct: answer_value,
-        });
-      });
+  //     const answers_data: {
+  //       text: string;
+  //       is_correct: boolean;
+  //     }[] = [];
 
-      quiz_data.questions.content.push({
-        text: question_text,
-        answers: answers_data,
-      });
-    });
+  //     answers.forEach((answer, index) => {
+  //       const answer_text = (answer.querySelector(".answer-input-text") as HTMLInputElement).value;
+  //       const answer_value = (answer.querySelector(".answer-input-box") as HTMLInputElement)
+  //         .checked;
 
-    // console.log(quiz_data)
-  }
+  //       // Agregar la pregunta y si es correcta al array de datos
+  //       answers_data.push({
+  //         text: answer_text,
+  //         is_correct: answer_value,
+  //       });
+  //     });
+
+  //     quiz_data.questions.content.push({
+  //       text: question_text,
+  //       answers: answers_data,
+  //     });
+  //   });
+
+  //   // console.log(quiz_data)
+  // }
 
   function End_Animation(response, is_error) {
     console.log(response);

@@ -1,0 +1,43 @@
+---
+import Document from "@layouts/document.astro";
+import Table from "./table";
+import Questions from "./questions";
+---
+
+<Document title="Test">
+  <div class="test-container">
+    <Table client:only="react" />
+    <Questions client:only="react" />
+  </div>
+</Document>
+
+<style>
+  .test-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+  }
+</style>
+
+<script>
+  import type { Quiz } from "@content/quiz_data";
+  import { quiz_data_store } from "@content/quiz_data";
+  
+  const template_id = "e2d176bd-d27b-4ca8-8443-b84c40c9d7fb";
+
+  fetch(`/request/get/quiz/template/${template_id}`)
+    .then((response) => response.json())
+    .then((response_json) => response_json.data)
+    .then((quiz_data: Quiz) => {
+      quiz_data_store.set(quiz_data);
+    })
+    .then(() => {
+      console.log(quiz_data_store.get());
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+    });
+</script>

@@ -1,18 +1,20 @@
-import { atom } from 'nanostores';
+import { atom } from "nanostores";
 
-interface Quiz {
-  title: string;
+export interface Quiz {
+  quiz_title: string;
   created_by: number;
+  quiz_subject: string;
+
   specifications_table: {
-    subject: string;
-    skills: string[];
-    total_questions: string;
-    table_body: {
+    total_questions: number;
+    quiz_skills: string[];
+    items: {
       thematic_area: string;
       content: string;
       objective: string;
       performed_classes: string;
-      skills: string[];
+      skill_index: number;
+      skill_content: string;
     }[];
   };
   questions: {
@@ -33,14 +35,14 @@ interface Quiz {
 }
 
 // Crear el store usando atom
-export const quizDataStore = atom<Quiz>({
-  title: "",
-  created_by: 1,
+export let quiz_data_store = atom<Quiz>({
+  quiz_title: "",
+  created_by: -1,
+  quiz_subject: "",
   specifications_table: {
-    subject: "",
-    skills: [],
-    total_questions: "",
-    table_body: [],
+    total_questions: 0,
+    quiz_skills: [],
+    items: [],
   },
   questions: {
     metadata: [],
