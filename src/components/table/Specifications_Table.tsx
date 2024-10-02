@@ -1,9 +1,13 @@
 import { quiz_data_store, type Quiz, type RowSpan } from "@content/quiz_data";
 import { useStore } from "@nanostores/react";
+import React, { useState } from "react";
 import "@styles/table_2.css";
 
 export default function Specifications_Table() {
   const $quiz_data: Quiz = useStore(quiz_data_store);
+  const [editingCell, setEditingCell] = useState<{ index: number; field: string } | null>(null);
+
+  console.log($quiz_data.specifications_table.items);
 
   function Calculate_RowSpans(items: Quiz["specifications_table"]["items"]) {
     const row_spans: RowSpan = {
@@ -14,23 +18,21 @@ export default function Specifications_Table() {
     items.forEach((item) => {
       const { thematic_area, content } = item;
 
-      // Contar las ocurrencias para thematic_area
       row_spans.thematic_area[thematic_area] = (row_spans.thematic_area[thematic_area] || 0) + 1;
-      // Contar las ocurrencias para content
       row_spans.content[content] = (row_spans.content[content] || 0) + 1;
     });
 
     return row_spans;
   }
 
-  function Handle_Input(event, index, field) {
+  function Handle_Blur(event: React.FocusEvent<HTMLTextAreaElement>, index: number, field: string) {
     const old_value = $quiz_data.specifications_table.items[index][field];
-    const newValue = prompt("Ingresa un nuevo valor:"); // Muestra un prompt para ingresar un nuevo valor
+    const newValue = event.target.value;
 
     if (newValue !== null) {
       // Crear una copia del objeto y actualizar el valor
-      const updatedItems = $quiz_data.specifications_table.items.map(
-        (item, idx) => (item[field] === old_value ? { ...item, [field]: newValue } : item) // Actualiza el ítem específico
+      const updatedItems = $quiz_data.specifications_table.items.map((item) =>
+        item[field] === old_value ? { ...item, [field]: newValue } : item
       );
 
       quiz_data_store.set({
@@ -41,14 +43,9 @@ export default function Specifications_Table() {
         },
       });
 
-      // Recalcula los row spans después de la actualización
-      const newRowSpans = Calculate_RowSpans(updatedItems);
-
-      // Aquí puedes hacer algo con los nuevos row spans si es necesario
-      console.log(newRowSpans);
+      setEditingCell(null);
     }
   }
-
   const row_spans = Calculate_RowSpans($quiz_data.specifications_table.items);
 
   let thematic_area_rendered: { [key: string]: boolean } = {};
@@ -70,41 +67,27 @@ export default function Specifications_Table() {
       <thead className="table-dark">
         <tr>
           <th id="thead-axis" className="left-cell thead-fix-y-padding">
-            {" "}
-            Eje{" "}
+            Eje
           </th>
           <th id="thead-content" className="left-cell thead-fix-y-padding">
-            {" "}
-            Contenidos{" "}
+            Contenidos
           </th>
           <th id="thead-objective" className="left-cell thead-fix-y-padding">
-            {" "}
-            Objetivos{" "}
+            Objetivos
           </th>
           <th id="thead-classes" className="text-center thead-fix-y-padding">
-            {" "}
-            Clases{" "}
+            Clases
           </th>
           <th id="thead-percentage" className="text-center thead-fix-y-padding">
-            {" "}
-            %{" "}
+            %
           </th>
-          <th
-            className="cell thead-input"
-            title="Ingresa una habilidad que quieras evaluar. Ej: Aplicación, Conocimiento, Análisis, etc."
-          >
+          <th className="cell thead-input">
             <input className="text-center" type="text" placeholder="Habilidad" required />
           </th>
-          <th
-            className="cell thead-input"
-            title="Ingresa una habilidad que quieras evaluar. Ej: Aplicación, Conocimiento, Análisis, etc."
-          >
+          <th className="cell thead-input">
             <input className="text-center" type="text" placeholder="Habilidad" required />
           </th>
-          <th
-            className="cell thead-input"
-            title="Ingresa una habilidad que quieras evaluar. Ej: Aplicación, Conocimiento, Análisis, etc."
-          >
+          <th className="cell thead-input">
             <input className="text-center" type="text" placeholder="Habilidad" required />
           </th>
           <th>
@@ -120,25 +103,49 @@ export default function Specifications_Table() {
               <td
                 className="td-input td-thematic_area"
                 rowSpan={row_spans.thematic_area[item.thematic_area]}
-                onDoubleClick={(event) => Handle_Input(event, index, "thematic_area")}
+                onDoubleClick={() => setEditingCell({ index, field: "thematic_area" })}
               >
-                {item.thematic_area}
+                {editingCell?.index === index && editingCell.field === "thematic_area" ? (
+                  <textarea
+                    defaultValue={item.thematic_area}
+                    onBlurCapture={(event) => Handle_Blur(event, index, "thematic_area")}
+                    autoFocus
+                  />
+                ) : (
+                  item.thematic_area
+                )}
               </td>
             )}
             {!content_rendered[item.content] && (
               <td
                 className="td-input td-content"
                 rowSpan={row_spans.content[item.content]}
-                onDoubleClick={(event) => Handle_Input(event, index, "content")}
+                onDoubleClick={() => setEditingCell({ index, field: "content" })}
               >
-                {item.content}
+                {editingCell?.index === index && editingCell.field === "content" ? (
+                  <textarea
+                    defaultValue={item.content}
+                    onBlur={(event) => Handle_Blur(event, index, "content")}
+                    autoFocus
+                  />
+                ) : (
+                  item.content
+                )}
               </td>
             )}
             <td
               className="td-input td-objective"
-              onDoubleClick={(event) => Handle_Input(event, index, "objective")}
+              onDoubleClick={() => setEditingCell({ index, field: "objective" })}
             >
-              {item.objective}
+              {editingCell?.index === index && editingCell.field === "objective" ? (
+                <textarea
+                  defaultValue={item.objective}
+                  onBlur={(event) => Handle_Blur(event, index, "objective")}
+                  autoFocus
+                />
+              ) : (
+                item.objective
+              )}
             </td>
             <td> - </td>
             <td> - </td>
