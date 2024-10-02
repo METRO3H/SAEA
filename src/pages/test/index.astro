@@ -2,30 +2,137 @@
 import Document from "@layouts/document.astro";
 import Table from "./table";
 import Questions from "./questions";
+import Specifications from "@layouts/specifications.astro";
+
 ---
 
-<Document title="Test">
-  <div class="test-container">
-    <Table client:only="react" />
-    <Questions client:only="react" />
+<Document title="Test Quiz" description="Crear Quiz">
+  <div id="main-container">
+    <div id="movable-container">
+      <Specifications/>
+
+      <div id="create-questions-container">
+        <div id="question-card-container">
+          <!-- <Questions_Data client:load /> -->
+
+          <div id="footer-card-buttons">
+            <div id="back-part-div">
+              <button id="button-back-part" class="btn btn-secondary btn-rounded"
+                ><i class="fas fa-arrow-rotate-left"></i>Atrás</button
+              >
+            </div>
+            <div id="work-buttons">
+              <button type="button" id="button-save-data-form" class="btn btn-lg btn-rounded">
+                <i class="far fa-bookmark"></i>
+                <span> Guardar</span>
+              </button>
+
+              <!-- <GoogleFormBtn /> -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- <Modal /> -->
   </div>
 </Document>
 
 <style>
-  .test-container {
-    width: 100%;
+  #main-container {
     height: 100%;
+    width: 100%;
+    overflow: hidden;
+  }
+  #movable-container {
     display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
+    height: 100%;
+    width: 200%;
+    transition: transform 500ms;
+    overflow: hidden;
+  }
+
+  #create-questions-container {
+    display: flex;
+    justify-content: center;
     align-items: center;
+    height: 100%;
+    width: 50%;
+  }
+  #question-card-container {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: minmax(0, 1fr) 80px;
+    grid-template-areas:
+      "main_content"
+      "buttons";
+    width: 805px;
+    height: 95%;
+
+    margin: 0;
+    padding: 0;
+    background: white;
+    box-shadow: 0 2px 8px rgba(var(--black), 5%);
+    border-radius: 11px;
+    overflow: hidden;
+  }
+
+  #back-part-div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* grid-area: back_button; */
+  }
+  #button-back-part {
+    /*  background: #e70034 !important; */
+    color: var(--main-color-blue-light);
+    height: fit-content;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  #footer-card-buttons {
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    grid-template-areas: "back-button work-buttons";
+    grid-area: buttons;
+  }
+  #button-save-data-form {
+    display: flex;
+    justify-content: center;
+    gap: 4px;
+    align-items: center;
+    background: var(--main-color-blue);
+    color: white;
+    grid-area: back-button;
+  }
+  #work-buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 11px;
+    grid-area: work-buttons;
+  }
+
+  #button-save-data-form > i {
+    padding-bottom: 2.2px;
+  }
+
+  @media (max-width: 805px) {
+    #question-card-container {
+      width: 100%;
+    }
   }
 </style>
 
 <script>
   import type { Quiz } from "@content/quiz_data";
   import { quiz_data_store } from "@content/quiz_data";
-  
+
+  // const URL = window?.location?.href?.match(/template\/([a-f0-9-]+)/);
+  // const template_id = URL?.[1];
+
   const template_id = "e2d176bd-d27b-4ca8-8443-b84c40c9d7fb";
 
   fetch(`/request/get/quiz/template/${template_id}`)

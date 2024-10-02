@@ -33,6 +33,10 @@ export interface Quiz {
     }[];
   };
 }
+export interface RowSpan {
+  thematic_area: { [key: string]: number };
+  content: { [key: string]: number };
+}
 
 // Crear el store usando atom
 export let quiz_data_store = atom<Quiz>({

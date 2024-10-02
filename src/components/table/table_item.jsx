@@ -11,7 +11,7 @@ function Table_Item({
   return (
     <td rowSpan={row_span} className={td_class} title={item_title} id={td_id}>
       {contains_input ? (
-        <input
+        <textarea
           className={input_class}
           type="text"
           placeholder={input_placeholder}

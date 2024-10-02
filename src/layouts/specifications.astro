@@ -1,22 +1,29 @@
 ---
+import Specifications_Table from "@components/table/Specifications_Table.tsx";
 import Special_Input_Text from "../components/special_input_text.jsx";
-import Custom_table from "../components/table/table.jsx";
+
 ---
 
-<div class="custom-container">
-  <div id="quiz-title">
-    <Special_Input_Text
-      input_label="Título del cuestionario"
-      label_class="fw-bold"
-      bar_thickness="3px"
-      input_width="45%"
-      input_font_size="31px"
-      input_no_focus_color="var(--main-color-blue)"
-      input_class="fw-bold"
-      input_icon_class="fas fa-book"
-    />
+<div id="specs-container">
+  <div class="custom-container">
+    <div id="quiz-title">
+      <Special_Input_Text
+        input_label="Título del cuestionario"
+        label_class="fw-bold"
+        bar_thickness="3px"
+        input_width="45%"
+        input_font_size="31px"
+        input_no_focus_color="var(--main-color-blue)"
+        input_class="fw-bold"
+        input_icon_class="fas fa-book"
+      />
+    </div>
+
+    <div id="table-container">
+      <Specifications_Table client:only="react" />
+    </div>
   </div>
-  <Custom_table client:load />
+
   <div id="next-part-div">
     <button id="button-next-part" class="btn btn-primary"
       ><i class="fas fa-forward"></i> Siguiente
@@ -25,12 +32,18 @@ import Custom_table from "../components/table/table.jsx";
 </div>
 
 <style>
+  #table-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+  }
   .custom-container {
     display: flex;
     justify-content: flex-start;
     align-items: flex-start;
     height: 100%;
-    width: 95%;
+    width: 100%;
     overflow: auto;
     flex-direction: column;
   }
@@ -39,7 +52,7 @@ import Custom_table from "../components/table/table.jsx";
     justify-content: center;
     align-items: center;
     width: 100%;
-    padding-top: 1rem;
+    padding: 1rem 0;
     gap: 8px;
   }
   #next-part-div {
@@ -54,6 +67,15 @@ import Custom_table from "../components/table/table.jsx";
     align-items: center;
     gap: 5px;
     background: var(--main-color-blue) !important;
+  }
+  #specs-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 100%;
+    width: 50%;
+    /* border: 2px solid red; */
+    padding: 1rem;
   }
 </style>
 

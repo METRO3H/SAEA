@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import Table_Item from "./table_item.jsx";
-import "@styles/table.css";
+// import "@styles/table.css";
 
 function Custom_table() {
   function Handle_Class_Item_Change() {
