@@ -92,6 +92,7 @@ tbody {
 
 .number-cell {
   font-family: Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  cursor: cell;
 }
 
 thead > tr > :last-child {
@@ -162,6 +163,9 @@ input::placeholder {
 
 .td-input > textarea {
   resize: none;
+}
+.td-input > input {
+  text-align: center;
 }
 
 .td-input > textarea:focus,

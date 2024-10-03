@@ -7,6 +7,7 @@ export default function Specifications_Table() {
   const $quiz_data: Quiz = useStore(quiz_data_store);
   const [editing_cell, set_editing_cell] = useState<{ index: number; field: string } | null>(null);
   const [editing_skill_cell, set_editing_skill_cell] = useState<{ index: number; skill_index: number } | null>(null);
+  
   console.log($quiz_data.specifications_table.items);
 
   function Calculate_RowSpans(items: Quiz["specifications_table"]["items"]) {
@@ -78,7 +79,23 @@ export default function Specifications_Table() {
     });
     return result.length;
   }
+ 
+  function Sanitize_Values(acc, item) {
+    const value = Number(item.performed_classes);
 
+    if (!Number.isInteger(value) || value < 0) {
+      return " - "; // Retornar " - " si se encuentra un valor inválido
+    }
+
+    if (acc === " - ") {
+      return acc;
+    }
+
+    return acc + value;
+  }
+
+  const total_classes = $quiz_data.specifications_table.items.reduce(Sanitize_Values, 0);
+  
   const row_spans = Calculate_RowSpans($quiz_data.specifications_table.items);
 
   let thematic_area_rendered: { [key: string]: boolean } = {};
@@ -207,7 +224,9 @@ export default function Specifications_Table() {
               )}
             </td>
 
-            <td className="td-percentage text-center align-middle"> - </td>
+            <td className="td-percentage text-center align-middle number-cell"> {
+                total_classes === 0 ? " - " : (parseInt(item.performed_classes )/ total_classes * 100).toFixed(1) + " %"
+              } </td>
 
             {$quiz_data.specifications_table.quiz_skills.map((_, skill_index) => (
               <td
@@ -248,7 +267,7 @@ export default function Specifications_Table() {
           <td colSpan={3} className="text-center">
             TOTAL
           </td>
-          <td className="text-center number-cell">0</td>
+          <td className="text-center number-cell">{total_classes}</td>
           <td className="text-center number-cell">100%</td>
           <td className="text-center number-cell item-total-skill">0</td>
           <td className="text-center number-cell item-total-skill">0</td>
