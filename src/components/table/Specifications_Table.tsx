@@ -2,7 +2,6 @@ import { quiz_data_store, type Quiz, type RowSpan } from "@content/quiz_data";
 import { useStore } from "@nanostores/react";
 import React, { useState } from "react";
 import "@styles/table_2.css";
-import { TRUE } from "sass";
 
 export default function Specifications_Table() {
   const $quiz_data: Quiz = useStore(quiz_data_store);
@@ -44,6 +43,23 @@ export default function Specifications_Table() {
     });
 
     set_editing_cell(null);
+  }
+
+  function Calculate_Total_Questions(skill_content_list: string[]) {
+    const result = skill_content_list.flatMap((item) => {
+      const skill_content_patron = item.match(/\d+-\d+|\d+/g) || [];
+
+      return skill_content_patron.flatMap((range) => {
+        if (range.includes("-")) {
+          const [start, end] = range.split("-").map(Number);
+          return Array.from({ length: end - start + 1 }, (_, i) => start + i);
+        }
+        return Number(range);
+      });
+    });
+
+    console.log(result);
+    return result.length;
   }
 
   const row_spans = Calculate_RowSpans($quiz_data.specifications_table.items);
@@ -109,7 +125,9 @@ export default function Specifications_Table() {
                   <textarea
                     defaultValue={item.thematic_area}
                     onBlur={(event) => Handle_Blur(event, index, "thematic_area")}
-                    onFocus={(event) => event.currentTarget.selectionStart = event.currentTarget.value.length}
+                    onFocus={(event) =>
+                      (event.currentTarget.selectionStart = event.currentTarget.value.length)
+                    }
                     autoFocus
                   />
                 ) : (
@@ -127,7 +145,9 @@ export default function Specifications_Table() {
                   <textarea
                     defaultValue={item.content}
                     onBlur={(event) => Handle_Blur(event, index, "content")}
-                    onFocus={(event) => event.currentTarget.selectionStart = event.currentTarget.value.length}
+                    onFocus={(event) =>
+                      (event.currentTarget.selectionStart = event.currentTarget.value.length)
+                    }
                     autoFocus
                   />
                 ) : (
@@ -143,20 +163,31 @@ export default function Specifications_Table() {
                 <textarea
                   defaultValue={item.objective}
                   onBlur={(event) => Handle_Blur(event, index, "objective")}
-                  onFocus={(event) => event.currentTarget.selectionStart = event.currentTarget.value.length}
+                  onFocus={(event) =>
+                    (event.currentTarget.selectionStart = event.currentTarget.value.length)
+                  }
                   autoFocus
                 />
               ) : (
                 item.objective
-              )}  
+              )}
             </td>
 
-            <td className="td-performed-classes text-center align-middle"> {item.performed_classes} </td>
-            <td> - </td>
-            <td> - </td>
-            <td> - </td>
-            <td> - </td>
-            <td> - </td>
+            <td className="td-performed-classes text-center align-middle">
+              {item.performed_classes}
+            </td>
+            <td className="td-percentage text-center align-middle"> - </td>
+
+            {$quiz_data.specifications_table.quiz_skills.map((_, skill_index) => (
+              <td key={"skill-index-" + skill_index} className="td-skill text-center align-middle">
+                {item.skill_index === skill_index ? item.skill_content : " - "}
+              </td>
+            ))}
+
+            <td className="td-total-questions text-center align-middle">
+            
+              {Calculate_Total_Questions([item.skill_content])}
+            </td>
 
             {(thematic_area_rendered[item.thematic_area] = true)}
             {(content_rendered[item.content] = true)}
