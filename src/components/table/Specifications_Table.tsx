@@ -2,10 +2,11 @@ import { quiz_data_store, type Quiz, type RowSpan } from "@content/quiz_data";
 import { useStore } from "@nanostores/react";
 import React, { useState } from "react";
 import "@styles/table_2.css";
+import { TRUE } from "sass";
 
 export default function Specifications_Table() {
   const $quiz_data: Quiz = useStore(quiz_data_store);
-  const [editingCell, setEditingCell] = useState<{ index: number; field: string } | null>(null);
+  const [editing_cell, set_editing_cell] = useState<{ index: number; field: string } | null>(null);
 
   console.log($quiz_data.specifications_table.items);
 
@@ -27,25 +28,24 @@ export default function Specifications_Table() {
 
   function Handle_Blur(event: React.FocusEvent<HTMLTextAreaElement>, index: number, field: string) {
     const old_value = $quiz_data.specifications_table.items[index][field];
-    const newValue = event.target.value;
+    let new_value = event.target.value.trim() || " - ";
 
-    if (newValue !== null) {
-      // Crear una copia del objeto y actualizar el valor
-      const updatedItems = $quiz_data.specifications_table.items.map((item) =>
-        item[field] === old_value ? { ...item, [field]: newValue } : item
-      );
+    // Crear una copia del objeto y actualizar el valor
+    const updatedItems = $quiz_data.specifications_table.items.map((item) =>
+      item[field] === old_value ? { ...item, [field]: new_value } : item
+    );
 
-      quiz_data_store.set({
-        ...$quiz_data, // Mantiene las propiedades existentes del estado
-        specifications_table: {
-          ...$quiz_data.specifications_table, // Mantiene las propiedades de specifications_table
-          items: updatedItems,
-        },
-      });
+    quiz_data_store.set({
+      ...$quiz_data, // Mantiene las propiedades existentes del estado
+      specifications_table: {
+        ...$quiz_data.specifications_table, // Mantiene las propiedades de specifications_table
+        items: updatedItems,
+      },
+    });
 
-      setEditingCell(null);
-    }
+    set_editing_cell(null);
   }
+
   const row_spans = Calculate_RowSpans($quiz_data.specifications_table.items);
 
   let thematic_area_rendered: { [key: string]: boolean } = {};
@@ -103,12 +103,13 @@ export default function Specifications_Table() {
               <td
                 className="td-input td-thematic_area"
                 rowSpan={row_spans.thematic_area[item.thematic_area]}
-                onDoubleClick={() => setEditingCell({ index, field: "thematic_area" })}
+                onClick={() => set_editing_cell({ index, field: "thematic_area" })}
               >
-                {editingCell?.index === index && editingCell.field === "thematic_area" ? (
+                {editing_cell?.index === index && editing_cell.field === "thematic_area" ? (
                   <textarea
                     defaultValue={item.thematic_area}
-                    onBlurCapture={(event) => Handle_Blur(event, index, "thematic_area")}
+                    onBlur={(event) => Handle_Blur(event, index, "thematic_area")}
+                    onFocus={(event) => event.currentTarget.select()}
                     autoFocus
                   />
                 ) : (
@@ -120,12 +121,13 @@ export default function Specifications_Table() {
               <td
                 className="td-input td-content"
                 rowSpan={row_spans.content[item.content]}
-                onDoubleClick={() => setEditingCell({ index, field: "content" })}
+                onClick={() => set_editing_cell({ index, field: "content" })}
               >
-                {editingCell?.index === index && editingCell.field === "content" ? (
+                {editing_cell?.index === index && editing_cell.field === "content" ? (
                   <textarea
                     defaultValue={item.content}
                     onBlur={(event) => Handle_Blur(event, index, "content")}
+                    onFocus={(event) => event.currentTarget.select()}
                     autoFocus
                   />
                 ) : (
@@ -135,12 +137,13 @@ export default function Specifications_Table() {
             )}
             <td
               className="td-input td-objective"
-              onDoubleClick={() => setEditingCell({ index, field: "objective" })}
+              onClick={() => set_editing_cell({ index, field: "objective" })}
             >
-              {editingCell?.index === index && editingCell.field === "objective" ? (
+              {editing_cell?.index === index && editing_cell.field === "objective" ? (
                 <textarea
                   defaultValue={item.objective}
                   onBlur={(event) => Handle_Blur(event, index, "objective")}
+                  onFocus={(event) => event.currentTarget.select()}
                   autoFocus
                 />
               ) : (
