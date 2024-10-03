@@ -76,6 +76,10 @@ caption {
   max-width: 40px;
 }
 
+table {
+  height: 100%;
+}
+
 td,
 th,
 tbody {
@@ -162,6 +166,4 @@ input::placeholder {
   outline-color: var(--main-color-google-form) !important;
 }
 
-table {
-  height: 100%;
-}
+

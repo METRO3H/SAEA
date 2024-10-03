@@ -109,7 +109,7 @@ export default function Specifications_Table() {
                   <textarea
                     defaultValue={item.thematic_area}
                     onBlur={(event) => Handle_Blur(event, index, "thematic_area")}
-                    onFocus={(event) => event.currentTarget.select()}
+                    onFocus={(event) => event.currentTarget.selectionStart = event.currentTarget.value.length}
                     autoFocus
                   />
                 ) : (
@@ -127,7 +127,7 @@ export default function Specifications_Table() {
                   <textarea
                     defaultValue={item.content}
                     onBlur={(event) => Handle_Blur(event, index, "content")}
-                    onFocus={(event) => event.currentTarget.select()}
+                    onFocus={(event) => event.currentTarget.selectionStart = event.currentTarget.value.length}
                     autoFocus
                   />
                 ) : (
@@ -143,14 +143,15 @@ export default function Specifications_Table() {
                 <textarea
                   defaultValue={item.objective}
                   onBlur={(event) => Handle_Blur(event, index, "objective")}
-                  onFocus={(event) => event.currentTarget.select()}
+                  onFocus={(event) => event.currentTarget.selectionStart = event.currentTarget.value.length}
                   autoFocus
                 />
               ) : (
                 item.objective
-              )}
+              )}  
             </td>
-            <td> - </td>
+
+            <td className="td-performed-classes text-center align-middle"> {item.performed_classes} </td>
             <td> - </td>
             <td> - </td>
             <td> - </td>
