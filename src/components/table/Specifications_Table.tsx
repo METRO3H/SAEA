@@ -1,12 +1,12 @@
 import { quiz_data_store, type Quiz, type RowSpan } from "@content/quiz_data";
 import { useStore } from "@nanostores/react";
-import React, { useState } from "react";
+import { useState } from "react";
 import "@styles/table_2.css";
 
 export default function Specifications_Table() {
   const $quiz_data: Quiz = useStore(quiz_data_store);
   const [editing_cell, set_editing_cell] = useState<{ index: number; field: string } | null>(null);
-
+  const [editing_skill_cell, set_editing_skill_cell] = useState<{ index: number; skill_index: number } | null>(null);
   console.log($quiz_data.specifications_table.items);
 
   function Calculate_RowSpans(items: Quiz["specifications_table"]["items"]) {
@@ -25,24 +25,43 @@ export default function Specifications_Table() {
     return row_spans;
   }
 
-  function Handle_Blur(event: React.FocusEvent<HTMLTextAreaElement>, index: number, field: string) {
-    const old_value = $quiz_data.specifications_table.items[index][field];
+  function Handle_Blur(event, index: number, field: string, skill_index: number = -1) {
+    const old_value = $quiz_data.specifications_table.items[index][field] || "";
     let new_value = event.target.value.trim() || " - ";
 
-    // Crear una copia del objeto y actualizar el valor
-    const updatedItems = $quiz_data.specifications_table.items.map((item) =>
-      item[field] === old_value ? { ...item, [field]: new_value } : item
-    );
+    let updated_items:Quiz["specifications_table"]["items"] = []
+
+    if (field === "thematic_area" || field === "content" || field === "objective") {
+      updated_items = $quiz_data.specifications_table.items.map((item, item_index) =>
+        item[field] === old_value ? { ...item, [field]: new_value } : item
+      );
+    }
+    if (field === "performed_classes") {
+      updated_items = $quiz_data.specifications_table.items.map((item, item_index) =>
+        item_index === index ? (item[field] === old_value ? { ...item, [field]: new_value } : item ): item
+      );
+    }
+    if (field === "skills") {
+      updated_items = $quiz_data.specifications_table.items.map((item, item_index) =>
+        item_index === index && item.skill_index === skill_index
+          ? { ...item, ["skill_content"]: new_value }
+          : item
+      );
+    }
+
 
     quiz_data_store.set({
       ...$quiz_data, // Mantiene las propiedades existentes del estado
       specifications_table: {
         ...$quiz_data.specifications_table, // Mantiene las propiedades de specifications_table
-        items: updatedItems,
+        items: updated_items,
       },
     });
 
     set_editing_cell(null);
+    if (field === "skills"){
+      set_editing_skill_cell(null);
+    }
   }
 
   function Calculate_Total_Questions(skill_content_list: string[]) {
@@ -57,8 +76,6 @@ export default function Specifications_Table() {
         return Number(range);
       });
     });
-
-    console.log(result);
     return result.length;
   }
 
@@ -172,20 +189,51 @@ export default function Specifications_Table() {
                 item.objective
               )}
             </td>
-
-            <td className="td-performed-classes text-center align-middle">
-              {item.performed_classes}
+            <td
+              className="td-input td-performed-classes text-center align-middle"
+              onClick={() => set_editing_cell({ index, field: "performed_classes" })}
+            >
+              {editing_cell?.index === index && editing_cell.field === "performed_classes" ? (
+                <input
+                  defaultValue={item.performed_classes}
+                  onBlur={(event) => Handle_Blur(event, index, "performed_classes")}
+                  onFocus={(event) =>
+                    (event.currentTarget.selectionStart = event.currentTarget.value.length)
+                  }
+                  autoFocus
+                />
+              ) : (
+                item.performed_classes
+              )}
             </td>
+
             <td className="td-percentage text-center align-middle"> - </td>
 
             {$quiz_data.specifications_table.quiz_skills.map((_, skill_index) => (
-              <td key={"skill-index-" + skill_index} className="td-skill text-center align-middle">
-                {item.skill_index === skill_index ? item.skill_content : " - "}
+              <td
+                key={"skill-index-" + skill_index}
+                className="td-input td-skill text-center align-middle"
+                onClick={() => set_editing_skill_cell({ index, skill_index })}
+              >
+                {editing_skill_cell?.index === index &&
+                editing_skill_cell.skill_index === skill_index ? (
+                  <input
+                    defaultValue={item.skill_index === skill_index ? item.skill_content : " - "}
+                    onBlur={(event) => Handle_Blur(event, index, "skills", skill_index)}
+                    onFocus={(event) =>
+                      (event.currentTarget.selectionStart = event.currentTarget.value.length)
+                    }
+                    autoFocus
+                  />
+                ) : item.skill_index === skill_index ? (
+                  item.skill_content
+                ) : (
+                  " - "
+                )}
               </td>
             ))}
 
             <td className="td-total-questions text-center align-middle">
-            
               {Calculate_Total_Questions([item.skill_content])}
             </td>
 
@@ -194,6 +242,22 @@ export default function Specifications_Table() {
           </tr>
         ))}
       </tbody>
+
+      <tfoot>
+        <tr>
+          <td colSpan={3} className="text-center">
+            TOTAL
+          </td>
+          <td className="text-center number-cell">0</td>
+          <td className="text-center number-cell">100%</td>
+          <td className="text-center number-cell item-total-skill">0</td>
+          <td className="text-center number-cell item-total-skill">0</td>
+          <td className="text-center number-cell item-total-skill">0</td>
+          <td className="text-center number-cell item-total-skill" id="item-total-all-questions">
+            0
+          </td>
+        </tr>
+      </tfoot>
     </table>
   );
 }

@@ -92,7 +92,6 @@ tbody {
 
 .number-cell {
   font-family: Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
-  font-size: 14.4px !important;
 }
 
 thead > tr > :last-child {
@@ -118,7 +117,7 @@ tfoot > tr > td {
   max-width: 70px;
 }
 #item-total-all-questions {
-  background: rgb(35, 55, 255) !important;
+  background: var(--main-color-google-form) !important;
 }
 #item-total-all-questions > input,
 #item-total-all-questions > input::placeholder {
@@ -145,25 +144,27 @@ input::placeholder {
   min-height: 50px;
   cursor: cell;
   height: 100%;
+  padding: 0;
 }
 
-
-
-.td-input > textarea {
+.td-input > textarea,
+.td-input > input {
   width: 100%;
   height: 100%;
   padding: 0;
   box-sizing: border-box;
   border: none;
-  resize: none;
-
   outline-width: 3px;
   outline-style: solid;
   outline-color: transparent;
   outline-offset: 2px;
 }
-.td-input > textarea:focus {
-  outline-color: var(--main-color-google-form) !important;
+
+.td-input > textarea {
+  resize: none;
 }
 
-
+.td-input > textarea:focus,
+.td-input > input:focus {
+  outline-color: var(--main-color-google-form) !important;
+}
