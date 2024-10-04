@@ -7,6 +7,7 @@ export default function Specifications_Table() {
   const $quiz_data: Quiz = useStore(quiz_data_store);
   const [editing_cell, set_editing_cell] = useState<{ index: number; field: string } | null>(null);
   const [editing_skill_cell, set_editing_skill_cell] = useState<{ index: number; skill_index: number } | null>(null);
+  const [editing_total_questions, set_editing_total_questions] = useState<boolean>(false);
   
   console.log($quiz_data.specifications_table.items);
 
@@ -48,6 +49,17 @@ export default function Specifications_Table() {
           ? { ...item, ["skill_content"]: new_value }
           : item
       );
+    }
+    if (field === "total_questions") {
+      quiz_data_store.set({
+        ...$quiz_data, // Mantiene las propiedades existentes del estado
+        specifications_table: {
+          ...$quiz_data.specifications_table, // Mantiene las propiedades de specifications_table
+          total_questions: Number(new_value),
+        },
+      });
+      set_editing_total_questions(false);
+      return;
     }
 
 
@@ -106,14 +118,14 @@ export default function Specifications_Table() {
   
   const row_spans = Calculate_RowSpans($quiz_data.specifications_table.items);
 
-  const total_question_count = $quiz_data.questions.length;
+  const total_question_count = $quiz_data.specifications_table.total_questions;
 
   let thematic_area_rendered: { [key: string]: boolean } = {};
   let content_rendered: { [key: string]: boolean } = {};
 
   
   return (
-    <table className="table mb-0 table-hover table-bordered caption-top">
+    <table className="table table-hover table-bordered caption-top">
       <caption>
         <div id="caption-container">
           <div id="table-subject">
@@ -160,20 +172,25 @@ export default function Specifications_Table() {
       <tbody>
         {$quiz_data.specifications_table.items.map((item, index) => {
           const classes_relation = parseInt(item.performed_classes) / total_classes;
-          let classes_percentage:any = classes_relation * 100;
+          let classes_percentage: any = classes_relation * 100;
           classes_percentage =
-            total_classes === 0 ? " - "
-              : 
-                Number.isInteger(classes_percentage) ?
-                parseInt(classes_percentage) : classes_percentage.toFixed(1);
-                
-          classes_percentage = classes_percentage + "%"     
+            total_classes === 0
+              ? " - "
+              : Number.isInteger(classes_percentage)
+              ? parseInt(classes_percentage)
+              : classes_percentage.toFixed(1);
+
+          classes_percentage = classes_percentage + "%";
 
           const item_question_count: number = Get_Skill_Content_Values([item.skill_content]).length;
-          const expected_item_question_count: number = Math.round( total_question_count * classes_relation);
+          const expected_item_question_count: number = Math.round(
+            total_question_count * classes_relation
+          );
 
-          const success_item_question_count = (item_question_count === expected_item_question_count ? " td-total-questions-successful" : "")
-          
+          const success_item_question_count =
+            item_question_count === expected_item_question_count
+              ? " td-total-questions-successful"
+              : "";
 
           return (
             <tr key={index}>
@@ -267,7 +284,7 @@ export default function Specifications_Table() {
                   editing_skill_cell.skill_index === skill_index ? (
                     <input
                       defaultValue={item.skill_index === skill_index ? item.skill_content : " - "}
-                      onBlur={(event) => Handle_Blur(event, index, "skills", skill_index)}
+                      // onBlur={(event) => Handle_Blur(event, index, "skills", skill_index)}
                       onFocus={(event) =>
                         (event.currentTarget.selectionStart = event.currentTarget.value.length)
                       }
@@ -281,8 +298,12 @@ export default function Specifications_Table() {
                 </td>
               ))}
 
-              <td className={"td-total-questions text-center align-middle"+ success_item_question_count }>
-                {item_question_count + "/" + expected_item_question_count} 
+              <td
+                className={
+                  "td-total-questions text-center align-middle" + success_item_question_count
+                }
+              >
+                {item_question_count + "/" + expected_item_question_count}
               </td>
 
               {(thematic_area_rendered[item.thematic_area] = true)}
@@ -299,20 +320,33 @@ export default function Specifications_Table() {
           </td>
           <td className="text-center number-cell">{total_classes}</td>
           <td className="text-center number-cell">100%</td>
-
           {$quiz_data.specifications_table.quiz_skills.map((_, skill_index) => (
             <td key={"foot-skill-index-" + skill_index} className="text-center number-cell">
               {Get_Skill_Content_Columns(skill_index).length}
             </td>
           ))}
-
           {/* <td className="text-center number-cell item-total-skill">0</td>
           <td className="text-center number-cell item-total-skill">0</td>
           <td className="text-center number-cell item-total-skill">0</td> */}
-
-          <td className="text-center number-cell item-total-skill" id="item-total-all-questions">
-            {total_question_count}
+          <td
+            className="td-input text-center number-cell"
+            id="item-total-all-questions"
+            onClick={() => set_editing_total_questions(true)}
+          >
+            {editing_total_questions ? (
+              <input
+                defaultValue={total_question_count}
+                onBlur={(event) => Handle_Blur(event, 0, "total_questions")}
+                onFocus={(event) =>
+                  (event.currentTarget.selectionStart = event.currentTarget.value.length)
+                }
+                autoFocus
+              />
+            ) : (
+              total_question_count
+            )}
           </td>
+         
         </tr>
       </tfoot>
     </table>

@@ -24,7 +24,7 @@
   --main-color-blue-light: #455b84;
   --main-color-blue-contrast: rgb(121, 141, 255);
   --main-color-google-form: #6200ee;
-  --main-color-google-form-light: rgba(98, 0, 238, 30%);
+  --main-color-google-form-light: rgba(98, 0, 238, 8%);
 }
 @font-face {
   font-family: "Atkinson";

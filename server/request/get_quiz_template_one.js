@@ -135,6 +135,7 @@ async function Get_Template_Data(test_id) {
           created_by: 1,
           quiz_subject: test_subject,
           specifications_table: {
+            total_questions: questions_list.length,
             quiz_skills: skills_list_query_data,
             items: specifications_table_query_data,
           },
