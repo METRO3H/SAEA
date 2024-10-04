@@ -172,3 +172,7 @@ input::placeholder {
 .td-input > input:focus {
   outline-color: var(--main-color-google-form) !important;
 }
+
+.td-total-questions-successful{
+  color: var(--main-color-google-form) !important;
+}

@@ -101,6 +101,7 @@ export default function Specifications_Table() {
 
     return column_values
   }
+
   const total_classes = $quiz_data.specifications_table.items.reduce(Sanitize_Values, 0);
   
   const row_spans = Calculate_RowSpans($quiz_data.specifications_table.items);
@@ -159,10 +160,20 @@ export default function Specifications_Table() {
       <tbody>
         {$quiz_data.specifications_table.items.map((item, index) => {
           const classes_relation = parseInt(item.performed_classes) / total_classes;
-          const classes_percentage =
-            total_classes === 0 ? " - " : (classes_relation * 100).toFixed(1) + " %";
+          let classes_percentage:any = classes_relation * 100;
+          classes_percentage =
+            total_classes === 0 ? " - "
+              : 
+                Number.isInteger(classes_percentage) ?
+                parseInt(classes_percentage) : classes_percentage.toFixed(1);
+                
+          classes_percentage = classes_percentage + "%"     
 
-          const item_question_count = total_question_count * classes_relation;
+          const item_question_count: number = Get_Skill_Content_Values([item.skill_content]).length;
+          const expected_item_question_count: number = Math.round( total_question_count * classes_relation);
+
+          const success_item_question_count = (item_question_count === expected_item_question_count ? " td-total-questions-successful" : "")
+          
 
           return (
             <tr key={index}>
@@ -270,9 +281,8 @@ export default function Specifications_Table() {
                 </td>
               ))}
 
-              <td className="td-total-questions text-center align-middle">
-                {/* {Calculate_Total_Questions([item.skill_content])} */}
-                {item_question_count}
+              <td className={"td-total-questions text-center align-middle"+ success_item_question_count }>
+                {item_question_count + "/" + expected_item_question_count} 
               </td>
 
               {(thematic_area_rendered[item.thematic_area] = true)}
