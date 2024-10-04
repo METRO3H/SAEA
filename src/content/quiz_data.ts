@@ -18,20 +18,12 @@ export interface Quiz {
     }[];
   };
   questions: {
-    metadata: {
-      thematic_area: string;
-      content: string;
-      objective: string;
-      skill: string;
-    }[];
-    content: {
+    text: string;
+    answers: {
       text: string;
-      answers: {
-        text: string;
-        is_correct: boolean;
-      }[];
+      is_correct: boolean;
     }[];
-  };
+  }[];
 }
 export interface RowSpan {
   thematic_area: { [key: string]: number };
@@ -48,8 +40,5 @@ export let quiz_data_store = atom<Quiz>({
     quiz_skills: [],
     items: [],
   },
-  questions: {
-    metadata: [],
-    content: [],
-  },
+  questions: [],
 });
