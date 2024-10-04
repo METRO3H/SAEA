@@ -79,7 +79,6 @@ caption {
 table {
   height: 100%;
 }
-
 td,
 th,
 tbody {
@@ -136,6 +135,7 @@ input::placeholder {
 }
 
 .td-input {
+  position: relative;
   min-height: 50px;
   cursor: cell;
   height: 100%;
@@ -163,6 +163,7 @@ input::placeholder {
   
 }
 .td-input > input {
+  
   text-align: center;
   line-height: 100%;
   font-size: 0.9rem;
@@ -173,6 +174,21 @@ input::placeholder {
 .td-input > input:focus {
   outline-color: var(--main-color-google-form) !important;
   background-color: var(--main-color-google-form-light) ;
+}
+
+.td-input > span{
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+
+
+
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
 }
 
 .td-total-questions-successful{
@@ -186,4 +202,8 @@ input::placeholder {
 #item-total-all-questions > input::placeholder {
   background: var(--main-color-google-form) !important;
   color: white;
+}
+
+.input-invisible{
+  visibility: hidden;
 }

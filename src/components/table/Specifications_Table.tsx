@@ -284,16 +284,18 @@ export default function Specifications_Table() {
                   editing_skill_cell.skill_index === skill_index ? (
                     <input
                       defaultValue={item.skill_index === skill_index ? item.skill_content : " - "}
-                      // onBlur={(event) => Handle_Blur(event, index, "skills", skill_index)}
+                      onBlur={(event) => Handle_Blur(event, index, "skills", skill_index)}
                       onFocus={(event) =>
                         (event.currentTarget.selectionStart = event.currentTarget.value.length)
                       }
                       autoFocus
                     />
-                  ) : item.skill_index === skill_index ? (
-                    item.skill_content
                   ) : (
-                    " - "
+                    
+                      <span >
+                        {item.skill_index === skill_index ? item.skill_content : " - "}
+                      </span>
+                  
                   )}
                 </td>
               ))}
