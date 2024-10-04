@@ -125,11 +125,11 @@ export default function Specifications_Table() {
 
   
   return (
-    <table className="table table-hover table-bordered caption-top">
+    <table className="table table-bordered caption-top">
       <caption>
         <div id="caption-container">
           <div id="table-subject">
-            <input placeholder="Asignatura" />
+            <input placeholder="Asignatura" defaultValue={$quiz_data.quiz_subject}/>
           </div>
           <div id="table-title">
             <i className="fas fa-table fa-2x"></i>

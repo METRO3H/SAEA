@@ -134,6 +134,7 @@ input::placeholder {
   }
 }
 
+
 .td-input {
   position: relative;
   min-height: 50px;
@@ -160,7 +161,6 @@ input::placeholder {
 
 .td-input > textarea {
   resize: none;
-  
 }
 .td-input > input {
   
@@ -173,7 +173,7 @@ input::placeholder {
 .td-input > textarea:focus,
 .td-input > input:focus {
   outline-color: var(--main-color-google-form) !important;
-  background-color: var(--main-color-google-form-light) ;
+  background-color: rgba(var(--main-color-google-form-dynamic), 16%) ;
 }
 
 .td-input > span{
@@ -181,9 +181,6 @@ input::placeholder {
   display: flex;
   justify-content: center;
   align-items: center;
-
-
-
 
   top: 0;
   right: 0;
@@ -206,4 +203,15 @@ input::placeholder {
 
 .input-invisible{
   visibility: hidden;
+}
+
+tr{
+  --mdb-table-bg: none;
+}
+tr:hover{
+  background-color: var(--main-color-google-form-light)!important;
+}
+
+td:hover{
+  background-color: rgba(var(--main-color-google-form-dynamic), 8%) ;
 }
