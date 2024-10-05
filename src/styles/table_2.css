@@ -207,6 +207,7 @@ input::placeholder {
 
 tr{
   --mdb-table-bg: none;
+
 }
 tr:hover{
   background-color: var(--main-color-google-form-light)!important;

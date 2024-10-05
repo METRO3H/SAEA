@@ -9,7 +9,6 @@ export default function Specifications_Table() {
   const [editing_skill_cell, set_editing_skill_cell] = useState<{ index: number; skill_index: number } | null>(null);
   const [editing_total_questions, set_editing_total_questions] = useState<boolean>(false);
   
-  console.log($quiz_data.specifications_table.items);
 
   function Calculate_RowSpans(items: Quiz["specifications_table"]["items"]) {
     const row_spans: RowSpan = {
@@ -55,11 +54,20 @@ export default function Specifications_Table() {
         ...$quiz_data, // Mantiene las propiedades existentes del estado
         specifications_table: {
           ...$quiz_data.specifications_table, // Mantiene las propiedades de specifications_table
-          total_questions: Number(new_value),
+          total_questions: new_value ? Number(new_value) : 0,
         },
       });
       set_editing_total_questions(false);
       return;
+    }
+
+    if (field === "subject") {
+      quiz_data_store.set({
+        ...$quiz_data, // Mantiene las propiedades existentes del estado
+        quiz_subject: new_value ? new_value : " - ",
+      });
+
+      return
     }
 
 
@@ -123,13 +131,17 @@ export default function Specifications_Table() {
   let thematic_area_rendered: { [key: string]: boolean } = {};
   let content_rendered: { [key: string]: boolean } = {};
 
-  
+  console.log($quiz_data);
   return (
     <table className="table table-bordered caption-top">
       <caption>
         <div id="caption-container">
           <div id="table-subject">
-            <input placeholder="Asignatura" defaultValue={$quiz_data.quiz_subject}/>
+            <input
+              placeholder="Asignatura"
+              defaultValue={$quiz_data.quiz_subject}
+              onBlur={(event) => Handle_Blur(event, 0, "subject")}
+            />
           </div>
           <div id="table-title">
             <i className="fas fa-table fa-2x"></i>
@@ -291,11 +303,7 @@ export default function Specifications_Table() {
                       autoFocus
                     />
                   ) : (
-                    
-                      <span >
-                        {item.skill_index === skill_index ? item.skill_content : " - "}
-                      </span>
-                  
+                    <span>{item.skill_index === skill_index ? item.skill_content : " - "}</span>
                   )}
                 </td>
               ))}
@@ -348,7 +356,6 @@ export default function Specifications_Table() {
               total_question_count
             )}
           </td>
-         
         </tr>
       </tfoot>
     </table>

@@ -1,22 +1,12 @@
 ---
 import Specifications_Table from "@components/table/Specifications_Table.tsx";
-import Special_Input_Text from "../components/special_input_text.jsx";
-
+import Quiz_Title from "@components/table/quiz_title.tsx";
 ---
 
 <div id="specs-container">
   <div class="custom-container">
     <div id="quiz-title">
-      <Special_Input_Text
-        input_label="Título del cuestionario"
-        label_class="fw-bold"
-        bar_thickness="3px"
-        input_width="45%"
-        input_font_size="31px"
-        input_no_focus_color="var(--main-color-blue)"
-        input_class="fw-bold"
-        input_icon_class="fas fa-book"
-      />
+      <Quiz_Title client:only="react" />
     </div>
 
     <div id="table-container">
@@ -25,7 +15,7 @@ import Special_Input_Text from "../components/special_input_text.jsx";
   </div>
 
   <div id="next-part-div">
-    <button id="button-next-part" class="btn btn-primary"
+    <button id="button-next-part" class="btn btn-primary" onclick="Move_Container('50%')"
       ><i class="fas fa-forward"></i> Siguiente
     </button>
   </div>
@@ -37,6 +27,7 @@ import Special_Input_Text from "../components/special_input_text.jsx";
     justify-content: center;
     align-items: center;
     width: 100%;
+    flex-grow: 1;
   }
   .custom-container {
     display: flex;
@@ -80,6 +71,15 @@ import Special_Input_Text from "../components/special_input_text.jsx";
 </style>
 
 <script>
+  const button_next_part = document.querySelector("#button-next-part") as HTMLButtonElement;
+
+  button_next_part?.addEventListener("click", () => {
+    const movable_container = document.querySelector("#movable-container") as HTMLDivElement;
+    movable_container.style.transform = "translateX(-50%)";
+  });
+</script>
+
+<!-- <script>
   document.querySelectorAll<HTMLInputElement>(".cell input").forEach((input: HTMLInputElement) => {
     const parent = input.parentNode as HTMLElement;
     const original_title = parent.title;
@@ -91,4 +91,4 @@ import Special_Input_Text from "../components/special_input_text.jsx";
       }
     });
   });
-</script>
+</script> -->

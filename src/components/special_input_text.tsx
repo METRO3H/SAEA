@@ -1,6 +1,8 @@
 import "@styles/special_input_text.css";
+
 function Special_Input_Text({
   input_label,
+  input_value = "",
   label_class = "",
   input_width = "auto",
   input_height = "auto",
@@ -13,6 +15,7 @@ function Special_Input_Text({
   input_icon_right_class = "false",
   fix_label_position = "0px",
   input_background = "transparent",
+  events = {},
 }) {
 
   const input_style = {
@@ -26,9 +29,14 @@ function Special_Input_Text({
     "--fix-label-position": fix_label_position,
     "--input-background": input_background,
   };
+
+
+
   return (
     <div className="input-container" style={input_style}>
-      <input required type="text" className={`${input_class}`} autoComplete="no" />
+      <input required type="text" className={`${input_class}`} autoComplete="no" {...events} 
+      defaultValue={input_value}
+      />
       <span className="highlight"></span>
       <span className="bar"></span>
       <label className={label_class}>
