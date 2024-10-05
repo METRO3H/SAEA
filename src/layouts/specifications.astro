@@ -1,6 +1,7 @@
 ---
 import Specifications_Table from "@components/table/Specifications_Table.tsx";
 import Quiz_Title from "@components/table/quiz_title.tsx";
+
 ---
 
 <div id="specs-container">
@@ -15,7 +16,7 @@ import Quiz_Title from "@components/table/quiz_title.tsx";
   </div>
 
   <div id="next-part-div">
-    <button id="button-next-part" class="btn btn-primary" onclick="Move_Container('50%')"
+    <button id="button-next-part" class="btn btn-primary"
       ><i class="fas fa-forward"></i> Siguiente
     </button>
   </div>
@@ -71,15 +72,6 @@ import Quiz_Title from "@components/table/quiz_title.tsx";
 </style>
 
 <script>
-  const button_next_part = document.querySelector("#button-next-part") as HTMLButtonElement;
-
-  button_next_part?.addEventListener("click", () => {
-    const movable_container = document.querySelector("#movable-container") as HTMLDivElement;
-    movable_container.style.transform = "translateX(-50%)";
-  });
-</script>
-
-<!-- <script>
   document.querySelectorAll<HTMLInputElement>(".cell input").forEach((input: HTMLInputElement) => {
     const parent = input.parentNode as HTMLElement;
     const original_title = parent.title;
@@ -91,4 +83,17 @@ import Quiz_Title from "@components/table/quiz_title.tsx";
       }
     });
   });
-</script> -->
+</script>
+
+<script>
+  const button_next_part = document.querySelector("#button-next-part");
+  button_next_part?.addEventListener("click", ()=>{
+    Move_Container("-50%");
+  });
+
+  function Move_Container(movement) {
+    const movable_container = document.querySelector("#movable-container") as HTMLDivElement;
+
+    movable_container.style.transform = `translateX(${movement})`;
+  }
+</script>

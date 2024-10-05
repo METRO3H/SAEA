@@ -1,15 +1,28 @@
 ---
 import Document from "@layouts/document.astro";
-import Table from "./table";
-import Questions from "./questions";
-import Specifications from "@layouts/specifications.astro";
-
+import Specifications_Table from "@components/table/Specifications_Table.tsx";
+import Quiz_Title from "@components/table/quiz_title.tsx";
 ---
 
 <Document title="Test Quiz" description="Crear Quiz">
   <div id="main-container">
     <div id="movable-container">
-      <Specifications/>
+      
+      <div id="specs-container">
+        <div id="quiz-title">
+          <Quiz_Title client:only="react" />
+        </div>
+
+        <div id="table-container">
+          <Specifications_Table client:only="react" />
+        </div>
+
+        <div id="next-part-div">
+          <button id="button-next-part" class="btn btn-primary"
+            ><i class="fas fa-forward"></i> Siguiente
+          </button>
+        </div>
+      </div>
 
       <div id="create-questions-container">
         <div id="question-card-container">
@@ -124,6 +137,52 @@ import Specifications from "@layouts/specifications.astro";
       width: 100%;
     }
   }
+
+  #table-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+  }
+  .custom-container {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    height: 100%;
+    width: 100%;
+    overflow: auto;
+    flex-direction: column;
+  }
+  #quiz-title {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    padding: 1rem 0;
+    gap: 8px;
+  }
+  #next-part-div {
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+    padding-top: 11px;
+    margin-bottom: 11px;
+  }
+  #button-next-part {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background: var(--main-color-blue) !important;
+  }
+  #specs-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 100%;
+    width: 50%;
+    /* border: 2px solid red; */
+    padding: 1rem;
+  }
 </style>
 
 <script>
@@ -147,4 +206,21 @@ import Specifications from "@layouts/specifications.astro";
     .catch((error) => {
       console.error("Error:", error);
     });
+</script>
+
+<script>
+  const button_next_part = document.querySelector("#button-next-part");
+  button_next_part?.addEventListener("click", () => {
+    Move_Container("-50%");
+  });
+  const button_back_part = document.querySelector("#button-back-part");
+  button_back_part?.addEventListener("click", () => {
+    Move_Container("0%");
+  });
+
+  function Move_Container(movement) {
+    const movable_container = document.querySelector("#movable-container") as HTMLDivElement;
+
+    movable_container.style.transform = `translateX(${movement})`;
+  }
 </script>

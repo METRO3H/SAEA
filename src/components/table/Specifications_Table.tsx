@@ -42,7 +42,7 @@ export default function Specifications_Table() {
         item_index === index ? (item[field] === old_value ? { ...item, [field]: new_value } : item ): item
       );
     }
-    if (field === "skills") {
+    if (field === "tbody_skills") {
       updated_items = $quiz_data.specifications_table.items.map((item, item_index) =>
         item_index === index && item.skill_index === skill_index
           ? { ...item, ["skill_content"]: new_value }
@@ -70,6 +70,22 @@ export default function Specifications_Table() {
       return
     }
 
+    if (field === "thead_skills") {
+
+      let quiz_skills = $quiz_data.specifications_table.quiz_skills;
+
+      quiz_skills[index] = new_value ? new_value : " - ";
+
+      quiz_data_store.set({
+        ...$quiz_data, // Mantiene las propiedades existentes del estado
+        specifications_table: {
+          ...$quiz_data.specifications_table, // Mantiene las propiedades de specifications_table
+          quiz_skills: quiz_skills
+        },
+      });
+      return;
+    }
+
 
     quiz_data_store.set({
       ...$quiz_data, // Mantiene las propiedades existentes del estado
@@ -80,10 +96,12 @@ export default function Specifications_Table() {
     });
 
     set_editing_cell(null);
-    if (field === "skills"){
+    if (field === "tbody_skills"){
       set_editing_skill_cell(null);
     }
   }
+
+
 
   function Get_Skill_Content_Values(skill_content_list: string[]) {
     const result = skill_content_list.flatMap((item) => {
@@ -166,7 +184,18 @@ export default function Specifications_Table() {
           <th id="thead-percentage" className="text-center thead-fix-y-padding">
             %
           </th>
-          <th className="cell thead-input">
+
+          {$quiz_data.specifications_table.quiz_skills.map((item, skill_index) => (
+            <th key={"skill-index-" + skill_index} className="cell thead-input">
+              <input className="text-center" type="text" placeholder="Habilidad" required 
+              defaultValue={item} 
+              onBlur={(event) => Handle_Blur(event, skill_index, "thead_skills")}
+              />
+            </th>
+          ))}
+
+
+          {/* <th className="cell thead-input">
             <input className="text-center" type="text" placeholder="Habilidad" required />
           </th>
           <th className="cell thead-input">
@@ -174,10 +203,15 @@ export default function Specifications_Table() {
           </th>
           <th className="cell thead-input">
             <input className="text-center" type="text" placeholder="Habilidad" required />
-          </th>
+          </th> */}
+
+
+
           <th>
             <div className="text-center">Total preguntas</div>
           </th>
+
+
         </tr>
       </thead>
 
@@ -296,7 +330,7 @@ export default function Specifications_Table() {
                   editing_skill_cell.skill_index === skill_index ? (
                     <input
                       defaultValue={item.skill_index === skill_index ? item.skill_content : " - "}
-                      onBlur={(event) => Handle_Blur(event, index, "skills", skill_index)}
+                      onBlur={(event) => Handle_Blur(event, index, "tbody_skills", skill_index)}
                       onFocus={(event) =>
                         (event.currentTarget.selectionStart = event.currentTarget.value.length)
                       }
