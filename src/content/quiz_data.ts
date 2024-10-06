@@ -18,16 +18,19 @@ export interface Quiz {
     }[];
   };
   questions: {
-    text: string;
-    answers: {
-      text: string;
-      is_correct: boolean;
-    }[];
+    question: string;
+    answers: string[];
+    correct_answer_index: number;
   }[];
 }
 export interface RowSpan {
   thematic_area: { [key: string]: number };
   content: { [key: string]: number };
+}
+export interface Question_Item {
+  question: string;
+  answers: string[];
+  correct_answer_index: number;
 }
 
 // Crear el store usando atom

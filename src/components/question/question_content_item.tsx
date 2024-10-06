@@ -1,7 +1,8 @@
 import "@styles/question_content_item.css";
 import "@styles/hint.css";
 import Answer_Item_Layout from "@components/question/answer_item_layout.jsx";
-import Special_Input_Text from "@components/special_input_text";
+import Special_Input_Text from "@components/special_input_text.tsx";
+import { type Question_Item } from "@content/quiz_data";
 
 function Question_Content_Item({
   question_content_item_number,
@@ -10,7 +11,11 @@ function Question_Content_Item({
   content = " - ",
   objective = " - ",
   skill = " - ",
+  data
 }) {
+  const question_item_data: Question_Item = data;
+  
+
   return (
     <div
       className={`tab-pane show question-content-item ${add_class}`}
@@ -45,6 +50,7 @@ function Question_Content_Item({
             input_class="fw-bold"
             input_icon_class="fas fa-circle-question trailing"
             fix_label_position="5px"
+            input_value={question_item_data.question}
           />
           <i className="fas fa-pencil"></i>
         </div>

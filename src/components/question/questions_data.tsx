@@ -35,6 +35,7 @@ export default function Questions_Data() {
               key={`question_content_key_${index + 1}`}
               question_content_item_number={index + 1}
               add_class={index === 0 ? "active" : ""}
+              data={item}
               // thematic_area={item.thematic_area}
               // content={item.content}
               // objective={item.objective}

@@ -44,6 +44,7 @@ function CheckboxGenerator() {
     Add_Answer();
     setTimeout(Add_Answer, 0);  
   }, []);
+  
   return (
     <div className="answer-items-section" ref={answerItemsSectionRef}>
 
