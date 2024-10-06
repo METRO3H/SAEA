@@ -9,7 +9,7 @@ export default function Answer_Item_Layout({answers, correct_answer_index}) {
 //   const answerItemsSectionRef = useRef(null);
 
     const answer_items = answers
-    console.log(answer_items)
+
 
   return (
     // <div className="answer-items-section" ref={answerItemsSectionRef}>
@@ -24,6 +24,7 @@ export default function Answer_Item_Layout({answers, correct_answer_index}) {
             answer_input_label={`Respuesta ${index + 1}`} // Actualizado para que la etiqueta sea consistente con la posición en el array
             // Remove_Answer={Remove_Answer}
             // add_class={show_answer_items.includes(item.key) ? "show-answer-item" : ""} // Comprueba si la clave está en el array
+            checked={ index === correct_answer_index ? true : false }
           />
         ))}
 

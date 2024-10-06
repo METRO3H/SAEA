@@ -6,6 +6,7 @@ function Item_Answer({
   // Remove_Answer,
   add_style = {},
   add_class = "show-answer-item",
+  checked = false,
 }) {
   return (
     <div className={`answer-item ${add_class}`} style={add_style}>
@@ -14,6 +15,7 @@ function Item_Answer({
         type="checkbox"
         value=""
         id={check_box_id}
+        defaultChecked={checked}
       />
       <SpecialInputText
         input_value={answer_value}
