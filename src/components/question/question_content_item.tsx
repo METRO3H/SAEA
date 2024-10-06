@@ -1,6 +1,6 @@
 import "@styles/question_content_item.css";
 import "@styles/hint.css";
-import Answer_Item_Layout from "@components/question/answer_item_layout.jsx";
+import Answer_Item_Layout from "@components/question/answer_item_layout_2.tsx";
 import Special_Input_Text from "@components/special_input_text.tsx";
 import { type Question_Item } from "@content/quiz_data";
 
@@ -11,10 +11,9 @@ function Question_Content_Item({
   content = " - ",
   objective = " - ",
   skill = " - ",
-  data
+  data,
 }) {
   const question_item_data: Question_Item = data;
-  
 
   return (
     <div
@@ -55,7 +54,10 @@ function Question_Content_Item({
           <i className="fas fa-pencil"></i>
         </div>
 
-        <Answer_Item_Layout />
+        <Answer_Item_Layout
+          answers={question_item_data.answers}
+          correct_answer_index={question_item_data.correct_answer_index}
+        />
       </div>
     </div>
   );

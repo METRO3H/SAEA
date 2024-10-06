@@ -1,11 +1,11 @@
 import SpecialInputText from "../special_input_text.tsx";
 function Item_Answer({
-  answer_key,
+  answer_value,
   check_box_id,
   answer_input_label,
-  Remove_Answer,
+  // Remove_Answer,
   add_style = {},
-  add_class = "",
+  add_class = "show-answer-item",
 }) {
   return (
     <div className={`answer-item ${add_class}`} style={add_style}>
@@ -16,6 +16,7 @@ function Item_Answer({
         id={check_box_id}
       />
       <SpecialInputText
+        input_value={answer_value}
         input_label={answer_input_label}
         input_width="300px"
         input_font_size="18px"
@@ -28,7 +29,8 @@ function Item_Answer({
         className="btn btn-secondary btn-floating btn-sm remove-button"
         data-mdb-ripple-init
       >
-        <i className="fas fa-trash-can" onClick={() => Remove_Answer(answer_key)}></i>
+        {/* <i className="fas fa-trash-can" onClick={() => Remove_Answer(answer_key)}></i> */}
+        <i className="fas fa-trash-can"></i>
       </button>
     </div>
   );

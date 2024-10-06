@@ -8,17 +8,40 @@ import { Tab, initMDB } from "mdb-ui-kit";
 
 export default function Questions_Data() {
   const $quiz_data: Quiz = useStore(quiz_data_store);
-  const $question_items = $quiz_data.questions;
-  
+
+  function Filter_Question_List_Items() {
+    const $question_items = $quiz_data.questions;
+    const $total_questions = $quiz_data.specifications_table.total_questions;
+
+    if ($total_questions === $question_items.length) return $question_items;
+
+    if ($total_questions < $question_items.length)
+      return $question_items.slice(0, $total_questions);
+
+    return $question_items.concat(
+      new Array($total_questions - $question_items.length).fill({
+        question: "",
+        answers: ["", ""],
+        correct_answer_index: 0,
+      })
+    );
+  }
+
   useEffect(() => {
     initMDB({ Tab });
   }, []);
+
+  const question_list_adjusted = Filter_Question_List_Items() || {
+    question: "",
+    answers: ["", ""],
+    correct_answer_index: 0,
+  };
 
   return (
     <div id="main-question-container">
       <div id="question-list-container">
         <div className="list-group list-group-light" id="list-tab" role="tablist" data-tabs>
-          {$question_items.map((item, index) => (
+          {question_list_adjusted.map((item, index) => (
             <Question_List_Item
               key={`question_list_key_${index + 1}`}
               question_list_item_number={index + 1}
@@ -30,7 +53,7 @@ export default function Questions_Data() {
       </div>
       <div id="question-content-container">
         <div className="tab-content">
-          {$question_items.map((item, index) => (
+          {question_list_adjusted.map((item, index) => (
             <Question_Content_Item
               key={`question_content_key_${index + 1}`}
               question_content_item_number={index + 1}

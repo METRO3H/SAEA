@@ -1,9 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 import Item_Answer from "./item_answer.jsx";
-import { useStore } from "@nanostores/react";
-import { quiz_data_store } from "@content/quiz_data";
 
-function CheckboxGenerator() {
+
+export default function Answer_Item_Layout() {
   const [answers_items, set_answers_items] = useState([]);
   const [show_answer_items, set_show_answer_items] = useState([]);
   const [itemAdded, setItemAdded] = useState(false);
@@ -70,5 +69,3 @@ function CheckboxGenerator() {
     </div>
   );
 }
-
-export default CheckboxGenerator;
