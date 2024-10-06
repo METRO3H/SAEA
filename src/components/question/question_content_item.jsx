@@ -6,10 +6,10 @@ import Special_Input_Text from "@components/special_input_text";
 function Question_Content_Item({
   question_content_item_number,
   add_class = "",
-  thematic_area,
-  content,
-  objective,
-  skill,
+  thematic_area = " - ",
+  content = " - ",
+  objective = " - ",
+  skill = " - ",
 }) {
   return (
     <div

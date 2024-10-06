@@ -2,12 +2,14 @@
 import Document from "@layouts/document.astro";
 import Specifications_Table from "@components/table/Specifications_Table.tsx";
 import Quiz_Title from "@components/table/quiz_title.tsx";
+import Questions_Data from "@components/question/questions_data.tsx";
+import Test from "@components/test.jsx";
+
 ---
 
 <Document title="Test Quiz" description="Crear Quiz">
   <div id="main-container">
     <div id="movable-container">
-      
       <div id="specs-container">
         <div id="quiz-title">
           <Quiz_Title client:only="react" />
@@ -22,12 +24,13 @@ import Quiz_Title from "@components/table/quiz_title.tsx";
             ><i class="fas fa-forward"></i> Siguiente
           </button>
         </div>
+
       </div>
 
       <div id="create-questions-container">
         <div id="question-card-container">
-          <!-- <Questions_Data client:load /> -->
-
+          <Questions_Data client:only="react" />
+          
           <div id="footer-card-buttons">
             <div id="back-part-div">
               <button id="button-back-part" class="btn btn-secondary btn-rounded"
@@ -49,6 +52,8 @@ import Quiz_Title from "@components/table/quiz_title.tsx";
 
     <!-- <Modal /> -->
   </div>
+
+  
 </Document>
 
 <style>
@@ -224,3 +229,8 @@ import Quiz_Title from "@components/table/quiz_title.tsx";
     movable_container.style.transform = `translateX(${movement})`;
   }
 </script>
+
+<script>
+  
+</script>
+

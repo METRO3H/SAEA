@@ -1,4 +1,4 @@
-import SpecialInputText from "../special_input_text.jsx";
+import SpecialInputText from "../special_input_text.tsx";
 function Item_Answer({
   answer_key,
   check_box_id,

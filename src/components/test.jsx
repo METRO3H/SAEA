@@ -1,0 +1,100 @@
+export default function () {
+  return (
+    <>
+      <div className="row">
+        <div className="col-4">
+          <div className="list-group list-group-light" id="list-tab" role="tablist">
+            <a
+              className="list-group-item list-group-item-action active px-3 border-0"
+              id="list-home-list"
+              data-mdb-list-init
+              href="#list-home"
+              role="tab"
+              aria-controls="list-home"
+            >
+              Home
+            </a>
+            <a
+              className="list-group-item list-group-item-action px-3 border-0"
+              id="list-profile-list"
+              data-mdb-list-init
+              href="#list-profile"
+              role="tab"
+              aria-controls="list-profile"
+            >
+              Profile
+            </a>
+            <a
+              className="list-group-item list-group-item-action px-3 border-0"
+              id="list-messages-list"
+              data-mdb-list-init
+              href="#list-messages"
+              role="tab"
+              aria-controls="list-messages"
+            >
+              Messages
+            </a>
+            <a
+              className="list-group-item list-group-item-action px-3 border-0"
+              id="list-settings-list"
+              data-mdb-list-init
+              href="#list-settings"
+              role="tab"
+              aria-controls="list-settings"
+            >
+              Settings
+            </a>
+          </div>
+        </div>
+        <div className="col-8">
+          <div className="tab-content" id="nav-tabContent">
+            <div
+              className="tab-pane fade show active"
+              id="list-home"
+              role="tabpanel"
+              aria-labelledby="list-home-list"
+            >
+              Some placeholder content in a paragraph relating to "Home". And some more content,
+              used here just to pad out and fill this tab panel. In production, you would obviously
+              have more real content here. And not just text. It could be anything, really. Text,
+              images, forms.
+            </div>
+            <div
+              className="tab-pane fade"
+              id="list-profile"
+              role="tabpanel"
+              aria-labelledby="list-profile-list"
+            >
+              Some placeholder content in a paragraph relating to "Profile". And some more content,
+              used here just to pad out and fill this tab panel. In production, you would obviously
+              have more real content here. And not just text. It could be anything, really. Text,
+              images, forms.
+            </div>
+            <div
+              className="tab-pane fade"
+              id="list-messages"
+              role="tabpanel"
+              aria-labelledby="list-messages-list"
+            >
+              Some placeholder content in a paragraph relating to "Messages". And some more content,
+              used here just to pad out and fill this tab panel. In production, you would obviously
+              have more real content here. And not just text. It could be anything, really. Text,
+              images, forms.
+            </div>
+            <div
+              className="tab-pane fade"
+              id="list-settings"
+              role="tabpanel"
+              aria-labelledby="list-settings-list"
+            >
+              Some placeholder content in a paragraph relating to "Settings". And some more content,
+              used here just to pad out and fill this tab panel. In production, you would obviously
+              have more real content here. And not just text. It could be anything, really. Text,
+              images, forms.
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}

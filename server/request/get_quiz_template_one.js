@@ -103,9 +103,6 @@ async function Get_Template_Data(test_id) {
           .sort((a, b) => a.index - b.index)
           .map((item) => item.skill);
 
-        console.log(skills_list_query_data);
-
-
         const questions_query_data = await Get_All_Query(questions_query, [test_id]);
 
         const questions_map = {};
