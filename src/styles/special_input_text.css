@@ -54,7 +54,7 @@
 
 .input-container > input:focus ~ label,
 .input-container > input:valid ~ label {
-  top: -7px;
+  top: -11px;
   font-size: 14px;
   color: var(--input-focus-color, #2337ff);
 }
@@ -68,7 +68,7 @@
 .bar:before,
 .bar:after {
   content: "";
-  height: calc(var(--bar-thickness) + 1px);
+  height: var(--bar-thickness);
   width: 0;
   bottom: 1px;
   position: absolute;

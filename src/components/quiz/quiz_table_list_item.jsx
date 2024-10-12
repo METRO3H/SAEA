@@ -1,5 +1,7 @@
 import "@styles/quiz_table_list_item.css";
 import { useEffect, useState } from "react";
+
+
 export default function quiz_table_list_item({ title, subject, quiz_url, creation_date, quiz_type, generated_date }) {
   const [is_checked, set_is_checked] = useState(false);
 

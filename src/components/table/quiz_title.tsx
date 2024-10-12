@@ -25,7 +25,7 @@ export default function Quiz_Title({}) {
         input_label="Título del cuestionario"
         input_value={$quiz_data.quiz_title}
         label_class="fw-bold"
-        bar_thickness="3px"
+        bar_thickness="4px"
         input_width="45%"
         input_font_size="31px"
         input_no_focus_color="var(--main-color-blue)"

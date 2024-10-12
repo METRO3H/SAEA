@@ -4,6 +4,7 @@ import Question_Content_Item from "@components/question/question_content_item.js
 import Question_List_Item from "@components/question/question_list_item.jsx";
 import "@styles/questions_data.css";
 import { useEffect } from "react";
+
 import { Tab, initMDB } from "mdb-ui-kit";
 
 export default function Questions_Data() {

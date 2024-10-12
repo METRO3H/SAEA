@@ -1,7 +1,7 @@
 .question-content-item {
   height: 100%;
-  padding: 21px;
-  padding-top: 11px;
+  padding: 11px 21px 0 21px; 
+
 }
 .question-content-item-main {
   display: flex;
@@ -21,24 +21,23 @@
 .add-item:hover {
   background: rgb(235, 240, 250);
 }
-.remove-button {
-  margin-left: 15px;
-  margin-top: 11px !important;
-}
+
 .btn:disabled {
   color: #294f8d;
   background-color: #e2eaf7;
 }
-.answer-input-box {
-  margin-top: 11px !important;
-}
+
 .answer-items-section {
   position: relative;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  padding: 0px 15px 15px 15px;
+  gap: 1rem;
   flex-grow: 1;
+
+  padding: 1.25rem 1rem 1rem 1.8rem;
+
+
   overflow: auto;
   scrollbar-gutter: stable;
   scroll-behavior: smooth;
@@ -64,23 +63,32 @@
   display: flex;
   align-items: center;
   transition: all 200ms;
-
-  padding-left: 1.5em;
-  margin-bottom: 0;
-  margin-top: 0;
-  height: 0;
+  /* height: 0; */
   opacity: 0;
 }
 .show-answer-item {
   margin-bottom: 0.125rem;
-  margin-top: 15px;
-  height: 47px;
+  /* margin-top: 15px; */
+  
   opacity: 100%;
 }
 
 .answer-input-checkbox {
-  margin-top: 0;
+  width: 1.5rem !important;
+  height: 1.5rem !important;
+  margin-right: 11px !important;
+
 }
+.form-check-input[type="radio"]::after{
+  width: auto;
+  height: auto;
+}
+
+.remove-button {
+  margin-left: 1rem;
+  /* margin-top: 11px !important; */
+}
+
 .form-outline {
   padding-top: 8px;
 }

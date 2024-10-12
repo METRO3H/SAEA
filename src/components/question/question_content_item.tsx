@@ -1,9 +1,6 @@
 import { type Question_Item } from "@content/quiz_data";
-import Answer_Item_Layout from "@components/question/answer_item_layout_2.tsx";
-
 import Special_Input_Text from "@components/special_input_text.tsx";
-import Item_Answer from "./item_answer.jsx";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 
 import "@styles/question_content_item.css";
@@ -26,6 +23,9 @@ function Question_Content_Item({
       correct_answer_index: 0,
     }
   );
+  const [answers_length, set_answers_length] = useState(0);
+
+  const answer_items_section_ref = useRef<HTMLDivElement>(null);
 
   function Update_Question_Title(event) {
     const old_value = question_item_data.question;
@@ -45,22 +45,22 @@ function Question_Content_Item({
   }
 
   function Remove_Answer(index) {
-    console.log("Index : ", index);
-
-    console.log(
-      "filter",
-      question_item_data.answers.filter((_, i) => i !== index)
-    );
-
     set_question_item_data((prev_question_item_data) => ({
       ...prev_question_item_data,
       answers: prev_question_item_data.answers.filter((_, i) => i !== index),
     }));
+
+    if (question_item_data.correct_answer_index === index) {
+      set_question_item_data((prev_question_item_data) => ({
+        ...prev_question_item_data,
+        correct_answer_index: -1,
+      }));
+    }
   }
 
-  function Update_Answer(event, index){ 
+  function Update_Answer(event, index) {
     const old_value = question_item_data.answers[index];
-    const new_value = event.target.value.trim() || " - ";
+    const new_value = event.target.value.trim() || "";
 
     if (new_value === old_value) return;
 
@@ -71,6 +71,24 @@ function Question_Content_Item({
       ),
     }));
   }
+  function Update_Checkbox(index) {
+    return set_question_item_data((prev_question_item_data) => ({
+      ...prev_question_item_data,
+      correct_answer_index: index,
+    }));
+  }
+
+  useEffect(() => {
+    if (question_item_data.answers.length <= answers_length || !answer_items_section_ref.current)
+      return;
+
+    answer_items_section_ref.current.scrollTop = answer_items_section_ref.current.scrollHeight;
+    
+    set_answers_length(question_item_data.answers.length);
+
+  }, [question_item_data.answers]);
+
+  const question_id = uuidv4();
 
   console.log(question_item_data);
 
@@ -101,7 +119,7 @@ function Question_Content_Item({
           <Special_Input_Text
             input_label={`Pregunta ${question_content_item_number}`}
             label_class="fw-bold"
-            bar_thickness="1px"
+            bar_thickness="3px"
             input_width="95%"
             input_font_size="25px"
             input_focus_color="var(--main-color-google-form)"
@@ -116,28 +134,32 @@ function Question_Content_Item({
           <i className="fas fa-pencil"></i>
         </div>
 
-        <div className="answer-items-section">
+        <div className="answer-items-section" ref={answer_items_section_ref}>
           {question_item_data.answers.map((item, index) => (
-            // const add_class = show_answer_items.includes(item.key) ? "show-answer-item" : "";
-
             <div className="answer-item show-answer-item" key={uuidv4()}>
               <input
-                className="answer-input-checkbox answer-input-box form-check-input"
-                type="checkbox"
+                id={"Checkbox-" + question_id + (index + 1)}
+                className="answer-input-checkbox form-check-input"
+                name={"checkbox-" + question_id}
+                aria-label="radio item"
+                type="radio"
                 value=""
-                id={`Checkbox-${index + 1}`}
                 defaultChecked={index === question_item_data.correct_answer_index ? true : false}
+                autoComplete="off"
+                onChange={() => Update_Checkbox(index)}
               />
+
               <Special_Input_Text
                 input_value={item}
                 input_label={`Respuesta ${index + 1}`}
-                input_width="300px"
-                input_font_size="18px"
+                input_font_size="1.15rem"
+                bar_thickness="2px"
+                input_width="18rem"
                 input_class="answer-input-text"
+                fix_label_position="2px"
                 events={{
                   onBlur: (event) => Update_Answer(event, index),
                 }}
-                /* input_focus_color="var(--main-color-blue)" */
               />
               <button
                 type="button"
@@ -145,7 +167,6 @@ function Question_Content_Item({
                 data-mdb-ripple-init
               >
                 <i className="fas fa-trash-can" onClick={() => Remove_Answer(index)}></i>
-                {/* <i className="fas fa-trash-can"></i> */}
               </button>
             </div>
           ))}
