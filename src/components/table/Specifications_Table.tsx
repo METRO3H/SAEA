@@ -102,7 +102,6 @@ export default function Specifications_Table() {
   }
 
 
-
   function Get_Skill_Content_Values(skill_content_list: string[]) {
     const result = skill_content_list.flatMap((item) => {
       const skill_content_patron = item.match(/\d+-\d+|\d+/g) || [];
@@ -149,7 +148,7 @@ export default function Specifications_Table() {
   let thematic_area_rendered: { [key: string]: boolean } = {};
   let content_rendered: { [key: string]: boolean } = {};
 
-  console.log($quiz_data);
+  // console.log($quiz_data);
   return (
     <table className="table table-bordered caption-top">
       <caption>

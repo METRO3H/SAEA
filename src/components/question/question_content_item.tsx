@@ -14,16 +14,17 @@ function Question_Content_Item({
   objective = " - ",
   skill = " - ",
   data,
+  update_question_item,
+  question_item_index,
 }) {
-  // const question_item_data: Question_Item = data;
-  const [question_item_data, set_question_item_data] = useState<Question_Item>(
-    data || {
-      question: "",
-      answers: ["", ""],
-      correct_answer_index: 0,
-    }
-  );
-  const [answers_length, set_answers_length] = useState(0);
+
+  const question_item_data: Question_Item = data || {
+    question: "",
+    answers: ["", ""],
+    correct_answer_index: -1,
+  };
+
+  const [scroll_container, set_scroll_container] = useState(false);
 
   const answer_items_section_ref = useRef<HTMLDivElement>(null);
 
@@ -32,30 +33,25 @@ function Question_Content_Item({
     const new_value = event.target.value.trim() || " - ";
     if (new_value === old_value) return;
 
-    set_question_item_data((prev_question_item_data) => ({
-      ...prev_question_item_data,
-      question: new_value,
-    }));
+    update_question_item(question_item_index, { ...question_item_data, question: new_value });
   }
   function Add_Answer() {
-    set_question_item_data((prev_question_item_data) => ({
-      ...prev_question_item_data,
-      answers: [...prev_question_item_data.answers, ""],
-    }));
+    update_question_item(question_item_index, {
+      ...question_item_data,
+      answers: [...question_item_data.answers, ""],
+    });
+    set_scroll_container(!scroll_container);
   }
 
   function Remove_Answer(index) {
-    set_question_item_data((prev_question_item_data) => ({
-      ...prev_question_item_data,
-      answers: prev_question_item_data.answers.filter((_, i) => i !== index),
-    }));
-
-    if (question_item_data.correct_answer_index === index) {
-      set_question_item_data((prev_question_item_data) => ({
-        ...prev_question_item_data,
-        correct_answer_index: -1,
-      }));
-    }
+    update_question_item(question_item_index, {
+      ...question_item_data,
+      answers: question_item_data.answers.filter((_, i) => i !== index),
+      correct_answer_index:
+        question_item_data.correct_answer_index === index
+          ? -1
+          : question_item_data.correct_answer_index,
+    });
   }
 
   function Update_Answer(event, index) {
@@ -64,33 +60,27 @@ function Question_Content_Item({
 
     if (new_value === old_value) return;
 
-    set_question_item_data((prev_question_item_data) => ({
-      ...prev_question_item_data,
-      answers: prev_question_item_data.answers.map((item, item_index) =>
+    update_question_item(question_item_index, {
+      ...question_item_data,
+      answers: question_item_data.answers.map((item, item_index) =>
         item_index === index ? new_value : item
       ),
-    }));
+    });
   }
   function Update_Checkbox(index) {
-    return set_question_item_data((prev_question_item_data) => ({
-      ...prev_question_item_data,
+    update_question_item(question_item_index, {
+      ...question_item_data,
       correct_answer_index: index,
-    }));
+    });
   }
 
   useEffect(() => {
-    if (question_item_data.answers.length <= answers_length || !answer_items_section_ref.current)
-      return;
-
+    if (!answer_items_section_ref.current) return;
     answer_items_section_ref.current.scrollTop = answer_items_section_ref.current.scrollHeight;
-    
-    set_answers_length(question_item_data.answers.length);
 
-  }, [question_item_data.answers]);
+  }, [scroll_container]);
 
   const question_id = uuidv4();
-
-  console.log(question_item_data);
 
   return (
     <div

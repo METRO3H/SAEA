@@ -1,4 +1,4 @@
-import { quiz_data_store, type Quiz } from "@content/quiz_data";
+import { quiz_data_store, type Quiz, type Question_Item } from "@content/quiz_data";
 import { useStore } from "@nanostores/react";
 import Question_Content_Item from "@components/question/question_content_item.jsx";
 import Question_List_Item from "@components/question/question_list_item.jsx";
@@ -23,20 +23,31 @@ export default function Questions_Data() {
       new Array($total_questions - $question_items.length).fill({
         question: "",
         answers: ["", ""],
-        correct_answer_index: 0,
+        correct_answer_index: -1,
       })
     );
   }
+
+  function Update_Question_Item(item_index: number, new_item: Question_Item) {
+    return quiz_data_store.set({
+      ...$quiz_data,
+      questions: $quiz_data.questions.map((item, index) =>
+        index === item_index ? new_item : item
+      ),
+    });
+  }
+
+  const question_list_adjusted = Filter_Question_List_Items() || {
+    question: "",
+    answers: ["", ""],
+    correct_answer_index: -1,
+  };
 
   useEffect(() => {
     initMDB({ Tab });
   }, []);
 
-  const question_list_adjusted = Filter_Question_List_Items() || {
-    question: "",
-    answers: ["", ""],
-    correct_answer_index: 0,
-  };
+  console.log(question_list_adjusted);
 
   return (
     <div id="main-question-container">
@@ -60,6 +71,8 @@ export default function Questions_Data() {
               question_content_item_number={index + 1}
               add_class={index === 0 ? "active" : ""}
               data={item}
+              update_question_item={Update_Question_Item}
+              question_item_index={index}
               // thematic_area={item.thematic_area}
               // content={item.content}
               // objective={item.objective}
