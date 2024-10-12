@@ -3,7 +3,7 @@ function Item_Answer({
   answer_value,
   check_box_id,
   answer_input_label,
-  // Remove_Answer,
+  Remove_Answer,
   add_style = {},
   add_class = "show-answer-item",
   checked = false,
@@ -31,8 +31,8 @@ function Item_Answer({
         className="btn btn-secondary btn-floating btn-sm remove-button"
         data-mdb-ripple-init
       >
-        {/* <i className="fas fa-trash-can" onClick={() => Remove_Answer(answer_key)}></i> */}
-        <i className="fas fa-trash-can"></i>
+        <i className="fas fa-trash-can" onClick={Remove_Answer}></i>
+        {/* <i className="fas fa-trash-can"></i> */}
       </button>
     </div>
   );

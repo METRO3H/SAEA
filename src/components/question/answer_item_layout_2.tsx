@@ -36,6 +36,10 @@ export default function Answer_Item_Layout({answers, correct_answer_index}) {
         <i className="fas fa-plus"></i>
         <span> Añadir respuesta</span>
       </button>
+      
     </div>
+
+
+
   );
 }
