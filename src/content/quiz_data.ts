@@ -23,15 +23,6 @@ export interface Quiz {
     correct_answer_index: number;
   }[];
 }
-export interface RowSpan {
-  thematic_area: { [key: string]: number };
-  content: { [key: string]: number };
-}
-export interface Question_Item {
-  question: string;
-  answers: string[];
-  correct_answer_index: number;
-}
 
 // Crear el store usando atom
 export let quiz_data_store = atom<Quiz>({
@@ -46,4 +37,13 @@ export let quiz_data_store = atom<Quiz>({
   questions: [],
 });
 
+export interface RowSpan {
+  thematic_area: { [key: string]: number };
+  content: { [key: string]: number };
+}
+export interface Question_Item {
+  question: string;
+  answers: string[];
+  correct_answer_index: number;
+}
 

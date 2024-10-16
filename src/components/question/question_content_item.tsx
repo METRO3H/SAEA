@@ -9,15 +9,11 @@ import "@styles/hint.css";
 function Question_Content_Item({
   question_content_item_number,
   add_class = "",
-  thematic_area = " - ",
-  content = " - ",
-  objective = " - ",
-  skill = " - ",
-  data,
   update_question_item,
   question_item_index,
+  data,
+  metadata,
 }) {
-
   const question_item_data: Question_Item = data || {
     question: "",
     answers: ["", ""],
@@ -77,7 +73,6 @@ function Question_Content_Item({
   useEffect(() => {
     if (!answer_items_section_ref.current) return;
     answer_items_section_ref.current.scrollTop = answer_items_section_ref.current.scrollHeight;
-
   }, [scroll_container]);
 
   const question_id = uuidv4();
@@ -91,17 +86,17 @@ function Question_Content_Item({
     >
       <div className="question-content-item-main">
         <ul className="badge-container">
-          <li className="hint--bottom hint--rounded" aria-label={thematic_area}>
-            <span className="badge rounded-pill badge-primary">{thematic_area}</span>
+          <li className="hint--bottom hint--rounded" aria-label={metadata.thematic_area}>
+            <span className="badge rounded-pill badge-primary">{metadata.thematic_area}</span>
           </li>
-          <li className="hint--bottom hint--rounded" aria-label={content}>
-            <span className="badge rounded-pill badge-warning">{content}</span>
+          <li className="hint--bottom hint--rounded" aria-label={metadata.content}>
+            <span className="badge rounded-pill badge-warning">{metadata.content}</span>
           </li>
-          <li className="hint--bottom hint--rounded" aria-label={objective}>
-            <span className="badge rounded-pill badge-danger">{objective}</span>
+          <li className="hint--bottom hint--rounded" aria-label={metadata.objective}>
+            <span className="badge rounded-pill badge-danger">{metadata.objective}</span>
           </li>
-          <li className="hint--bottom hint--rounded" aria-label={skill}>
-            <span className="badge rounded-pill badge-success">{skill}</span>
+          <li className="hint--bottom hint--rounded" aria-label={metadata.skill}>
+            <span className="badge rounded-pill badge-success">{metadata.skill}</span>
           </li>
         </ul>
 
@@ -125,41 +120,43 @@ function Question_Content_Item({
         </div>
 
         <div className="answer-items-section" ref={answer_items_section_ref}>
-          {question_item_data.answers.map((item, index) => (
-            <div className="answer-item show-answer-item" key={uuidv4()}>
-              <input
-                id={"Checkbox-" + question_id + (index + 1)}
-                className="answer-input-checkbox form-check-input"
-                name={"checkbox-" + question_id}
-                aria-label="radio item"
-                type="radio"
-                value=""
-                defaultChecked={index === question_item_data.correct_answer_index ? true : false}
-                autoComplete="off"
-                onChange={() => Update_Checkbox(index)}
-              />
+          {question_item_data.answers.map((item, index) => {
+            return (
+              <div className="answer-item" key={index}>
+                <input
+                  id={"Checkbox-" + question_id + (index + 1)}
+                  className="answer-input-checkbox form-check-input"
+                  name={"checkbox-" + question_id}
+                  aria-label="radio item"
+                  type="radio"
+                  value=""
+                  defaultChecked={index === question_item_data.correct_answer_index ? true : false}
+                  autoComplete="off"
+                  onChange={() => Update_Checkbox(index)}
+                />
 
-              <Special_Input_Text
-                input_value={item}
-                input_label={`Respuesta ${index + 1}`}
-                input_font_size="1.15rem"
-                bar_thickness="2px"
-                input_width="18rem"
-                input_class="answer-input-text"
-                fix_label_position="2px"
-                events={{
-                  onBlur: (event) => Update_Answer(event, index),
-                }}
-              />
-              <button
-                type="button"
-                className="btn btn-secondary btn-floating btn-sm remove-button"
-                data-mdb-ripple-init
-              >
-                <i className="fas fa-trash-can" onClick={() => Remove_Answer(index)}></i>
-              </button>
-            </div>
-          ))}
+                <Special_Input_Text
+                  input_value={item}
+                  input_label={`Respuesta ${index + 1}`}
+                  input_font_size="1.15rem"
+                  bar_thickness="2px"
+                  input_width="18rem"
+                  input_class="answer-input-text"
+                  fix_label_position="2px"
+                  events={{
+                    onBlur: (event) => Update_Answer(event, index),
+                  }}
+                />
+                <button
+                  type="button"
+                  className="btn btn-secondary btn-floating btn-sm remove-button"
+                  data-mdb-ripple-init
+                >
+                  <i className="fas fa-trash-can" onClick={() => Remove_Answer(index)}></i>
+                </button>
+              </div>
+            );
+          })}
 
           <button
             type="button"

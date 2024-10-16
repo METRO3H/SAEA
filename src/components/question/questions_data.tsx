@@ -1,6 +1,6 @@
 import { quiz_data_store, type Quiz, type Question_Item } from "@content/quiz_data";
 import { useStore } from "@nanostores/react";
-import Question_Content_Item from "@components/question/question_content_item.jsx";
+import Question_Content_Item from "@components/question/question_content_item.tsx";
 import Question_List_Item from "@components/question/question_list_item.jsx";
 import "@styles/questions_data.css";
 import { useEffect } from "react";
@@ -17,12 +17,11 @@ export default function Questions_Data() {
     if ($total_questions === $question_items.length) return;
 
     if ($total_questions < $question_items.length)
-     return quiz_data_store.set({
+      return quiz_data_store.set({
         ...$quiz_data,
-        questions: $question_items.slice(0, $total_questions)
-      })
+        questions: $question_items.slice(0, $total_questions),
+      });
 
-    
     const $question_items_filled = $question_items.concat(
       new Array($total_questions - $question_items.length).fill({
         question: "",
@@ -33,8 +32,54 @@ export default function Questions_Data() {
 
     return quiz_data_store.set({
       ...$quiz_data,
-      questions: $question_items_filled
-    })
+      questions: $question_items_filled,
+    });
+  }
+
+  function Get_Metadata_Map() {
+    const metadata_map = new Map()
+    $quiz_data.specifications_table.items.forEach((item) => {
+
+      const assigned_questions = [item.skill_content].flatMap((skill_content) => {
+
+        const skill_content_patron = skill_content.match(/\d+-\d+|\d+/g) || [];
+
+        return skill_content_patron.flatMap((range) => {
+          if (range.includes("-")) {
+            const [start, end] = range.split("-").map(Number);
+            return Array.from({ length: end - start + 1 }, (_, i) => start + i);
+          }
+          return Number(range);
+        });
+      });
+
+      
+      assigned_questions.forEach(question => {
+        metadata_map.set(question, {
+          thematic_area: item.thematic_area,
+          content: item.content,
+          objective: item.objective,
+          skill: $quiz_data.specifications_table.quiz_skills[item.skill_index],
+        })
+      })
+
+      
+    });
+
+    return metadata_map
+
+    // const result = skill_content_list.flatMap((item) => {
+    //   const skill_content_patron = item.match(/\d+-\d+|\d+/g) || [];
+
+    //   return skill_content_patron.flatMap((range) => {
+    //     if (range.includes("-")) {
+    //       const [start, end] = range.split("-").map(Number);
+    //       return Array.from({ length: end - start + 1 }, (_, i) => start + i);
+    //     }
+    //     return Number(range);
+    //   });
+    // });
+    // return result;
   }
 
   function Update_Question_Item(item_index: number, new_item: Question_Item) {
@@ -46,17 +91,18 @@ export default function Questions_Data() {
     });
   }
 
-  
   useEffect(() => {
-
-    Filter_Question_List_Items()
+    Filter_Question_List_Items();
   }, [$quiz_data]);
 
   useEffect(() => {
     initMDB({ Tab });
   }, []);
 
-  console.log($quiz_data.questions);
+
+  const metadata_map = Get_Metadata_Map();
+
+  console.log(metadata_map)
 
   return (
     <div id="main-question-container">
@@ -79,13 +125,10 @@ export default function Questions_Data() {
               key={`question_content_key_${index + 1}`}
               question_content_item_number={index + 1}
               add_class={index === 0 ? "active" : ""}
-              data={item}
               update_question_item={Update_Question_Item}
               question_item_index={index}
-              // thematic_area={item.thematic_area}
-              // content={item.content}
-              // objective={item.objective}
-              // skill={item.skill}
+              data={item}
+              metadata={metadata_map.get(index + 1)}
             />
           ))}
         </div>
