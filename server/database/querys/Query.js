@@ -44,32 +44,37 @@ export default class Query {
       (SELECT id FROM question_skill WHERE text = ?),
       ?,?)
     `),
-      test_question_metadata_2: db.prepare(/*sql*/ `
-    INSERT OR IGNORE 
-        INTO test_question_metadata_2 (test_id, question_id, thematic_area_id, content_id, objective_id, skill_id) 
-        VALUES (?, ?, 
-          (SELECT id FROM question_thematic_area WHERE text = ?), 
-          (SELECT id FROM question_content_area WHERE text = ?), 
-          (SELECT id FROM question_objective WHERE text = ?),
-          (SELECT id FROM question_skill WHERE text = ?));
-        `),
+    //   test_question_metadata_2: db.prepare(/*sql*/ `
+    // INSERT OR IGNORE 
+    //     INTO test_question_metadata_2 (test_id, question_id, thematic_area_id, content_id, objective_id, skill_id) 
+    //     VALUES (?, ?, 
+    //       (SELECT id FROM question_thematic_area WHERE text = ?), 
+    //       (SELECT id FROM question_content_area WHERE text = ?), 
+    //       (SELECT id FROM question_objective WHERE text = ?),
+    //       (SELECT id FROM question_skill WHERE text = ?));
+    //     `),
 
-      test_question_metadata: db.prepare(/*sql*/ `
-        INSERT
-        INTO test_question_metadata (test_id, question_id, specifications_table_id, question_number) 
-        VALUES (?, ?, (
-          SELECT id 
-          FROM specifications_table
-          WHERE 
-            test_id = ? AND 
-            thematic_area_id = (SELECT id FROM question_thematic_area WHERE text = ?) AND 
-            content_id = (SELECT id FROM question_content_area WHERE text = ?) AND 
-            objective_id = (SELECT id FROM question_objective WHERE text = ?))
-            ,?);
-            `),
+    //   test_question_metadata: db.prepare(/*sql*/ `
+    //     INSERT
+    //     INTO test_question_metadata (test_id, question_id, specifications_table_id, question_number) 
+    //     VALUES (?, ?, (
+    //       SELECT id 
+    //       FROM specifications_table
+    //       WHERE 
+    //         test_id = ? AND 
+    //         thematic_area_id = (SELECT id FROM question_thematic_area WHERE text = ?) AND 
+    //         content_id = (SELECT id FROM question_content_area WHERE text = ?) AND 
+    //         objective_id = (SELECT id FROM question_objective WHERE text = ?))
+    //         ,?);
+    //         `),
+      test_question: db.prepare(/*sql*/ `
+        INSERT OR IGNORE INTO test_question (test_id, question_id, question_number, correct_answer_index)
+        VALUES (?, ?, ?, ?)
+        `),
+        
       test_question_answer: db.prepare(/*sql*/ `
-        INSERT OR IGNORE INTO test_question_answer (test_id, question_id, question_number, answer_id, is_correct)
-        VALUES (?, ?, ?, ?, ?)
+        INSERT OR IGNORE INTO test_question_answer (test_question_id, answer_id, answer_number)
+        VALUES (?, ?, ?)
         `),
     };
 
@@ -94,6 +99,13 @@ export default class Query {
         objective_id = ? AND 
         performed_classes = ?
       `),
+
+      test_question_id: db.prepare(/*sql*/ `
+        SELECT id
+        FROM test_question
+        WHERE test_id = ? AND question_id = ?
+      `),
+      
     };
     return;
   }

@@ -4,24 +4,27 @@ import google from "@googleapis/forms";
 import { authenticate } from "@google-cloud/local-auth";
 import sqlite3 from "sqlite3";
 import moment from "moment";
+import Report_Status from "../../util/report_status.js";
+import chalk from "chalk";
+
 sqlite3.verbose();
 export default async function (data) {
   try {
+    if (!data.quiz_id.trim()) throw new Error("No se ha especificado el ID del Quiz");
+
     const access_form_response = await User_Authentication();
-    const create_form_response = await Create_Form(access_form_response, data.quiz_data.title);
-    await Fill_Form(access_form_response, create_form_response, data.quiz_data);
-    console.log(create_form_response.data);
-    const quiz_URL = create_form_response.data.responderUri;
+    const create_form_response = await Create_Form(access_form_response, data.quiz_title);
+    await Fill_Form(access_form_response, create_form_response, data);
+    // console.log(create_form_response.data);
+    const quiz_url = create_form_response.data.responderUri;
 
-    Save_Performed_Test(data.test_id, create_form_response.data);
+    Save_Performed_Test(data.quiz_id, create_form_response.data);
 
-    return { status: true, message: "Quiz generado con éxito!", data: quiz_URL };
+    Report_Status("success", "Quiz generado con éxito!");
+
+    return { data: quiz_url };
   } catch (error) {
-    console.error(error);
-    return {
-      status: false,
-      message: error,
-    };
+    return Report_Status("error", error);
   }
 }
 
@@ -75,27 +78,22 @@ async function Create_Form(form_access, form_title) {
 }
 
 async function Fill_Form(access_form_response, create_form_response, quiz_data) {
-  const questions = quiz_data.questions.content;
+  const questions = quiz_data.questions;
+
   for (let i = 0; i < questions.length; i++) {
-    const answers = [];
-    const correct_answers = [];
+    const question_item = questions[i];
+    const answers = question_item.answers.map((answer) => ({ value: answer }));
+    const correct_answers = [answers[question_item.correct_answer_index]];
 
-    questions[i].answers.forEach((answer) => {
-      answers.push({ value: answer.text });
-
-      if (answer.is_correct == true) {
-        correct_answers.push({ value: answer.text });
-      }
-    });
-
-    const new_item = await Create_Item(questions[i].text, answers, correct_answers, i);
+    const new_item = await Create_Item(question_item.question, answers, correct_answers, i);
 
     await access_form_response.forms.batchUpdate({
       formId: create_form_response.data.formId,
       requestBody: new_item,
     });
 
-    console.log(` ▶ Pregunta ${i + 1} agregada...`);
+    console.log(chalk.greenBright(`   ➕    Pregunta ${i + 1} agregada...`));
+    // console.log(` ▶ Pregunta ${i + 1} agregada...`);
   }
 
   return;
@@ -141,33 +139,30 @@ async function Create_Item(question, answers_map, correct_answers_map, position)
 async function Save_Performed_Test(test_id, google_form_data) {
   const data_base_path = path.join(process.cwd(), "server", "database", "database.db");
   const date_time = moment().format("YYYY-MM-DD HH:mm:ss");
+  const google_form_id = google_form_data.formId;
   const db = new sqlite3.Database(data_base_path);
+
   const save_generated_data = db.prepare(/*sql*/ `
     INSERT OR IGNORE INTO test_performed (test_id, form_id, form_url, date) 
     VALUES (?, ?, ?, ?)
   `);
+
   save_generated_data.run(
-    [test_id, google_form_data.formId, google_form_data.responderUri, date_time],
+    [test_id, google_form_id, google_form_data.responderUri, date_time],
     (error) => {
       if (error) {
-        throw new Error("Error al ejecutar la sentencia SQL");
+        throw new Error(error);
       }
-      console.log("El Quiz generado fue guardado con exito!");
 
       save_generated_data.finalize();
       db.close();
+
+      Report_Status(
+        "success",
+        `Quiz generado ${chalk.blueBright(google_form_id)} guardado con exito!`
+      );
+      Report_Status("divider");
     }
   );
 }
 
-// function Run_Query(query, parameters = []) {
-//   return new Promise((resolve, reject) => {
-//     query.run(parameters, (error) => {
-//       if (error) {
-//         reject(error);
-//       } else {
-//         resolve("Correcto");
-//       }
-//     });
-//   });
-// }

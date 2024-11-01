@@ -3,9 +3,9 @@ import Document from "@layouts/document.astro";
 import Specifications_Table from "@components/table/Specifications_Table.tsx";
 import Quiz_Title from "@components/table/quiz_title.tsx";
 import Questions_Data from "@components/question/questions_data.tsx";
-import Test from "@components/test.jsx";
-import Questions from "./questions";
-
+import Modal from "@components/modal.astro";
+import Google_Icon from "@assets/svg/google-icon.svg";
+import { Image } from "astro:assets";
 ---
 
 <Document title="Test Quiz" description="Crear Quiz">
@@ -24,14 +24,13 @@ import Questions from "./questions";
           <button id="button-next-part" class="btn btn-primary"
             ><i class="fas fa-forward"></i> Siguiente
           </button>
-        </div>   
-
+        </div>
       </div>
 
       <div id="create-questions-container">
         <div id="question-card-container">
           <Questions_Data client:only="react" />
-          
+
           <div id="footer-card-buttons">
             <div id="back-part-div">
               <button id="button-back-part" class="btn btn-secondary btn-rounded"
@@ -44,17 +43,26 @@ import Questions from "./questions";
                 <span> Guardar</span>
               </button>
 
-              <!-- <GoogleFormBtn /> -->
+              <button
+                type="button"
+                id="button-generate-google-form"
+                class="btn btn-lg btn-rounded"
+                data-mdb-ripple-init
+                data-mdb-modal-init
+                data-mdb-target="#staticBackdrop"
+                disabled
+              >
+                <Image src={Google_Icon} alt="Google icon" />
+                <span>GENERAR FORMULARIO</span>
+              </button>
             </div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- <Modal /> -->
+    <Modal />
   </div>
-
-  
 </Document>
 
 <style>
@@ -189,29 +197,266 @@ import Questions from "./questions";
     /* border: 2px solid red; */
     padding: 1rem;
   }
+
+  #button-generate-google-form {
+    display: flex;
+    justify-content: center;
+    gap: 4px;
+    background: var(--main-color-google-form);
+    color: white;
+  }
+  #button-generate-google-form > img {
+    width: 20px;
+  }
 </style>
 
 <script>
   import type { Quiz } from "@content/quiz_data";
   import { quiz_data_store } from "@content/quiz_data";
 
+  const test_object: Quiz = {
+    quiz_id: "",
+    quiz_title: "Test 820",
+    created_by: 1,
+    quiz_subject: "Matemáticas",
+    specifications_table: {
+      total_questions: 15,
+      quiz_skills: ["Comprensión", "Aplicación", "Evaluación"],
+      items: [
+        {
+          thematic_area: "Números",
+          content: "Números naturales",
+          objective: "Identificar números naturales",
+          performed_classes: 3,
+          skill_index: 0,
+          skill_content: "1-2",
+        },
+        {
+          thematic_area: "Números",
+          content: "Números enteros",
+          objective: "Identificar números enteros",
+          performed_classes: 3,
+          skill_index: 0,
+          skill_content: "3-4",
+        },
+        {
+          thematic_area: "Números",
+          content: "Números enteros",
+          objective: "Realizar operaciones con números enteros",
+          performed_classes: 4,
+          skill_index: 1,
+          skill_content: "5-7",
+        },
+        {
+          thematic_area: "Álgebra",
+          content: "Expresiones algebraicas",
+          objective: "Simplificar expresiones algebraicas",
+          performed_classes: 5,
+          skill_index: 1,
+          skill_content: "8-11",
+        },
+        {
+          thematic_area: "Álgebra",
+          content: "Ecuaciones",
+          objective: "Resolver ecuaciones",
+          performed_classes: 5,
+          skill_index: 2,
+          skill_content: "12-15",
+        },
+      ],
+    },
+    questions: [
+      {
+        question: "¿Cuál de los siguientes es un número natural?",
+        answers: ["3", "-2"],
+        correct_answer_index: 0,
+      },
+      {
+        question: "¿Cuál de los siguientes no es un número natural?",
+        answers: ["9", "-1"],
+        correct_answer_index: 1,
+      },
+      {
+        question: "¿Cuál de los siguientes es un número entero?",
+        answers: ["2.5", "-3"],
+        correct_answer_index: 1,
+      },
+      {
+        question: "¿Cuál de los siguientes no es un número entero?",
+        answers: ["1/2", "-8"],
+        correct_answer_index: 0,
+      },
+      {
+        question: "¿Cuál es el resultado de la operación -3 + 2?",
+        answers: ["-1", "1"],
+        correct_answer_index: 0,
+      },
+      {
+        question: "¿Cuál es el resultado de la operación -2 - 3?",
+        answers: ["-5", "5"],
+        correct_answer_index: 0,
+      },
+      {
+        question: "¿Cuál es el resultado de la operación -2 * -3?",
+        answers: ["6", "-6"],
+        correct_answer_index: 0,
+      },
+      {
+        question: "¿Cuál es la simplificación de la expresión algebraica 2x + 3x?",
+        answers: ["5x", "6x"],
+        correct_answer_index: 0,
+      },
+      {
+        question: "¿Cuál es la simplificación de la expresión algebraica 4x - 2x?",
+        answers: ["6x", "2x"],
+        correct_answer_index: 1,
+      },
+      {
+        question: "¿Cuál es la simplificación de la expresión algebraica x * x?",
+        answers: ["2x", "x^2"],
+        correct_answer_index: 1,
+      },
+      {
+        question: "¿Cuál es la simplificación de la expresión algebraica x / x?",
+        answers: ["1", "x^2"],
+        correct_answer_index: 0,
+      },
+      {
+        question: "Si la ecuación es x + 3 = 5, ¿cuál es el valor de x?",
+        answers: ["2", "8"],
+        correct_answer_index: 0,
+      },
+      {
+        question: "Si la ecuación es 2x = 6, ¿cuál es el valor de x?",
+        answers: ["3", "4"],
+        correct_answer_index: 0,
+      },
+      {
+        question: "Si la ecuación es x - 2 = 3, ¿cuál es el valor de x?",
+        answers: ["1", "5"],
+        correct_answer_index: 1,
+      },
+      {
+        question: "Si la ecuación es x / 2 = 4, ¿cuál es el valor de x?",
+        answers: ["2", "8"],
+        correct_answer_index: 1,
+      },
+    ],
+  };
   // const URL = window?.location?.href?.match(/template\/([a-f0-9-]+)/);
   // const template_id = URL?.[1];
+  // const template_id = "e2d176bd-d27b-4ca8-8443-b84c40c9d7fb";
 
-  const template_id = "e2d176bd-d27b-4ca8-8443-b84c40c9d7fb";
+  // fetch(`/request/get/quiz/template/${template_id}`)
+  //   .then((response) => response.json())
+  //   .then((response_json) => response_json.data)
+  //   .then((quiz_data: Quiz) => {
+  //     quiz_data_store.set(quiz_data);
+  //   })
+  //   .then(() => {
+  //     console.log(quiz_data_store.get());
+  //   })
+  //   .catch((error) => {
+  //     console.error("Error:", error);
+  //   });
 
-  fetch(`/request/get/quiz/template/${template_id}`)
-    .then((response) => response.json())
-    .then((response_json) => response_json.data)
-    .then((quiz_data: Quiz) => {
-      quiz_data_store.set(quiz_data);
+  console.log(test_object);
+  quiz_data_store.set(test_object);
+
+  const Save_quiz_data_btn = document.querySelector("#button-save-data-form") as HTMLButtonElement;
+  const Generate_Google_Form_btn = document.querySelector(
+    "#button-generate-google-form"
+  ) as HTMLButtonElement;
+
+  Save_quiz_data_btn?.addEventListener("click", Save_Quiz_Data);
+  Generate_Google_Form_btn?.addEventListener("click", Generate_Google_Form);
+
+  function Save_Quiz_Data() {
+    fetch(`/request/quiz/save`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(quiz_data_store.get()),
     })
-    .then(() => {
-      console.log(quiz_data_store.get());
+      .then((response) => response.json())
+      .then((response_json) =>
+        quiz_data_store.set({
+          ...quiz_data_store.get(),
+          quiz_id: response_json.data,
+        })
+      )
+      .then(() => Generate_Google_Form_btn.removeAttribute("disabled"))
+      .then(() => Save_quiz_data_btn.setAttribute("disabled", ""))
+      .catch((error) => console.error(error));
+  }
+
+  function Generate_Google_Form() {
+    fetch("/request/quiz/generate", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify(quiz_data_store.get()),
     })
-    .catch((error) => {
-      console.error("Error:", error);
-    });
+      .then((response) => {
+        if (!response.ok) {
+          throw Error("Error al generar formulario!");
+        }
+        return response.json();
+      })
+      .then((response) => {
+        End_Animation(
+          {
+            ...response,
+            message: "Formulario generado con éxito!",
+          },
+          false
+        );
+      })
+      .then(() => Generate_Google_Form_btn.setAttribute("disabled", ""))
+      .catch((error) => {
+        console.error(error);
+        End_Animation(error, true);
+      });
+  }
+
+  function End_Animation(response, is_error) {
+    (document.querySelector(".check-mark") as HTMLDivElement).style.display = "block";
+
+    document.documentElement.style.setProperty("--cicleFlow", "forwards");
+    document.documentElement.style.setProperty(
+      "--finalBorder",
+      "rgb(215, 215, 231) rgb(215, 215, 231) rgb(215, 215, 231) rgb(215, 215, 231)"
+    );
+    document.documentElement.style.setProperty("--h1Animation", "h1-animation-2");
+
+    // const modal_message_container = document.querySelector(
+    //   "#modal-message-container"
+    // ) as HTMLDivElement;
+
+    const modal_message_text = document.querySelector("#modal-message-text") as HTMLDivElement;
+    modal_message_text.textContent = response.message || "";
+
+    const btn_close_modal = document.querySelector(".btn-close-modal") as HTMLElement;
+
+    btn_close_modal.style.height = "51px";
+    btn_close_modal.style.paddingTop = "var(--mdb-btn-padding-top)";
+    btn_close_modal.style.paddingBottom = "var(--mdb-btn-padding-bottom)";
+    btn_close_modal.style.paddingTop = "var(--mdb-btn-padding-top)";
+    btn_close_modal.style.paddingBottom = "var(--mdb-btn-padding-bottom)";
+
+    if (is_error) return;
+
+    const btn_link_form = document.querySelector(".btn-link-form") as HTMLLinkElement;
+    btn_link_form.href = response.data;
+    btn_link_form.style.height = "51px";
+    btn_link_form.style.width = "auto";
+    btn_link_form.style.paddingTop = "var(--mdb-btn-padding-top)";
+    btn_link_form.style.paddingBottom = "var(--mdb-btn-padding-bottom)";
+    btn_link_form.style.paddingLeft = "var(--mdb-btn-padding-x)";
+    btn_link_form.style.paddingRight = "var(--mdb-btn-padding-x)";
+
+    return;
+  }
 </script>
 
 <script>
@@ -230,8 +475,3 @@ import Questions from "./questions";
     movable_container.style.transform = `translateX(${movement})`;
   }
 </script>
-
-<script>
-  
-</script>
-

@@ -3,22 +3,21 @@ import path from "path";
 import moment from "moment";
 import { randomUUID } from "crypto";
 import Query from "../database/querys/Query.js";
-
-
+import Report_Status from "../../util/report_status.js";
 sqlite3.verbose();
 
 export async function Save_Form(data_form) {
+  // console.log(data_form);
   const data_base_path = path.join(process.cwd(), "server", "database", "database.db");
   const date_time = moment().format("YYYY-MM-DD HH:mm:ss");
   const UNIQUE_ID = randomUUID();
-  const title = data_form.title;
+  const title = data_form.quiz_title;
   const created_by = data_form.created_by;
-  const subject = data_form.specifications_table.subject;
+  const subject = data_form.quiz_subject;
 
-  const skills = data_form.specifications_table.skills;
-  const table_body = data_form.specifications_table.table_body;
+  const skills = data_form.specifications_table.quiz_skills;
+  const table_body = data_form.specifications_table.items;
 
-  const metadata = data_form.questions.metadata;
   const db = new sqlite3.Database(data_base_path);
   try {
     return new Promise((resolve, reject) => {
@@ -28,8 +27,11 @@ export async function Save_Form(data_form) {
         db.run("BEGIN TRANSACTION");
 
         try {
+          // console.log(subject, created_by, date_time);
           await Run_Query(sql.Insert.subject, [subject, created_by, date_time]);
+
           const subject_id = (await Get_Query(sql.Get.subject_id, [subject, created_by])).id;
+          // console.log(subject_id);
 
           await Run_Query(sql.Insert.test, [UNIQUE_ID, title, subject_id, created_by, date_time]);
           const test_id = (await Get_Query(sql.Get.test_id, [title, created_by, date_time])).id;
@@ -39,6 +41,7 @@ export async function Save_Form(data_form) {
           );
 
           table_body.forEach(async (row) => {
+            // console.log(row);
             await Run_Query(sql.Insert.thematic_area, [row.thematic_area, created_by, date_time]);
             await Run_Query(sql.Insert.content_area, [row.content, created_by, date_time]);
             await Run_Query(sql.Insert.objective, [row.objective, created_by, date_time]);
@@ -51,59 +54,43 @@ export async function Save_Form(data_form) {
               row.performed_classes,
             ]);
 
-            row.skills.forEach(async (question_range, index) => {
-              if (question_range.trim() !== "") {
-                await Run_Query(sql.Insert.specifications_table_skill, [
-                  test_id,
-                  row.thematic_area,
-                  row.content,
-                  row.objective,
-                  skills[index],
-                  index,
-                  question_range,
-                ]);
-              }
-            });
+            await Run_Query(sql.Insert.specifications_table_skill, [
+              test_id,
+              row.thematic_area,
+              row.content,
+              row.objective,
+              skills[row.skill_index],
+              row.skill_index,
+              row.skill_content,
+            ]);
           });
 
-          for (const [index, question] of data_form.questions.content.entries()) {
-            const { thematic_area, content, objective, skill } = metadata[index];
+          for (const [question_index, question_item] of data_form.questions.entries()) {
+            await Run_Query(sql.Insert.question, [question_item.question, created_by, date_time]);
 
-            await Run_Query(sql.Insert.question, [question.text, created_by, date_time]);
+            const question_id = (
+              await Get_Query(sql.Get.question_id, [question_item.question, created_by])
+            ).id;
 
-            const question_id = (await Get_Query(sql.Get.question_id, [question.text, created_by]))
-              .id;
-
-            await Run_Query(sql.Insert.test_question_metadata_2, [
+            await Run_Query(sql.Insert.test_question, [
               test_id,
               question_id,
-              thematic_area,
-              content,
-              objective,
-              skill,
+              question_index + 1,
+              question_item.correct_answer_index,
             ]);
+            const test_question_id = (
+              await Get_Query(sql.Get.test_question_id, [test_id, question_id])
+            ).id;
 
-            await Run_Query(sql.Insert.test_question_metadata, [
-              test_id,
-              question_id,
-              test_id,
-              thematic_area,
-              content,
-              objective,
-              (index + 1)
-            ]);
+            for (const [answer_index, answer] of question_item.answers.entries()) {
+              await Run_Query(sql.Insert.answer, [answer, created_by, date_time]);
 
-            
+              const answer_id = (await Get_Query(sql.Get.answer_id, [answer, created_by])).id;
 
-            for (let answer of question.answers) {
-              await Run_Query(sql.Insert.answer, [answer.text, created_by, date_time]);
-              const answer_id = (await Get_Query(sql.Get.answer_id, [answer.text, created_by])).id;
               await Run_Query(sql.Insert.test_question_answer, [
-                test_id,
-                question_id,
-                (index + 1),
+                test_question_id,
                 answer_id,
-                answer.is_correct,
+                answer_index + 1,
               ]);
             }
           }
@@ -111,24 +98,30 @@ export async function Save_Form(data_form) {
           db.run("COMMIT");
           sql.Finalize();
           db.close();
+          
+          Report_Status("success", "Form guardado en la base de datos con éxito!!");
+          Report_Status("divider");
+
           resolve({
-            status: true,
-            message: "Form guardado en la base de datos con éxito!!",
             data: UNIQUE_ID,
           });
+
         } catch (error) {
-          console.error(error);
+          Report_Status("error", error);
+          Report_Status("divider");
           db.run("ROLLBACK");
+
           sql.Finalize();
           db.close();
-          reject({ status: false, message: "Error al guardar form en la base de datos!!" });
+
+          reject();
         }
       });
     });
   } catch (error) {
     db.close();
     console.error(error);
-    return { status: false, message: "Error al guardar form en la base de datos!!" };
+    reject();
   }
 }
 

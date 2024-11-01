@@ -37,11 +37,9 @@ export default function Questions_Data() {
   }
 
   function Get_Metadata_Map() {
-    const metadata_map = new Map()
+    const metadata_map = new Map();
     $quiz_data.specifications_table.items.forEach((item) => {
-
       const assigned_questions = [item.skill_content].flatMap((skill_content) => {
-
         const skill_content_patron = skill_content.match(/\d+-\d+|\d+/g) || [];
 
         return skill_content_patron.flatMap((range) => {
@@ -53,33 +51,17 @@ export default function Questions_Data() {
         });
       });
 
-      
-      assigned_questions.forEach(question => {
+      assigned_questions.forEach((question) => {
         metadata_map.set(question, {
           thematic_area: item.thematic_area,
           content: item.content,
           objective: item.objective,
           skill: $quiz_data.specifications_table.quiz_skills[item.skill_index],
-        })
-      })
-
-      
+        });
+      });
     });
 
-    return metadata_map
-
-    // const result = skill_content_list.flatMap((item) => {
-    //   const skill_content_patron = item.match(/\d+-\d+|\d+/g) || [];
-
-    //   return skill_content_patron.flatMap((range) => {
-    //     if (range.includes("-")) {
-    //       const [start, end] = range.split("-").map(Number);
-    //       return Array.from({ length: end - start + 1 }, (_, i) => start + i);
-    //     }
-    //     return Number(range);
-    //   });
-    // });
-    // return result;
+    return metadata_map;
   }
 
   function Update_Question_Item(item_index: number, new_item: Question_Item) {
@@ -99,10 +81,9 @@ export default function Questions_Data() {
     initMDB({ Tab });
   }, []);
 
-
   const metadata_map = Get_Metadata_Map();
 
-  console.log(metadata_map)
+  // console.log(metadata_map);
 
   return (
     <div id="main-question-container">

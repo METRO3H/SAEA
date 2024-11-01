@@ -1,16 +1,16 @@
-CREATE TABLE
+CREATE TABLE IF NOT EXISTS
 	teacher (
 		"id" INTEGER NOT NULL UNIQUE,
 		"name" TEXT NOT NULL UNIQUE,
 		PRIMARY KEY ("id" AUTOINCREMENT)
 	);
 
-INSERT INTO
+INSERT OR IGNORE INTO
 	teacher (name)
 VALUES
 	("Bob");
 
-CREATE TABLE
+CREATE TABLE IF NOT EXISTS
 	test (
 		"id" INTEGER NOT NULL UNIQUE,
 		"unique_id" TEXT NOT NULL UNIQUE,
@@ -25,7 +25,7 @@ CREATE TABLE
 		/* FOREIGN KEY (designed_for) REFERENCES grade(id), */
 	);
 
-CREATE TABLE
+CREATE TABLE IF NOT EXISTS
 	question (
 		"id" INTEGER NOT NULL UNIQUE,
 		"text" TEXT NOT NULL UNIQUE,
@@ -36,40 +36,40 @@ CREATE TABLE
 		PRIMARY KEY ("id" AUTOINCREMENT)
 	);
 
-CREATE TABLE
-	test_question_metadata_2 (
-		"id" INTEGER NOT NULL UNIQUE,
-		"test_id" INTEGER NOT NULL,
-		"question_id" INTEGER NOT NULL,
-		"thematic_area_id" INTEGER NOT NULL,
-		"content_id" INTEGER NOT NULL,
-		"objective_id" INTEGER NOT NULL,
-		"skill_id" INTEGER NOT NULL,
-		FOREIGN KEY (test_id) REFERENCES test (id),
-		FOREIGN KEY (question_id) REFERENCES question (id),
-		FOREIGN KEY (thematic_area_id) REFERENCES question_thematic_area (id),
-		FOREIGN KEY (content_id) REFERENCES question_content_area (id),
-		FOREIGN KEY (objective_id) REFERENCES question_objective (id),
-		FOREIGN KEY (skill_id) REFERENCES question_skill (id),
-		UNIQUE (test_id, question_id),
-		PRIMARY KEY ("id" AUTOINCREMENT)
-	);
+-- CREATE TABLE IF NOT EXISTS
+-- 	test_question_metadata_2 (
+-- 		"id" INTEGER NOT NULL UNIQUE,
+-- 		"test_id" INTEGER NOT NULL,
+-- 		"question_id" INTEGER NOT NULL,
+-- 		"thematic_area_id" INTEGER NOT NULL,
+-- 		"content_id" INTEGER NOT NULL,
+-- 		"objective_id" INTEGER NOT NULL,
+-- 		"skill_id" INTEGER NOT NULL,
+-- 		FOREIGN KEY (test_id) REFERENCES test (id),
+-- 		FOREIGN KEY (question_id) REFERENCES question (id),
+-- 		FOREIGN KEY (thematic_area_id) REFERENCES question_thematic_area (id),
+-- 		FOREIGN KEY (content_id) REFERENCES question_content_area (id),
+-- 		FOREIGN KEY (objective_id) REFERENCES question_objective (id),
+-- 		FOREIGN KEY (skill_id) REFERENCES question_skill (id),
+-- 		UNIQUE (test_id, question_id),
+-- 		PRIMARY KEY ("id" AUTOINCREMENT)
+-- 	);
 
-CREATE TABLE
-	test_question_metadata (
-		"id" INTEGER NOT NULL UNIQUE,
-		"test_id" INTEGER NOT NULL,
-		"question_id" INTEGER NOT NULL,
-		"specifications_table_id" INTEGER NOT NULL,
-		"question_number" INTEGER NOT NULL,
-		FOREIGN KEY (test_id) REFERENCES test (id),
-		FOREIGN KEY (question_id) REFERENCES question (id),
-		FOREIGN KEY (specifications_table_id) REFERENCES specifications_table (id),
-		UNIQUE (test_id, question_id, specifications_table_id),
-		PRIMARY KEY ("id" AUTOINCREMENT)
-	);
+-- CREATE TABLE IF NOT EXISTS
+-- 	test_question_metadata (
+-- 		"id" INTEGER NOT NULL UNIQUE,
+-- 		"test_id" INTEGER NOT NULL,
+-- 		"question_id" INTEGER NOT NULL,
+-- 		"specifications_table_id" INTEGER NOT NULL,
+-- 		"question_number" INTEGER NOT NULL,
+-- 		FOREIGN KEY (test_id) REFERENCES test (id),
+-- 		FOREIGN KEY (question_id) REFERENCES question (id),
+-- 		FOREIGN KEY (specifications_table_id) REFERENCES specifications_table (id),
+-- 		UNIQUE (test_id, question_id, specifications_table_id),
+-- 		PRIMARY KEY ("id" AUTOINCREMENT)
+-- 	);
 
-CREATE TABLE
+CREATE TABLE IF NOT EXISTS
 	question_thematic_area (
 		"id" INTEGER NOT NULL UNIQUE,
 		"text" TEXT NOT NULL UNIQUE,
@@ -80,7 +80,7 @@ CREATE TABLE
 		PRIMARY KEY ("id" AUTOINCREMENT)
 	);
 
-CREATE TABLE
+CREATE TABLE IF NOT EXISTS
 	question_content_area (
 		"id" INTEGER NOT NULL UNIQUE,
 		"text" TEXT NOT NULL UNIQUE,
@@ -91,7 +91,7 @@ CREATE TABLE
 		PRIMARY KEY ("id" AUTOINCREMENT)
 	);
 
-CREATE TABLE
+CREATE TABLE IF NOT EXISTS
 	question_objective (
 		"id" INTEGER NOT NULL UNIQUE,
 		"text" TEXT NOT NULL UNIQUE,
@@ -102,7 +102,7 @@ CREATE TABLE
 		PRIMARY KEY ("id" AUTOINCREMENT)
 	);
 
-CREATE TABLE
+CREATE TABLE IF NOT EXISTS
 	question_skill (
 		"id" INTEGER NOT NULL UNIQUE,
 		"text" TEXT NOT NULL UNIQUE,
@@ -113,7 +113,7 @@ CREATE TABLE
 		PRIMARY KEY ("id" AUTOINCREMENT)
 	);
 
-CREATE TABLE
+CREATE TABLE IF NOT EXISTS
 	answer (
 		"id" INTEGER NOT NULL UNIQUE,
 		"text" TEXT NOT NULL,
@@ -124,28 +124,40 @@ CREATE TABLE
 		PRIMARY KEY ("id" AUTOINCREMENT)
 	);
 
-CREATE TABLE
-	test_question_answer (
+CREATE TABLE IF NOT EXISTS
+	test_question (
 		"id" INTEGER NOT NULL UNIQUE,
 		"test_id" INTEGER NOT NULL,
 		"question_id" INTEGER NOT NULL,
 		"question_number" INTEGER NOT NULL,
-		"answer_id" INTEGER NOT NULL,
-		"is_correct" INTEGER,
-		UNIQUE (test_id, question_id, answer_id) FOREIGN KEY (test_id) REFERENCES test (id),
+		"correct_answer_index" INTEGER NOT NULL,
+
+		UNIQUE (test_id, question_id),
+		FOREIGN KEY (test_id) REFERENCES test (id),
 		FOREIGN KEY (question_id) REFERENCES question (id),
-		FOREIGN KEY (answer_id) REFERENCES answer (id),
 		PRIMARY KEY ("id" AUTOINCREMENT)
 	);
 
-CREATE TABLE
+CREATE TABLE IF NOT EXISTS
+	test_question_answer (
+		"test_question_id" INTEGER NOT NULL,
+		"answer_id" INTEGER NOT NULL,
+		"answer_number" INTEGER NOT NULL,
+
+		UNIQUE (test_question_id, answer_number),
+
+		FOREIGN KEY (test_question_id) REFERENCES test_question (id),
+		FOREIGN KEY (answer_id) REFERENCES answer (id)
+	);
+
+CREATE TABLE IF NOT EXISTS
 	grade (
 		"id" INTEGER NOT NULL UNIQUE,
 		"level" TEXT NOT NULL UNIQUE,
 		PRIMARY KEY ("id" AUTOINCREMENT)
 	);
 
-CREATE TABLE
+CREATE TABLE IF NOT EXISTS
 	generation (
 		"id" INTEGER NOT NULL UNIQUE,
 		"grade_id" INTEGER NOT NULL,
@@ -154,7 +166,7 @@ CREATE TABLE
 		PRIMARY KEY ("id" AUTOINCREMENT)
 	);
 
-CREATE TABLE
+CREATE TABLE IF NOT EXISTS
 	generation_student (
 		"id" INTEGER NOT NULL UNIQUE,
 		"generation_id" INTEGER NOT NULL,
@@ -164,14 +176,14 @@ CREATE TABLE
 		PRIMARY KEY ("id" AUTOINCREMENT)
 	);
 
-CREATE TABLE
+CREATE TABLE IF NOT EXISTS
 	student (
 		"id" INTEGER NOT NULL UNIQUE,
 		"name" TEXT NOT NULL,
 		PRIMARY KEY ("id" AUTOINCREMENT)
 	);
 
-CREATE TABLE
+CREATE TABLE IF NOT EXISTS
 	test_performed (
 		"id" INTEGER NOT NULL UNIQUE,
 		"test_id" INTEGER DEFAULT NULL,
@@ -184,7 +196,7 @@ CREATE TABLE
 		PRIMARY KEY ("id" AUTOINCREMENT)
 	);
 
-CREATE TABLE
+CREATE TABLE IF NOT EXISTS
 	test_result (
 		"id" INTEGER NOT NULL UNIQUE,
 		"test_performed_id" INTEGER NOT NULL,
@@ -197,7 +209,7 @@ CREATE TABLE
 		PRIMARY KEY ("id" AUTOINCREMENT)
 	);
 
-CREATE TABLE
+CREATE TABLE IF NOT EXISTS
 	subject (
 		"id" INTEGER NOT NULL UNIQUE,
 		"text" TEXT NOT NULL UNIQUE,
@@ -207,7 +219,7 @@ CREATE TABLE
 		PRIMARY KEY ("id" AUTOINCREMENT)
 	);
 
-CREATE TABLE
+CREATE TABLE IF NOT EXISTS
 	specifications_table (
 		"id" INTEGER NOT NULL UNIQUE,
 		"test_id" INTEGER NOT NULL,
@@ -225,7 +237,7 @@ CREATE TABLE
 		PRIMARY KEY ("id" AUTOINCREMENT)
 	);
 
-CREATE TABLE
+CREATE TABLE IF NOT EXISTS
 	specifications_table_skill (
 		"id" INTEGER NOT NULL UNIQUE,
 		"specifications_table_id" INTEGER NOT NULL,
