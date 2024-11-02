@@ -33,8 +33,36 @@ export let quiz_data_store = atom<Quiz>({
   quiz_subject: "",
   specifications_table: {
     total_questions: 0,
-    quiz_skills: [],
-    items: [],
+    quiz_skills: ["", "", ""],
+    items: [{
+      thematic_area: "",
+      content: "",
+      objective: "",
+      performed_classes: 0,
+      skill_index: 0,
+      skill_content: "",
+    },{
+      thematic_area: "",
+      content: "",
+      objective: "",
+      performed_classes: 0,
+      skill_index: 0,
+      skill_content: "",
+    },{
+      thematic_area: "",
+      content: "",
+      objective: "",
+      performed_classes: 0,
+      skill_index: 0,
+      skill_content: "",
+    },{
+      thematic_area: "",
+      content: "",
+      objective: "",
+      performed_classes: 0,
+      skill_index: 0,
+      skill_content: "",
+    }],
   },
   questions: [],
 });
@@ -48,4 +76,3 @@ export interface Question_Item {
   answers: string[];
   correct_answer_index: number;
 }
-

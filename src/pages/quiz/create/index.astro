@@ -1,21 +1,16 @@
 ---
-import CreateQuiz from "@layouts/create_quiz.astro";
+import Edit_Quiz from "@layouts/edit_quiz.astro";
 ---
 
-<CreateQuiz />
+<Edit_Quiz />
 
-<!-- <script>
-  import { data_test_2 } from "@content/Test/create_quiz/data_test_1";
 
-  import { Fill_data_table, Fill_Questions } from "@content/Test/create_quiz/fill_dom";
+<script>
+  import { quiz_data_store } from "@content/quiz_data";
+  import { data_test_3 } from "@content/Test/create_quiz/data_test_1";
+  console.log(data_test_3);
+  quiz_data_store.set(data_test_3);
 
-  document.addEventListener("DOMContentLoaded", () => {
-    Fill_data_table(data_test_2);
-  });
+</script>
 
-  const button_next_part = document.querySelector("#button-next-part");
 
-  button_next_part?.addEventListener("click", () => {
-    setTimeout(Fill_Questions, 50, data_test_2);
-  });
-</script> -->

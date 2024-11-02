@@ -26,7 +26,7 @@ function Question_Content_Item({
 
   function Update_Question_Title(event) {
     const old_value = question_item_data.question;
-    const new_value = event.target.value.trim() || " - ";
+    const new_value = event.target.value.trim() || "";
     if (new_value === old_value) return;
 
     update_question_item(question_item_index, { ...question_item_data, question: new_value });
@@ -86,17 +86,17 @@ function Question_Content_Item({
     >
       <div className="question-content-item-main">
         <ul className="badge-container">
-          <li className="hint--bottom hint--rounded" aria-label={metadata.thematic_area}>
-            <span className="badge rounded-pill badge-primary">{metadata.thematic_area}</span>
+          <li className="hint--bottom hint--rounded" aria-label={metadata.thematic_area || ""}>
+            <span className="badge rounded-pill badge-primary">{metadata.thematic_area || ""}</span>
           </li>
-          <li className="hint--bottom hint--rounded" aria-label={metadata.content}>
-            <span className="badge rounded-pill badge-warning">{metadata.content}</span>
+          <li className="hint--bottom hint--rounded" aria-label={metadata.content || ""}>
+            <span className="badge rounded-pill badge-warning">{metadata.content || ""}</span>
           </li>
-          <li className="hint--bottom hint--rounded" aria-label={metadata.objective}>
-            <span className="badge rounded-pill badge-danger">{metadata.objective}</span>
+          <li className="hint--bottom hint--rounded" aria-label={metadata.objective || ""}>
+            <span className="badge rounded-pill badge-danger">{metadata.objective || ""}</span>
           </li>
-          <li className="hint--bottom hint--rounded" aria-label={metadata.skill}>
-            <span className="badge rounded-pill badge-success">{metadata.skill}</span>
+          <li className="hint--bottom hint--rounded" aria-label={metadata.skill || ""}>
+            <span className="badge rounded-pill badge-success">{metadata.skill || ""}</span>
           </li>
         </ul>
 

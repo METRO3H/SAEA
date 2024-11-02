@@ -6,9 +6,11 @@ import "@styles/table_2.css";
 export default function Specifications_Table() {
   const $quiz_data: Quiz = useStore(quiz_data_store);
   const [editing_cell, set_editing_cell] = useState<{ index: number; field: string } | null>(null);
-  const [editing_skill_cell, set_editing_skill_cell] = useState<{ index: number; skill_index: number } | null>(null);
+  const [editing_skill_cell, set_editing_skill_cell] = useState<{
+    index: number;
+    skill_index: number;
+  } | null>(null);
   const [editing_total_questions, set_editing_total_questions] = useState<boolean>(false);
-  
 
   function Calculate_RowSpans(items: Quiz["specifications_table"]["items"]) {
     const row_spans: RowSpan = {
@@ -28,9 +30,9 @@ export default function Specifications_Table() {
 
   function Handle_Blur(event, index: number, field: string, skill_index: number = -1) {
     const old_value = $quiz_data.specifications_table.items[index][field] || "";
-    let new_value = event.target.value.trim() || " - ";
+    let new_value = event.target.value.trim() || "";
 
-    let updated_items:Quiz["specifications_table"]["items"] = []
+    let updated_items: Quiz["specifications_table"]["items"] = [];
 
     if (field === "thematic_area" || field === "content" || field === "objective") {
       updated_items = $quiz_data.specifications_table.items.map((item, item_index) =>
@@ -39,7 +41,11 @@ export default function Specifications_Table() {
     }
     if (field === "performed_classes") {
       updated_items = $quiz_data.specifications_table.items.map((item, item_index) =>
-        item_index === index ? (item[field] === old_value ? { ...item, [field]: new_value } : item ): item
+        item_index === index
+          ? item[field] === old_value
+            ? { ...item, [field]: new_value }
+            : item
+          : item
       );
     }
     if (field === "tbody_skills") {
@@ -64,28 +70,26 @@ export default function Specifications_Table() {
     if (field === "subject") {
       quiz_data_store.set({
         ...$quiz_data, // Mantiene las propiedades existentes del estado
-        quiz_subject: new_value ? new_value : " - ",
+        quiz_subject: new_value ? new_value : "",
       });
 
-      return
+      return;
     }
 
     if (field === "thead_skills") {
-
       let quiz_skills = $quiz_data.specifications_table.quiz_skills;
 
-      quiz_skills[index] = new_value ? new_value : " - ";
+      quiz_skills[index] = new_value ? new_value : "";
 
       quiz_data_store.set({
         ...$quiz_data, // Mantiene las propiedades existentes del estado
         specifications_table: {
           ...$quiz_data.specifications_table, // Mantiene las propiedades de specifications_table
-          quiz_skills: quiz_skills
+          quiz_skills: quiz_skills,
         },
       });
       return;
     }
-
 
     quiz_data_store.set({
       ...$quiz_data, // Mantiene las propiedades existentes del estado
@@ -96,11 +100,10 @@ export default function Specifications_Table() {
     });
 
     set_editing_cell(null);
-    if (field === "tbody_skills"){
+    if (field === "tbody_skills") {
       set_editing_skill_cell(null);
     }
   }
-
 
   function Get_Skill_Content_Values(skill_content_list: string[]) {
     const result = skill_content_list.flatMap((item) => {
@@ -116,31 +119,32 @@ export default function Specifications_Table() {
     });
     return result;
   }
- 
+
   function Sanitize_Values(acc, item) {
     const value = Number(item.performed_classes);
 
     if (!Number.isInteger(value) || value < 0) {
-      return " - "; // Retornar " - " si se encuentra un valor inválido
+      return "";
     }
 
-    if (acc === " - ") {
+    if (acc === "") {
       return acc;
     }
 
     return acc + value;
   }
-  function Get_Skill_Content_Columns(column_index : number) {
-
-    const column_list = $quiz_data.specifications_table.items.filter((item) => item.skill_index === column_index).map(item => item.skill_content);
+  function Get_Skill_Content_Columns(column_index: number) {
+    const column_list = $quiz_data.specifications_table.items
+      .filter((item) => item.skill_index === column_index)
+      .map((item) => item.skill_content);
 
     const column_values: number[] = Get_Skill_Content_Values(column_list);
 
-    return column_values
+    return column_values;
   }
 
   const total_classes = $quiz_data.specifications_table.items.reduce(Sanitize_Values, 0);
-  
+
   const row_spans = Calculate_RowSpans($quiz_data.specifications_table.items);
 
   const total_question_count = $quiz_data.specifications_table.total_questions;
@@ -186,13 +190,16 @@ export default function Specifications_Table() {
 
           {$quiz_data.specifications_table.quiz_skills.map((item, skill_index) => (
             <th key={"skill-index-" + skill_index} className="cell thead-input">
-              <input className="text-center" type="text" placeholder="Habilidad" required 
-              defaultValue={item} 
-              onBlur={(event) => Handle_Blur(event, skill_index, "thead_skills")}
+              <input
+                className="text-center"
+                type="text"
+                placeholder="Habilidad"
+                required
+                defaultValue={item}
+                onBlur={(event) => Handle_Blur(event, skill_index, "thead_skills")}
               />
             </th>
           ))}
-
 
           {/* <th className="cell thead-input">
             <input className="text-center" type="text" placeholder="Habilidad" required />
@@ -204,33 +211,31 @@ export default function Specifications_Table() {
             <input className="text-center" type="text" placeholder="Habilidad" required />
           </th> */}
 
-
-
           <th>
             <div className="text-center">Total preguntas</div>
           </th>
-
-
         </tr>
       </thead>
 
       <tbody>
         {$quiz_data.specifications_table.items.map((item, index) => {
-          const classes_relation = parseInt(item.performed_classes) / total_classes;
-          let classes_percentage: any = classes_relation * 100;
-          classes_percentage =
-            total_classes === 0
-              ? " - "
-              : Number.isInteger(classes_percentage)
-              ? parseInt(classes_percentage)
-              : classes_percentage.toFixed(1);
+          const classes_relation =
+            !isNaN(item.performed_classes) && !isNaN(total_classes)
+              ? item.performed_classes / total_classes
+              : 0;
 
-          classes_percentage = classes_percentage + "%";
+          let classes_percentage: any = classes_relation * 100;
+          classes_percentage = Number.isInteger(classes_percentage)
+            ? parseInt(classes_percentage)
+            : classes_percentage.toFixed(1);
+
+          classes_percentage = total_classes === 0 ? " - " : classes_percentage + "%";
 
           const item_question_count: number = Get_Skill_Content_Values([item.skill_content]).length;
-          const expected_item_question_count: number = Math.round(
-            total_question_count * classes_relation
-          );
+          const expected_item_question_count: number =
+            total_question_count > 0 && classes_relation > 0
+              ? Math.round(total_question_count * classes_relation)
+              : 0;
 
           const success_item_question_count =
             item_question_count === expected_item_question_count
@@ -328,7 +333,7 @@ export default function Specifications_Table() {
                   {editing_skill_cell?.index === index &&
                   editing_skill_cell.skill_index === skill_index ? (
                     <input
-                      defaultValue={item.skill_index === skill_index ? item.skill_content : " - "}
+                      defaultValue={item.skill_index === skill_index ? item.skill_content : ""}
                       onBlur={(event) => Handle_Blur(event, index, "tbody_skills", skill_index)}
                       onFocus={(event) =>
                         (event.currentTarget.selectionStart = event.currentTarget.value.length)

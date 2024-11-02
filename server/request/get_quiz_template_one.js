@@ -54,7 +54,6 @@ async function Get_Template_Data(test_id) {
             unique_id = ?
         GROUP BY
             position;
-
         `);
 
       const specifications_table_query = db.prepare(/*sql*/ ` 
@@ -78,18 +77,24 @@ async function Get_Template_Data(test_id) {
         `);
 
       const questions_query = db.prepare(/*sql*/ `
-        SELECT
-            test_question_answer.question_number,
-            question.text AS question,
-            answer.text AS answer,
-            test_question_answer.is_correct
-        FROM
-            test
-            JOIN test_question_answer ON test_question_answer.test_id = test.id
-            JOIN question ON question.id = test_question_answer.question_id
-            JOIN answer ON answer.id = test_question_answer.answer_id
-        WHERE
-            test.unique_id = ?;
+          SELECT question.text AS question, test_question.correct_answer_index, test_question.id AS test_question_id
+          FROM test
+          JOIN test_question ON test_question.test_id = test.id
+          JOIN question ON question.id = test_question.question_id
+          WHERE test.unique_id = ?
+          ORDER BY test_question.question_number ASC
+        `);
+
+      const answers_query = db.prepare(/*sql*/ `
+          SELECT answer.text AS answer
+          FROM test
+          JOIN test_question ON test_question.test_id = test.id
+          JOIN test_question_answer ON test_question_answer.test_question_id = test_question.id
+          JOIN question ON question.id = test_question.question_id
+          JOIN answer ON answer.id = test_question_answer.answer_id
+          WHERE 
+          test.unique_id = ? AND test_question.id = ?
+          ORDER BY test_question_answer.answer_number ASC
         `);
 
       try {
@@ -105,38 +110,33 @@ async function Get_Template_Data(test_id) {
 
         const questions_query_data = await Get_All_Query(questions_query, [test_id]);
 
-        const questions_map = {};
 
-        questions_query_data.forEach((question_item) => {
-          const { question_number, question, answer, is_correct } = question_item;
-
-          if (!questions_map[question_number]) {
-            questions_map[question_number] = {
+        const question_list = await Promise.all(
+          questions_query_data.map(async (question_data) => {
+            const { question, correct_answer_index, test_question_id } = question_data;
+        
+            const answer_list = (
+              await Get_All_Query(answers_query, [test_id, test_question_id])
+            ).map((item) => item.answer);
+        
+            return {
               question: question,
-              answers: [],
-              correct_answer_index: null,
+              answers: answer_list,
+              correct_answer_index: correct_answer_index,
             };
-          }
-          questions_map[question_number].answers.push(answer);
-
-          if (is_correct) {
-            questions_map[question_number].correct_answer_index =
-              questions_map[question_number].answers.length - 1;
-          }
-        });
-
-        const questions_list = Object.keys(questions_map).map((key) => questions_map[key]);
+          })
+        );
 
         const data = {
           quiz_title: test_title,
           created_by: 1,
           quiz_subject: test_subject,
           specifications_table: {
-            total_questions: questions_list.length,
+            total_questions: 15,
             quiz_skills: skills_list_query_data,
             items: specifications_table_query_data,
           },
-          questions: questions_list,
+          questions: question_list,
         };
 
         // console.log(data);
@@ -145,6 +145,7 @@ async function Get_Template_Data(test_id) {
         skills_list_query.finalize();
         specifications_table_query.finalize();
         questions_query.finalize();
+        answers_query.finalize();
         db.close();
 
         resolve(data);

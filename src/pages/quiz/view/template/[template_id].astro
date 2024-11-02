@@ -1,33 +1,27 @@
 ---
-const { template_id } = Astro.params;
-const bob = "XD";
-
-import CreateQuiz from "@layouts/create_quiz.astro";
+import Edit_Quiz from "@layouts/edit_quiz.astro";
 ---
 
-<CreateQuiz />
+<Edit_Quiz />
 
 <script>
-  import { Fill_data_table, Fill_Questions } from "@content/Test/create_quiz/fill_dom";
+  import type { Quiz } from "@content/quiz_data";
+  import { quiz_data_store } from "@content/quiz_data";
 
   const URL = window?.location?.href?.match(/template\/([a-f0-9-]+)/);
   const template_id = URL?.[1];
-
+  console.log(template_id)
 
   fetch(`/request/get/quiz/template/${template_id}`)
     .then((response) => response.json())
-    .then((response_data) => response_data.data)
-    .then((quiz_data) => {
-
-      Fill_data_table(quiz_data);
+    .then((response_json) => response_json.data)
+    .then((quiz_data: Quiz) => {
       console.log(quiz_data)
-      const button_next_part = document.querySelector("#button-next-part");
-
-      button_next_part?.addEventListener("click", () => {
-        setTimeout(Fill_Questions, 50, quiz_data);
-      });
+      quiz_data_store.set(quiz_data);
     })
     .catch((error) => {
       console.error("Error:", error);
     });
+
+
 </script>
