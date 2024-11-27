@@ -1,5 +1,5 @@
 ---
-import Document from "@layouts/document.astro";
+
 import Specifications_Table from "@components/table/Specifications_Table.tsx";
 import Quiz_Title from "@components/table/quiz_title.tsx";
 import Questions_Data from "@components/question/questions_data.tsx";
@@ -8,62 +8,61 @@ import Google_Icon from "@assets/svg/google-icon.svg";
 import { Image } from "astro:assets";
 ---
 
-<Document title="Test Quiz" description="Crear Quiz">
-  <div id="main-container">
-    <div id="movable-container">
-      <div id="specs-container">
-        <div id="quiz-title">
-          <Quiz_Title client:only="react" />
-        </div>
 
-        <div id="table-container">
-          <Specifications_Table client:only="react" />
-        </div>
-
-        <div id="next-part-div">
-          <button id="button-next-part" class="btn btn-primary"
-            ><i class="fas fa-forward"></i> Siguiente
-          </button>
-        </div>
+<div id="main-container">
+  <div id="movable-container">
+    <div id="specs-container">
+      <div id="quiz-title">
+        <Quiz_Title client:only="react" />
       </div>
 
-      <div id="create-questions-container">
-        <div id="question-card-container">
-          <Questions_Data client:only="react" />
+      <div id="table-container">
+        <Specifications_Table client:only="react" />
+      </div>
 
-          <div id="footer-card-buttons">
-            <div id="back-part-div">
-              <button id="button-back-part" class="btn btn-secondary btn-rounded"
-                ><i class="fas fa-arrow-rotate-left"></i>Atrás</button
-              >
-            </div>
-            <div id="work-buttons">
-              <button type="button" id="button-save-data-form" class="btn btn-lg btn-rounded">
-                <i class="far fa-bookmark"></i>
-                <span> Guardar</span>
-              </button>
+      <div id="next-part-div">
+        <button id="button-next-part" class="btn btn-primary"
+          ><i class="fas fa-forward"></i> Siguiente
+        </button>
+      </div>
+    </div>
 
-              <button
-                type="button"
-                id="button-generate-google-form"
-                class="btn btn-lg btn-rounded"
-                data-mdb-ripple-init
-                data-mdb-modal-init
-                data-mdb-target="#staticBackdrop"
-                disabled
-              >
-                <Image src={Google_Icon} alt="Google icon" />
-                <span>GENERAR FORMULARIO</span>
-              </button>
-            </div>
+    <div id="create-questions-container">
+      <div id="question-card-container">
+        <Questions_Data client:only="react" />
+
+        <div id="footer-card-buttons">
+          <div id="back-part-div">
+            <button id="button-back-part" class="btn btn-secondary btn-rounded"
+              ><i class="fas fa-arrow-rotate-left"></i>Atrás</button
+            >
+          </div>
+          <div id="work-buttons">
+            <button type="button" id="button-save-data-form" class="btn btn-lg btn-rounded">
+              <i class="far fa-bookmark"></i>
+              <span> Guardar</span>
+            </button>
+
+            <button
+              type="button"
+              id="button-generate-google-form"
+              class="btn btn-lg btn-rounded"
+              data-mdb-ripple-init
+              data-mdb-modal-init
+              data-mdb-target="#staticBackdrop"
+              disabled
+            >
+              <Image src={Google_Icon} alt="Google icon" />
+              <span>GENERAR FORMULARIO</span>
+            </button>
           </div>
         </div>
       </div>
     </div>
-
-    <Modal />
   </div>
-</Document>
+
+  <Modal />
+</div>
 
 <style>
   #main-container {

@@ -1,8 +1,12 @@
 ---
+import Document from "@layouts/document.astro";
 import Edit_Quiz from "@layouts/edit_quiz.astro";
 ---
+<Document title="Test Quiz" description="Crear Quiz">
 
-<Edit_Quiz />
+  <Edit_Quiz />
+
+</Document>
 
 <script>
   import type { Quiz } from "@content/quiz_data";
@@ -15,8 +19,9 @@ import Edit_Quiz from "@layouts/edit_quiz.astro";
   fetch(`/request/get/quiz/template/${template_id}`)
     .then((response) => response.json())
     .then((response_json) => response_json.data)
-    .then((quiz_data: Quiz) => {
+    .then((quiz_data: Quiz) => { 
       console.log(quiz_data)
+      document.title = quiz_data.quiz_title;
       quiz_data_store.set(quiz_data);
     })
     .catch((error) => {
