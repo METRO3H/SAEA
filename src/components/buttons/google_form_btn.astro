@@ -1,0 +1,31 @@
+---
+import Google_Icon from "@assets/svg/google-icon.svg";
+import { Image } from "astro:assets";
+const { button_text = "GENERAR FORMULARIO", is_generator = true } = Astro.props;
+---
+
+<button
+  type="button"
+  id="generate_google_btn"
+  class="btn btn-lg btn-rounded"
+  data-mdb-ripple-init={is_generator}
+  data-mdb-modal-init={is_generator}
+  data-mdb-target="#staticBackdrop"
+  disabled={is_generator}
+>
+  <Image src={Google_Icon} alt="Google icon" />
+  <span>{button_text}</span>
+</button>
+
+<style>
+  #generate_google_btn {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    background: var(--main-color-google-form);
+    color: white;
+  }
+  #generate_google_btn > img {
+    width: 20px;
+  }
+</style>

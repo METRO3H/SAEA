@@ -1,12 +1,18 @@
 ---
 import Document from "@layouts/document.astro";
 import Edit_Quiz from "@layouts/edit_quiz.astro";
+import Save_Quiz_Button from "@components/buttons/save_quiz.astro";
+import Modal from "@components/modal.astro";
+import GoogleForm_btn from "@components/buttons/google_form_btn.astro";
 ---
+
 <Document title="Crear Quiz" description="Crear Quiz">
-  <Edit_Quiz />
+  <Edit_Quiz>
+    <Save_Quiz_Button slot="save-button" />
+    <GoogleForm_btn slot="google-form-button" />
+    <Modal slot="modal" />
+  </Edit_Quiz>
 </Document>
-
-
 
 <script>
   import { quiz_data_store } from "@content/quiz_data";
@@ -14,6 +20,98 @@ import Edit_Quiz from "@layouts/edit_quiz.astro";
   console.log(data_test_3);
   quiz_data_store.set(data_test_3);
 
+  const Save_quiz_data_btn = document.querySelector("#save_quiz_btn") as HTMLButtonElement;
+  const Generate_Google_Form_btn = document.querySelector(
+    "#generate_google_btn"
+  ) as HTMLButtonElement;
+
+  Save_quiz_data_btn?.addEventListener("click", Save_Quiz_Data);
+  Generate_Google_Form_btn?.addEventListener("click", Generate_Google_Form);
+
+  function Save_Quiz_Data() {
+    fetch(`/request/quiz/save`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(quiz_data_store.get()),
+    })
+      .then((response) => response.json())
+      .then((response_json) =>
+        quiz_data_store.set({
+          ...quiz_data_store.get(),
+          quiz_id: response_json.data,
+        })
+      )
+      .then(() => Generate_Google_Form_btn.removeAttribute("disabled"))
+      .then(() => Save_quiz_data_btn.setAttribute("disabled", ""))
+      .catch((error) => console.error(error));
+  }
+
+  function Generate_Google_Form() {
+    fetch("/request/quiz/generate", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify(quiz_data_store.get()),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw Error("Error al generar formulario!");
+        }
+        return response.json();
+      })
+      .then((response) => {
+        End_Animation(
+          {
+            ...response,
+            message: "Formulario generado con éxito!",
+          },
+          false
+        );
+      })
+      .then(() => Generate_Google_Form_btn.setAttribute("disabled", ""))
+      .catch((error) => {
+        console.error(error);
+        End_Animation(error, true);
+      });
+  }
+
+  function End_Animation(response, is_error) {
+    (document.querySelector(".check-mark") as HTMLDivElement).style.display = "block";
+
+    document.documentElement.style.setProperty("--cicleFlow", "forwards");
+    document.documentElement.style.setProperty(
+      "--finalBorder",
+      "rgb(215, 215, 231) rgb(215, 215, 231) rgb(215, 215, 231) rgb(215, 215, 231)"
+    );
+    document.documentElement.style.setProperty("--h1Animation", "h1-animation-2");
+
+    // const modal_message_container = document.querySelector(
+    //   "#modal-message-container"
+    // ) as HTMLDivElement;
+
+    const modal_message_text = document.querySelector("#modal-message-text") as HTMLDivElement;
+    modal_message_text.textContent = response.message || "";
+
+    const btn_close_modal = document.querySelector(".btn-close-modal") as HTMLElement;
+
+    btn_close_modal.style.height = "51px";
+    btn_close_modal.style.paddingTop = "var(--mdb-btn-padding-top)";
+    btn_close_modal.style.paddingBottom = "var(--mdb-btn-padding-bottom)";
+    btn_close_modal.style.paddingTop = "var(--mdb-btn-padding-top)";
+    btn_close_modal.style.paddingBottom = "var(--mdb-btn-padding-bottom)";
+
+    if (is_error) return;
+
+    const btn_link_form = document.querySelector(".btn-link-form") as HTMLLinkElement;
+    btn_link_form.href = response.data;
+    btn_link_form.style.height = "51px";
+    btn_link_form.style.width = "auto";
+    btn_link_form.style.paddingTop = "var(--mdb-btn-padding-top)";
+    btn_link_form.style.paddingBottom = "var(--mdb-btn-padding-bottom)";
+    btn_link_form.style.paddingLeft = "var(--mdb-btn-padding-x)";
+    btn_link_form.style.paddingRight = "var(--mdb-btn-padding-x)";
+
+    return;
+  }
 </script>
-
-

@@ -28,8 +28,11 @@ async function Get_Template_Data(test_id) {
     const data_base_path = path.join(process.cwd(), "server", "database", "database.db");
     const db = new sqlite3.Database(data_base_path);
 
-    const user_id = 1;
     db.serialize(async () => {
+      const google_form_url_query = db.prepare(/*sql*/ `
+        SELECT form_url FROM test_performed WHERE test_id = ?;
+        `);
+
       const title_subject_query = db.prepare(/*sql*/ `
         SELECT
             test.title as test_title,
@@ -98,6 +101,11 @@ async function Get_Template_Data(test_id) {
         `);
 
       try {
+
+        const google_form_url = (await Get_Query(google_form_url_query, [test_id])).form_url;
+
+        console.log(google_form_url)
+
         const [{ test_title, test_subject }] = await Get_All_Query(title_subject_query, [test_id]);
         let skills_list_query_data = await Get_All_Query(skills_list_query, [test_id]);
         const specifications_table_query_data = await Get_All_Query(specifications_table_query, [
@@ -128,6 +136,8 @@ async function Get_Template_Data(test_id) {
         );
 
         const data = {
+          quiz_id: test_id,
+          google_form_url: google_form_url,
           quiz_title: test_title,
           created_by: 1,
           quiz_subject: test_subject,
@@ -140,7 +150,7 @@ async function Get_Template_Data(test_id) {
         };
 
         // console.log(data);
-
+        google_form_url_query.finalize();
         title_subject_query.finalize();
         skills_list_query.finalize();
         specifications_table_query.finalize();
@@ -162,6 +172,18 @@ async function Get_Template_Data(test_id) {
 function Get_All_Query(query, parameters = []) {
   return new Promise((resolve, reject) => {
     query.all(parameters, function (error, row) {
+      if (error) {
+        reject(error);
+      } else {
+        resolve(row);
+      }
+    });
+  });
+}
+
+function Get_Query(query, parameters = []) {
+  return new Promise((resolve, reject) => {
+    query.get(parameters, function (error, row) {
       if (error) {
         reject(error);
       } else {

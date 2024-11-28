@@ -1,11 +1,17 @@
 ---
 import Document from "@layouts/document.astro";
 import Edit_Quiz from "@layouts/edit_quiz.astro";
+import Save_Quiz_Button from "@components/buttons/save_quiz.astro";
+import GoogleForm_btn from "@components/buttons/google_form_btn.astro";
 ---
-<Document title="Test Quiz" description="Crear Quiz">
 
-  <Edit_Quiz />
-
+<Document title="..." description="Crear Quiz">
+  <Edit_Quiz>
+    <Save_Quiz_Button slot="save-button" />
+    <a slot="google-form-button" id="link-form-btn" href="#" target="_blank">
+      <GoogleForm_btn button_text="LINK DEL FORMULARIO" is_generator={false} />
+    </a>
+  </Edit_Quiz>
 </Document>
 
 <script>
@@ -14,19 +20,20 @@ import Edit_Quiz from "@layouts/edit_quiz.astro";
 
   const URL = window?.location?.href?.match(/template\/([a-f0-9-]+)/);
   const template_id = URL?.[1];
-  console.log(template_id)
+  const link_form_btn = document.querySelector("#link-form-btn") as HTMLAnchorElement;
 
   fetch(`/request/get/quiz/template/${template_id}`)
     .then((response) => response.json())
     .then((response_json) => response_json.data)
-    .then((quiz_data: Quiz) => { 
-      console.log(quiz_data)
-      document.title = quiz_data.quiz_title;
+    .then((quiz_data: Quiz) => {
+      console.log(quiz_data);
       quiz_data_store.set(quiz_data);
+    })
+    .then(() => {
+      document.title = quiz_data_store.get().quiz_title;
+      link_form_btn.href = quiz_data_store.get().google_form_url;
     })
     .catch((error) => {
       console.error("Error:", error);
     });
-
-
 </script>

@@ -2,6 +2,7 @@ import { atom } from "nanostores";
 
 export interface Quiz {
   quiz_id: string;
+  google_form_url: string;
   quiz_title: string;
   created_by: number;
   quiz_subject: string;
@@ -28,6 +29,7 @@ export interface Quiz {
 // Crear el store usando atom
 export let quiz_data_store = atom<Quiz>({
   quiz_id: "",
+  google_form_url: "",
   quiz_title: "",
   created_by: -1,
   quiz_subject: "",

@@ -1,6 +1,5 @@
 ---
-import Google_Icon from "@assets/svg/google-icon.svg";
-import { Image } from "astro:assets";
+import GoogleForm_btn_2 from "@components/buttons/google_form_btn_2.astro";
 ---
 
 <div
@@ -30,37 +29,28 @@ import { Image } from "astro:assets";
           data-mdb-ripple-init
           data-mdb-dismiss="modal"
         >
-          <i class="fas fa-xmark me-2"></i> Cerrar</button
-        >
-        <a
-          role="button"
-          class="btn btn-link-form btn-lg text-white"
-          data-mdb-ripple-init
-          target="_blank"
-          title="Quiz URL"
-          aria-disabled="true"
-        >
-          <Image src={Google_Icon} alt="Google icon" />
-          <span> Link del formulario</span>
-        </a>
+          <i class="fas fa-xmark me-2"></i>
+          Cerrar
+        </button>
+
+        <GoogleForm_btn_2 />
       </div>
     </div>
   </div>
 </div>
 
 <script>
-//   import Modal from "bootstrap/js/dist/modal";
-//   const myModalEl = document.querySelector("#staticBackdrop");
-// //https://stackoverflow.com/questions/65493353/how-to-disposedestroy-bootstrap-5-modal
-//   const modal_instance = new Modal("#staticBackdrop");
+  //   import Modal from "bootstrap/js/dist/modal";
+  //   const myModalEl = document.querySelector("#staticBackdrop");
+  // //https://stackoverflow.com/questions/65493353/how-to-disposedestroy-bootstrap-5-modal
+  //   const modal_instance = new Modal("#staticBackdrop");
 
-//   myModalEl?.addEventListener("hidden.bs.modal", (event) => {
-//     console.log(modal_instance)
-//     modal_instance.dispose()
-//     console.log(modal_instance)
+  //   myModalEl?.addEventListener("hidden.bs.modal", (event) => {
+  //     console.log(modal_instance)
+  //     modal_instance.dispose()
+  //     console.log(modal_instance)
 
-//   });
-
+  //   });
 </script>
 <style>
   .fade {
@@ -97,23 +87,7 @@ import { Image } from "astro:assets";
     transition: all 500ms ease-in;
   }
 
-  .btn-link-form {
-    display: flex;
-    align-items: center;
-    background: var(--main-color-google-form);
-    transition: all 500ms ease-in;
-    height: 0;
-    padding: 0;
-    width: 0;
-    overflow: hidden;
-    gap: 6px;
-  }
-  .btn-link-form ~ span {
-    font-size: larger;
-  }
-  .btn-link-form > img {
-    width: 25px;
-  }
+
   .btn-close-modal {
     display: flex;
     align-items: center;
