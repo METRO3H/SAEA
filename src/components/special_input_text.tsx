@@ -35,6 +35,7 @@ function Special_Input_Text({
     defaultValue: input_value,
   }: fixed_value ? {
     value: fixed_value,
+      onChange: () => {},
   } : {};
 
   return (

@@ -6,7 +6,7 @@ import Query from "../database/querys/Query.js";
 import Report_Status from "../../util/report_status.js";
 sqlite3.verbose();
 
-export async function Save_Form(data_form) {
+export async function Save_Quiz(data_form) {
   // console.log(data_form);
   const data_base_path = path.join(process.cwd(), "server", "database", "database.db");
   const date_time = moment().format("YYYY-MM-DD HH:mm:ss");

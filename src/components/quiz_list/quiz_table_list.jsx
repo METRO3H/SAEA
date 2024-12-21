@@ -75,7 +75,7 @@ export default function quiz_table_list() {
             key={item.unique_id + (item.form_id || "")}
             title={item.test_title}
             subject={item.subject}
-            quiz_url={quiz_type == "templates" ? "template/"+item.unique_id : "performed/"+item.unique_id}
+            quiz_url={quiz_type == "templates" ? "template/"+item.unique_id : "performed/"+item.form_id}
             creation_date={item.creation_date}
             quiz_type={quiz_type}
             generated_date={item.generated_date}

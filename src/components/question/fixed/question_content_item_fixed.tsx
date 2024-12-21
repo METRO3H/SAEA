@@ -80,6 +80,7 @@ function Question_Content_Item({
                   aria-label="radio item"
                   type="radio"
                   checked={index === question_item_data.correct_answer_index ? true : false}
+                  onChange={() => {}}
                   autoComplete="off"
                 />
 

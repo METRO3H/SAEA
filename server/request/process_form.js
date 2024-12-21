@@ -1,7 +1,7 @@
 import express from "express";
 import Report_Status from "../../util/report_status.js";
 import Generate_Form from "../API_google_forms/generate_form.js";
-import { Save_Form } from "../handlers/save_form.js";
+import { Save_Quiz } from "../handlers/save_quiz.js";
 
 
 // import test from "../API_google_forms/test.js";
@@ -9,7 +9,7 @@ import { Save_Form } from "../handlers/save_form.js";
 const router = express.Router();
 router.post("/save", async (request, response) => {
   Report_Status("status", "Guardando Form en la base de datos...");
-  await Process_Form(request, response, Save_Form);
+  await Process_Form(request, response, Save_Quiz);
 });
 router.post("/generate", async (request, response) => {
   Report_Status("status", "Generando Google Form...");
