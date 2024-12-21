@@ -1,6 +1,6 @@
 import { quiz_data_store, type Quiz, type Question_Item } from "@content/quiz_data";
 import { useStore } from "@nanostores/react";
-import Question_Content_Item from "@components/question/question_content_item.tsx";
+import Question_Content_Item from "@components/question/editable/question_content_item";
 import Question_List_Item from "@components/question/question_list_item.jsx";
 import "@styles/questions_data.css";
 import { useEffect } from "react";

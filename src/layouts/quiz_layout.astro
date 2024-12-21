@@ -1,18 +1,13 @@
----
-import Specifications_Table from "@components/table/Specifications_Table.tsx";
-import Quiz_Title from "@components/table/quiz_title.tsx";
-import Questions_Data from "@components/question/questions_data.tsx";
----
 
 <div id="main-container">
   <div id="movable-container">
     <div id="specs-container">
       <div id="quiz-title">
-        <Quiz_Title client:only="react" />
+        <slot name="quiz-title" />
       </div>
 
       <div id="table-container">
-        <Specifications_Table client:only="react" />
+        <slot name="specifications-table" />
       </div>
 
       <div id="next-part-div">
@@ -24,7 +19,7 @@ import Questions_Data from "@components/question/questions_data.tsx";
 
     <div id="create-questions-container">
       <div id="question-card-container">
-        <Questions_Data client:only="react" />
+        <slot name="questions-data" />
 
         <div id="footer-card-buttons">
           <div id="back-part-div">
@@ -166,8 +161,6 @@ import Questions_Data from "@components/question/questions_data.tsx";
     padding: 1rem;
   }
 </style>
-
-
 
 <script>
   const button_next_part = document.querySelector("#button-next-part");

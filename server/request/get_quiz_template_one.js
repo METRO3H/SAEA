@@ -104,7 +104,6 @@ async function Get_Template_Data(test_id) {
 
         const google_form_url = (await Get_Query(google_form_url_query, [test_id])).form_url;
 
-        console.log(google_form_url)
 
         const [{ test_title, test_subject }] = await Get_All_Query(title_subject_query, [test_id]);
         let skills_list_query_data = await Get_All_Query(skills_list_query, [test_id]);

@@ -1,17 +1,23 @@
 ---
 import Document from "@layouts/document.astro";
-import Edit_Quiz from "@layouts/edit_quiz.astro";
+import Quiz_Layout from "@layouts/quiz_layout.astro";
+import Quiz_Title from "@components/quiz_title/quiz_title";
+import Specifications_Table from "@components/Specifications_Table/specifications_table";
+import Questions_Data from "@components/question/editable/questions_data";
 import Save_Quiz_Button from "@components/buttons/save_quiz.astro";
-import Modal from "@components/modal.astro";
 import GoogleForm_btn from "@components/buttons/google_form_btn.astro";
+import Modal from "@components/modal.astro";
 ---
 
 <Document title="Crear Quiz" description="Crear Quiz">
-  <Edit_Quiz>
+  <Quiz_Layout>
+    <Quiz_Title slot="quiz-title" client:only="react" />
+    <Specifications_Table slot="specifications-table" client:only="react" />
+    <Questions_Data slot="questions-data" client:only="react" />
     <Save_Quiz_Button slot="save-button" />
     <GoogleForm_btn slot="google-form-button" />
     <Modal slot="modal" />
-  </Edit_Quiz>
+  </Quiz_Layout>
 </Document>
 
 <script>

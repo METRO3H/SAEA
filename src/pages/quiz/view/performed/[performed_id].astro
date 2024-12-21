@@ -1,0 +1,46 @@
+---
+import Document from "@layouts/document.astro";
+import Quiz_Layout from "@layouts/quiz_layout.astro";
+import Quiz_Title_Fixed from "@components/quiz_title/quiz_title_fixed";
+import Specifications_Table_Fixed from "@components/Specifications_Table/specifications_table_fixed";
+import Questions_Data_Fixed from "@components/question/fixed/questions_data_fixed";
+import GoogleForm_btn from "@components/buttons/google_form_btn.astro";
+
+---
+
+
+<Document title="Quiz realizado" description="Quiz realizado">
+  <Quiz_Layout>
+    <Quiz_Title_Fixed slot="quiz-title" client:only="react" />
+    <Specifications_Table_Fixed  slot="specifications-table" client:only="react" />
+    <Questions_Data_Fixed slot="questions-data" client:only="react" />
+    <a slot="google-form-button" id="link-form-btn" href="#" target="_blank">
+      <GoogleForm_btn button_text="LINK DEL FORMULARIO" is_generator={false} />
+    </a>
+
+  </Quiz_Layout>
+</Document>
+
+<script>
+  import type { Quiz } from "@content/quiz_data";
+  import { quiz_data_store } from "@content/quiz_data";
+
+  const URL = window?.location?.href?.match(/performed\/([a-f0-9-]+)/);
+  const performed_id = URL?.[1];
+  const link_form_btn = document.querySelector("#link-form-btn") as HTMLAnchorElement;
+
+  fetch(`/request/get/quiz/performed/${performed_id}`)
+    .then((response) => response.json())
+    .then((response_json) => response_json.data)
+    .then((quiz_data: Quiz) => {
+      console.log(quiz_data);
+      quiz_data_store.set(quiz_data);
+    })
+    .then(() => {
+      document.title = quiz_data_store.get().quiz_title;
+      link_form_btn.href = quiz_data_store.get().google_form_url;
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+    });
+</script>

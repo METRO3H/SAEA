@@ -16,6 +16,7 @@ function Special_Input_Text({
   fix_label_position = "0px",
   input_background = "transparent",
   events = {},
+  fixed_value = "",
 }) {
 
   const input_style = {
@@ -30,12 +31,16 @@ function Special_Input_Text({
     "--input-background": input_background,
   };
 
-
+  const value_param = input_value ? {
+    defaultValue: input_value,
+  }: fixed_value ? {
+    value: fixed_value,
+  } : {};
 
   return (
     <div className="input-container" style={input_style}>
       <input required type="text" className={`${input_class}`} autoComplete="no" {...events} 
-      defaultValue={input_value}
+      {...value_param}
       />
       <span className="highlight"></span>
       <span className="bar"></span>

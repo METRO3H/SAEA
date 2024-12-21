@@ -1,4 +1,4 @@
-import { atom } from "nanostores";
+import { atom, map } from "nanostores";
 
 export interface Quiz {
   quiz_id: string;
@@ -78,3 +78,10 @@ export interface Question_Item {
   answers: string[];
   correct_answer_index: number;
 }
+
+
+
+
+
+
+//TENGO QUE DECIDIR COMO MANEJAR LOS DATOS DE NANOSTORES

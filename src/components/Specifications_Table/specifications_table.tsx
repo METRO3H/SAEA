@@ -11,6 +11,10 @@ export default function Specifications_Table() {
     skill_index: number;
   } | null>(null);
   const [editing_total_questions, set_editing_total_questions] = useState<boolean>(false);
+  const total_classes = $quiz_data.specifications_table.items.reduce(Sanitize_Values, 0);
+  const total_question_count = $quiz_data.specifications_table.total_questions;
+  let thematic_area_rendered: { [key: string]: boolean } = {};
+  let content_rendered: { [key: string]: boolean } = {};
 
   function Calculate_RowSpans(items: Quiz["specifications_table"]["items"]) {
     const row_spans: RowSpan = {
@@ -142,17 +146,50 @@ export default function Specifications_Table() {
 
     return column_values;
   }
+  function Process_Table_Items(items, total_classes, total_question_count) {
+    return items.map((item) => {
+      const classes_relation =
+        !isNaN(item.performed_classes) && !isNaN(total_classes)
+          ? item.performed_classes / total_classes
+          : 0;
 
-  const total_classes = $quiz_data.specifications_table.items.reduce(Sanitize_Values, 0);
+      let classes_percentage: any = classes_relation * 100;
+      classes_percentage = Number.isInteger(classes_percentage)
+        ? parseInt(classes_percentage)
+        : classes_percentage.toFixed(1);
+
+      classes_percentage = total_classes === 0 ? " - " : classes_percentage + "%";
+
+      const item_question_count: number = Get_Skill_Content_Values([item.skill_content]).length;
+
+      const expected_item_question_count: number =
+        total_question_count > 0 && classes_relation > 0
+          ? Math.round(total_question_count * classes_relation)
+          : 0;
+
+      const success_item_question_count =
+        item_question_count === expected_item_question_count
+          ? " td-total-questions-successful"
+          : "";
+
+      return {
+        ...item,
+        classes_relation,
+        classes_percentage,
+        item_question_count,
+        expected_item_question_count,
+        success_item_question_count,
+      };
+    });
+  }
 
   const row_spans = Calculate_RowSpans($quiz_data.specifications_table.items);
-
-  const total_question_count = $quiz_data.specifications_table.total_questions;
-
-  let thematic_area_rendered: { [key: string]: boolean } = {};
-  let content_rendered: { [key: string]: boolean } = {};
-
-  // console.log($quiz_data);
+  const processed_table_items = Process_Table_Items(
+    $quiz_data.specifications_table.items,
+    total_classes,
+    total_question_count
+  );
+  
   return (
     <table className="table table-bordered caption-top">
       <caption>
@@ -200,17 +237,6 @@ export default function Specifications_Table() {
               />
             </th>
           ))}
-
-          {/* <th className="cell thead-input">
-            <input className="text-center" type="text" placeholder="Habilidad" required />
-          </th>
-          <th className="cell thead-input">
-            <input className="text-center" type="text" placeholder="Habilidad" required />
-          </th>
-          <th className="cell thead-input">
-            <input className="text-center" type="text" placeholder="Habilidad" required />
-          </th> */}
-
           <th>
             <div className="text-center">Total preguntas</div>
           </th>
@@ -218,30 +244,7 @@ export default function Specifications_Table() {
       </thead>
 
       <tbody>
-        {$quiz_data.specifications_table.items.map((item, index) => {
-          const classes_relation =
-            !isNaN(item.performed_classes) && !isNaN(total_classes)
-              ? item.performed_classes / total_classes
-              : 0;
-
-          let classes_percentage: any = classes_relation * 100;
-          classes_percentage = Number.isInteger(classes_percentage)
-            ? parseInt(classes_percentage)
-            : classes_percentage.toFixed(1);
-
-          classes_percentage = total_classes === 0 ? " - " : classes_percentage + "%";
-
-          const item_question_count: number = Get_Skill_Content_Values([item.skill_content]).length;
-          const expected_item_question_count: number =
-            total_question_count > 0 && classes_relation > 0
-              ? Math.round(total_question_count * classes_relation)
-              : 0;
-
-          const success_item_question_count =
-            item_question_count === expected_item_question_count
-              ? " td-total-questions-successful"
-              : "";
-
+        {processed_table_items.map((item, index) => {
           return (
             <tr key={index}>
               {!thematic_area_rendered[item.thematic_area] && (
@@ -250,7 +253,7 @@ export default function Specifications_Table() {
                   rowSpan={row_spans.thematic_area[item.thematic_area]}
                   onClick={() => set_editing_cell({ index, field: "thematic_area" })}
                 >
-                  {editing_cell?.index === index && editing_cell.field === "thematic_area" ? (
+                  {editing_cell?.index === index && editing_cell?.field === "thematic_area" ? (
                     <textarea
                       defaultValue={item.thematic_area}
                       onBlur={(event) => Handle_Blur(event, index, "thematic_area")}
@@ -270,7 +273,7 @@ export default function Specifications_Table() {
                   rowSpan={row_spans.content[item.content]}
                   onClick={() => set_editing_cell({ index, field: "content" })}
                 >
-                  {editing_cell?.index === index && editing_cell.field === "content" ? (
+                  {editing_cell?.index === index && editing_cell?.field === "content" ? (
                     <textarea
                       defaultValue={item.content}
                       onBlur={(event) => Handle_Blur(event, index, "content")}
@@ -288,7 +291,7 @@ export default function Specifications_Table() {
                 className="td-input td-objective"
                 onClick={() => set_editing_cell({ index, field: "objective" })}
               >
-                {editing_cell?.index === index && editing_cell.field === "objective" ? (
+                {editing_cell?.index === index && editing_cell?.field === "objective" ? (
                   <textarea
                     defaultValue={item.objective}
                     onBlur={(event) => Handle_Blur(event, index, "objective")}
@@ -305,7 +308,7 @@ export default function Specifications_Table() {
                 className="td-input td-performed-classes text-center align-middle"
                 onClick={() => set_editing_cell({ index, field: "performed_classes" })}
               >
-                {editing_cell?.index === index && editing_cell.field === "performed_classes" ? (
+                {editing_cell?.index === index && editing_cell?.field === "performed_classes" ? (
                   <input
                     defaultValue={item.performed_classes}
                     onBlur={(event) => Handle_Blur(event, index, "performed_classes")}
@@ -321,7 +324,7 @@ export default function Specifications_Table() {
 
               <td className="td-percentage text-center align-middle number-cell">
                 {" "}
-                {classes_percentage}{" "}
+                {item.classes_percentage}{" "}
               </td>
 
               {$quiz_data.specifications_table.quiz_skills.map((_, skill_index) => (
@@ -331,7 +334,7 @@ export default function Specifications_Table() {
                   onClick={() => set_editing_skill_cell({ index, skill_index })}
                 >
                   {editing_skill_cell?.index === index &&
-                  editing_skill_cell.skill_index === skill_index ? (
+                  editing_skill_cell?.skill_index === skill_index ? (
                     <input
                       defaultValue={item.skill_index === skill_index ? item.skill_content : ""}
                       onBlur={(event) => Handle_Blur(event, index, "tbody_skills", skill_index)}
@@ -348,10 +351,10 @@ export default function Specifications_Table() {
 
               <td
                 className={
-                  "td-total-questions text-center align-middle" + success_item_question_count
+                  "td-total-questions text-center align-middle" + item.success_item_question_count
                 }
               >
-                {item_question_count + "/" + expected_item_question_count}
+                {item.item_question_count + "/" + item.expected_item_question_count}
               </td>
 
               {(thematic_area_rendered[item.thematic_area] = true)}

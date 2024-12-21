@@ -1,17 +1,23 @@
 ---
 import Document from "@layouts/document.astro";
-import Edit_Quiz from "@layouts/edit_quiz.astro";
+import Quiz_Layout from "@layouts/quiz_layout.astro";
+import Quiz_Title from "@components/quiz_title/quiz_title";
+import Specifications_Table from "@components/Specifications_Table/specifications_table";
+import Questions_Data from "@components/question/editable/questions_data";
 import Save_Quiz_Button from "@components/buttons/save_quiz.astro";
 import GoogleForm_btn from "@components/buttons/google_form_btn.astro";
+import Modal from "@components/modal.astro";
 ---
 
-<Document title="..." description="Crear Quiz">
-  <Edit_Quiz>
+<Document title="Crear Quiz" description="Crear Quiz">
+  <Quiz_Layout>
+    <Quiz_Title slot="quiz-title" client:only="react" />
+    <Specifications_Table slot="specifications-table" client:only="react" />
+    <Questions_Data slot="questions-data" client:only="react" />
     <Save_Quiz_Button slot="save-button" />
-    <a slot="google-form-button" id="link-form-btn" href="#" target="_blank">
-      <GoogleForm_btn button_text="LINK DEL FORMULARIO" is_generator={false} />
-    </a>
-  </Edit_Quiz>
+    <GoogleForm_btn slot="google-form-button" />
+    <Modal slot="modal" />
+  </Quiz_Layout>
 </Document>
 
 <script>
@@ -20,7 +26,6 @@ import GoogleForm_btn from "@components/buttons/google_form_btn.astro";
 
   const URL = window?.location?.href?.match(/template\/([a-f0-9-]+)/);
   const template_id = URL?.[1];
-  const link_form_btn = document.querySelector("#link-form-btn") as HTMLAnchorElement;
 
   fetch(`/request/get/quiz/template/${template_id}`)
     .then((response) => response.json())
@@ -31,9 +36,103 @@ import GoogleForm_btn from "@components/buttons/google_form_btn.astro";
     })
     .then(() => {
       document.title = quiz_data_store.get().quiz_title;
-      link_form_btn.href = quiz_data_store.get().google_form_url;
     })
     .catch((error) => {
       console.error("Error:", error);
     });
+
+  const Save_quiz_data_btn = document.querySelector("#save_quiz_btn") as HTMLButtonElement;
+  const Generate_Google_Form_btn = document.querySelector(
+    "#generate_google_btn"
+  ) as HTMLButtonElement;
+
+  Save_quiz_data_btn?.addEventListener("click", Save_Quiz_Data);
+  Generate_Google_Form_btn?.addEventListener("click", Generate_Google_Form);
+
+  function Save_Quiz_Data() {
+    fetch(`/request/quiz/save`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(quiz_data_store.get()),
+    })
+      .then((response) => response.json())
+      .then((response_json) =>
+        quiz_data_store.set({
+          ...quiz_data_store.get(),
+          quiz_id: response_json.data,
+        })
+      )
+      .then(() => Generate_Google_Form_btn.removeAttribute("disabled"))
+      .then(() => Save_quiz_data_btn.setAttribute("disabled", ""))
+      .catch((error) => console.error(error));
+  }
+
+  function Generate_Google_Form() {
+    fetch("/request/quiz/generate", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify(quiz_data_store.get()),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw Error("Error al generar formulario!");
+        }
+        return response.json();
+      })
+      .then((response) => {
+        End_Animation(
+          {
+            ...response,
+            message: "Formulario generado con éxito!",
+          },
+          false
+        );
+      })
+      .then(() => Generate_Google_Form_btn.setAttribute("disabled", ""))
+      .catch((error) => {
+        console.error(error);
+        End_Animation(error, true);
+      });
+  }
+
+  function End_Animation(response, is_error) {
+    (document.querySelector(".check-mark") as HTMLDivElement).style.display = "block";
+
+    document.documentElement.style.setProperty("--cicleFlow", "forwards");
+    document.documentElement.style.setProperty(
+      "--finalBorder",
+      "rgb(215, 215, 231) rgb(215, 215, 231) rgb(215, 215, 231) rgb(215, 215, 231)"
+    );
+    document.documentElement.style.setProperty("--h1Animation", "h1-animation-2");
+
+    // const modal_message_container = document.querySelector(
+    //   "#modal-message-container"
+    // ) as HTMLDivElement;
+
+    const modal_message_text = document.querySelector("#modal-message-text") as HTMLDivElement;
+    modal_message_text.textContent = response.message || "";
+
+    const btn_close_modal = document.querySelector(".btn-close-modal") as HTMLElement;
+
+    btn_close_modal.style.height = "51px";
+    btn_close_modal.style.paddingTop = "var(--mdb-btn-padding-top)";
+    btn_close_modal.style.paddingBottom = "var(--mdb-btn-padding-bottom)";
+    btn_close_modal.style.paddingTop = "var(--mdb-btn-padding-top)";
+    btn_close_modal.style.paddingBottom = "var(--mdb-btn-padding-bottom)";
+
+    if (is_error) return;
+
+    const btn_link_form = document.querySelector(".btn-link-form") as HTMLLinkElement;
+    btn_link_form.href = response.data;
+    btn_link_form.style.height = "51px";
+    btn_link_form.style.width = "auto";
+    btn_link_form.style.paddingTop = "var(--mdb-btn-padding-top)";
+    btn_link_form.style.paddingBottom = "var(--mdb-btn-padding-bottom)";
+    btn_link_form.style.paddingLeft = "var(--mdb-btn-padding-x)";
+    btn_link_form.style.paddingRight = "var(--mdb-btn-padding-x)";
+
+    return;
+  }
 </script>
