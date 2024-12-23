@@ -76,7 +76,7 @@ export default function quiz_table_list() {
             title={item.test_title}
             subject={item.subject}
             quiz_url={quiz_type == "drafts" ? "draft/"+item.unique_id : "performed/"+item.form_id}
-            creation_date={item.creation_date}
+            creation_date={quiz_type == "drafts" ? item.creation_date : item.generated_date}
             quiz_type={quiz_type}
             generated_date={item.generated_date}
           />
