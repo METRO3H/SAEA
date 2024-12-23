@@ -15,8 +15,8 @@ import Quiz_Table_List from "@components/quiz_list/quiz_table_list.jsx";
         <div id="filter-options">
           Cuestionarios
           <ul id="quiz-type-options">
-            <li class="quiz-type-options-item-active" id="templates">
-              <span>Plantillas</span>
+            <li class="quiz-type-options-item-active" id="drafts">
+              <span>Borradores</span>
               <span class="type-counter">-</span>
             </li>
             <li id="perform">
@@ -28,7 +28,7 @@ import Quiz_Table_List from "@components/quiz_list/quiz_table_list.jsx";
       </div>
 
       <div id="content-container">
-        <h4 id="content-title">Plantillas de cuestionarios</h4>
+        <h4 id="content-title">Borradores de cuestionarios</h4>
         <div id="card-container">
           <Quiz_Table_List client:load />
         </div>

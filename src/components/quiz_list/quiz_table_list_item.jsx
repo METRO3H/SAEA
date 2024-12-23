@@ -51,7 +51,7 @@ export default function quiz_table_list_item({ title, subject, quiz_url, creatio
       </td>
       <td onDoubleClick={Handle_Checkbox_Click}>
         <div className="creation_date_item align-items-center text-center mb-1">
-          {quiz_type=="templates" ? creation_date : generated_date}
+          {quiz_type=="drafts" ? creation_date : generated_date}
         </div>
       </td>
       <td>

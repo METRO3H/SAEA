@@ -10,7 +10,7 @@ export default async function get_quiz_all() {
     db.serialize(async () => {
       const get_all_performed = db.prepare(/*sql*/ `
         SELECT 
-            test.id, test.unique_id,test.title AS "test_title", subject.text AS "subject", test.creation_date AS "creation_date",  test_performed.test_id AS "template_id",  test_performed.form_id, test_performed.form_url,
+            test.id, test.unique_id,test.title AS "test_title", subject.text AS "subject", test.creation_date AS "creation_date",  test_performed.test_id AS "draft_id",  test_performed.form_id, test_performed.form_url,
             test_performed.date AS "generated_date"
         FROM test 
         JOIN subject ON subject.id = test.subject_id
@@ -19,7 +19,7 @@ export default async function get_quiz_all() {
         ORDER BY test.creation_date DESC;
         `);
 
-      const get_all_templates = db.prepare(/*sql*/ `
+      const get_all_drafts = db.prepare(/*sql*/ `
         SELECT 
             test.id, test.unique_id,test.title AS "test_title", subject.text AS "subject", test.creation_date AS "creation_date"
         FROM test 
@@ -30,10 +30,10 @@ export default async function get_quiz_all() {
 
       try {
         const data = {
-          templates: await Get_All_Query(get_all_templates, [user_id]),
+          drafts: await Get_All_Query(get_all_drafts, [user_id]),
           performed: await Get_All_Query(get_all_performed, [user_id]),
         };
-        get_all_templates.finalize();
+        get_all_drafts.finalize();
         get_all_performed.finalize();
         db.close();
         resolve(data);

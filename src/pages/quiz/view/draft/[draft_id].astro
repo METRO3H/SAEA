@@ -24,10 +24,10 @@ import Modal from "@components/modal.astro";
   import type { Quiz } from "@content/quiz_data";
   import { quiz_data_store } from "@content/quiz_data";
 
-  const URL = window?.location?.href?.match(/template\/([a-f0-9-]+)/);
-  const template_id = URL?.[1];
+  const URL = window?.location?.href?.match(/draft\/([a-f0-9-]+)/);
+  const draft_id = URL?.[1];
 
-  fetch(`/request/get/quiz/template/${template_id}`)
+  fetch(`/request/get/quiz/draft/${draft_id}`)
     .then((response) => response.json())
     .then((response_json) => response_json.data)
     .then((quiz_data: Quiz) => {

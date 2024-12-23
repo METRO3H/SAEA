@@ -3,9 +3,9 @@ import { useEffect, useState } from "react";
 import Quiz_Table_List_Item from "./quiz_table_list_item";
 
 export default function quiz_table_list() {
-  const [data_list, set_data_list] = useState({ templates: [], performed: [] });
+  const [data_list, set_data_list] = useState({ drafts: [], performed: [] });
   const [input_value, set_input_value] = useState("");
-  const [quiz_type, set_quiz_type] = useState("templates");
+  const [quiz_type, set_quiz_type] = useState("drafts");
 
   function Filter_Data(event) {
     set_input_value(event.target.value.toLowerCase());
@@ -25,15 +25,15 @@ export default function quiz_table_list() {
 
   useEffect(() => {
     const search_input = document.querySelector("#input-search");
-    const templates_element = document.querySelector("#templates");
+    const drafts_element = document.querySelector("#drafts");
     const perform_element = document.querySelector("#perform");
 
-    templates_element.addEventListener("click", () => Filter_Type("templates"));
+    drafts_element.addEventListener("click", () => Filter_Type("drafts"));
     perform_element.addEventListener("click", () => Filter_Type("performed"));
     search_input.addEventListener("input", Filter_Data);
 
     return () => {
-      templates_element.removeEventListener("click", () => Filter_Type("templates"));
+      drafts_element.removeEventListener("click", () => Filter_Type("drafts"));
       perform_element.removeEventListener("click", () => Filter_Type("perform"));
       search_input.removeEventListener("input", Filter_Data);
     };
@@ -44,18 +44,18 @@ export default function quiz_table_list() {
     );
   
 
-  const templates_length = data_list["templates"].length;
+  const drafts_length = data_list["drafts"].length;
 
   const perform_length = data_list["performed"].length;
 
   useEffect(() => {
-    const templates_element = document.querySelector("#templates");
+    const drafts_element = document.querySelector("#drafts");
     const perform_element = document.querySelector("#perform");
 
-    if(templates_length) templates_element.querySelector(".type-counter").textContent = templates_length;
+    if(drafts_length) drafts_element.querySelector(".type-counter").textContent = drafts_length;
     if(perform_length) perform_element.querySelector(".type-counter").textContent = perform_length;
 
-  }, [templates_length, perform_length])
+  }, [drafts_length, perform_length])
 
   return (
     <table className="table table-sm table-hover align-middle mb-0 bg-white">
@@ -75,7 +75,7 @@ export default function quiz_table_list() {
             key={item.unique_id + (item.form_id || "")}
             title={item.test_title}
             subject={item.subject}
-            quiz_url={quiz_type == "templates" ? "template/"+item.unique_id : "performed/"+item.form_id}
+            quiz_url={quiz_type == "drafts" ? "draft/"+item.unique_id : "performed/"+item.form_id}
             creation_date={item.creation_date}
             quiz_type={quiz_type}
             generated_date={item.generated_date}

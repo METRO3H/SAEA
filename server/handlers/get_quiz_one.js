@@ -1,7 +1,7 @@
 import sqlite3 from "sqlite3";
 import path from "path";
 import Report_Status from "../../util/report_status.js";
-export default async function Get_Template_Data(test_id) {
+export default async function Get_Draft_Data(test_id) {
     return new Promise((resolve, reject) => {
       const data_base_path = path.join(process.cwd(), "server", "database", "database.db");
       const db = new sqlite3.Database(data_base_path);
