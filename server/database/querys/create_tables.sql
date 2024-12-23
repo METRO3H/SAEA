@@ -223,16 +223,13 @@ CREATE TABLE IF NOT EXISTS
 	specifications_table (
 		"id" INTEGER NOT NULL UNIQUE,
 		"test_id" INTEGER NOT NULL,
+		"table_row" INTEGER NOT NULL,
 		"thematic_area_id" INTEGER NOT NULL,
 		"content_id" INTEGER NOT NULL,
 		"objective_id" INTEGER NOT NULL,
 		"performed_classes" INTEGER NOT NULL,
-		UNIQUE (
-			test_id,
-			thematic_area_id,
-			content_id,
-			objective_id
-		),
+		
+		UNIQUE (test_id, table_row),
 		FOREIGN KEY (test_id) REFERENCES test (id),
 		PRIMARY KEY ("id" AUTOINCREMENT)
 	);
@@ -244,6 +241,8 @@ CREATE TABLE IF NOT EXISTS
 		"question_skill_id" INTEGER NOT NULL,
 		"position" INTEGER NOT NULL,
 		"questions_range" TEXT,
+		
+		UNIQUE(specifications_table_id, position),
 		FOREIGN KEY (specifications_table_id) REFERENCES specifications_table (id),
 		FOREIGN KEY (question_skill_id) REFERENCES question_skill (id),
 		PRIMARY KEY ("id" AUTOINCREMENT)

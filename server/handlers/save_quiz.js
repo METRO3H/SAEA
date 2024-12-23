@@ -1,20 +1,16 @@
 import sqlite3 from "sqlite3";
 import path from "path";
-import moment from "moment";
-import { randomUUID } from "crypto";
 import Query from "../database/querys/Query.js";
 import Report_Status from "../../util/report_status.js";
 sqlite3.verbose();
 
-export async function Save_Quiz(data_form) {
+export async function Save_Quiz(data_form, unique_id, date_time) {
   // console.log(data_form);
   const data_base_path = path.join(process.cwd(), "server", "database", "database.db");
-  const date_time = moment().format("YYYY-MM-DD HH:mm:ss");
-  const UNIQUE_ID = randomUUID();
+  
   const title = data_form.quiz_title;
   const created_by = data_form.created_by;
   const subject = data_form.quiz_subject;
-
   const skills = data_form.specifications_table.quiz_skills;
   const table_body = data_form.specifications_table.items;
 
@@ -22,9 +18,9 @@ export async function Save_Quiz(data_form) {
   try {
     return new Promise((resolve, reject) => {
       db.serialize(async () => {
-        const sql = new Query(db);
+        const sql = new Query(db); 
 
-        db.run("BEGIN TRANSACTION");
+        db.run("BEGIN TRANSACTION"); 
 
         try {
           // console.log(subject, created_by, date_time);
@@ -33,14 +29,15 @@ export async function Save_Quiz(data_form) {
           const subject_id = (await Get_Query(sql.Get.subject_id, [subject, created_by])).id;
           // console.log(subject_id);
 
-          await Run_Query(sql.Insert.test, [UNIQUE_ID, title, subject_id, created_by, date_time]);
+          await Run_Query(sql.Insert.test, [unique_id, title, subject_id, created_by, date_time]);
+
           const test_id = (await Get_Query(sql.Get.test_id, [title, created_by, date_time])).id;
 
           skills.forEach(
             async (skill) => await Run_Query(sql.Insert.skill, [skill, created_by, date_time])
           );
 
-          table_body.forEach(async (row) => {
+          table_body.forEach(async (row, index) => {
             // console.log(row);
             await Run_Query(sql.Insert.thematic_area, [row.thematic_area, created_by, date_time]);
             await Run_Query(sql.Insert.content_area, [row.content, created_by, date_time]);
@@ -48,6 +45,7 @@ export async function Save_Quiz(data_form) {
 
             await Run_Query(sql.Insert.specifications_table, [
               test_id,
+              index + 1,
               row.thematic_area,
               row.content,
               row.objective,
@@ -56,9 +54,7 @@ export async function Save_Quiz(data_form) {
 
             await Run_Query(sql.Insert.specifications_table_skill, [
               test_id,
-              row.thematic_area,
-              row.content,
-              row.objective,
+              index + 1,
               skills[row.skill_index],
               row.skill_index,
               row.skill_content,
@@ -103,10 +99,11 @@ export async function Save_Quiz(data_form) {
           Report_Status("divider");
 
           resolve({
-            data: UNIQUE_ID,
+            data: unique_id,
           });
 
         } catch (error) {
+          console.error(error);
           Report_Status("error", error);
           Report_Status("divider");
           db.run("ROLLBACK");
@@ -144,6 +141,18 @@ function Get_Query(query, parameters = []) {
         reject(error);
       } else {
         resolve(row);
+      }
+    });
+  });
+}
+
+function Get_All_Query(query, parameters = []) {
+  return new Promise((resolve, reject) => {
+    query.all(parameters, function (error, data) {
+      if (error) {
+        reject(error);
+      } else {
+        resolve(data);
       }
     });
   });

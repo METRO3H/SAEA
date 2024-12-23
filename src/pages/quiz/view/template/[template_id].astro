@@ -41,16 +41,16 @@ import Modal from "@components/modal.astro";
       console.error("Error:", error);
     });
 
-  const Save_quiz_data_btn = document.querySelector("#save_quiz_btn") as HTMLButtonElement;
+  const Update_Quiz_Data_btn = document.querySelector("#save_quiz_btn") as HTMLButtonElement;
   const Generate_Google_Form_btn = document.querySelector(
     "#generate_google_btn"
   ) as HTMLButtonElement;
 
-  Save_quiz_data_btn?.addEventListener("click", Save_Quiz_Data);
+  Update_Quiz_Data_btn?.addEventListener("click", Update_Quiz_Data);
   Generate_Google_Form_btn?.addEventListener("click", Generate_Google_Form);
 
-  function Save_Quiz_Data() {
-    fetch(`/request/quiz/save`, {
+  function Update_Quiz_Data() {
+    fetch(`/request/quiz/update`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -65,7 +65,7 @@ import Modal from "@components/modal.astro";
         })
       )
       .then(() => Generate_Google_Form_btn.removeAttribute("disabled"))
-      .then(() => Save_quiz_data_btn.setAttribute("disabled", ""))
+      .then(() => Update_Quiz_Data_btn.setAttribute("disabled", ""))
       .catch((error) => console.error(error));
   }
 

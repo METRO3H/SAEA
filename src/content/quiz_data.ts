@@ -6,7 +6,7 @@ export interface Quiz {
   quiz_title: string;
   created_by: number;
   quiz_subject: string;
-
+  quiz_creation_date: string;
   specifications_table: {
     total_questions: number;
     quiz_skills: string[];
@@ -33,6 +33,7 @@ export let quiz_data_store = atom<Quiz>({
   quiz_title: "",
   created_by: -1,
   quiz_subject: "",
+  quiz_creation_date: "",
   specifications_table: {
     total_questions: 0,
     quiz_skills: ["", "", ""],
