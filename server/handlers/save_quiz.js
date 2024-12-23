@@ -75,7 +75,7 @@ export async function Save_Quiz(data_form, unique_id, date_time) {
               question_item.correct_answer_index,
             ]);
             const test_question_id = (
-              await Get_Query(sql.Get.test_question_id, [test_id, question_id])
+              await Get_Query(sql.Get.test_question_id, [test_id, question_index + 1])
             ).id;
 
             for (const [answer_index, answer] of question_item.answers.entries()) {

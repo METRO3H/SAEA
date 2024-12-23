@@ -6,7 +6,6 @@ const router = express.Router();
 
 router.get("/:test_id", async function (request, response) {
   try {
-    console.log("XD")
     const test_id = request.params.test_id;
     const specifications_table_data = await Get_Template_Data(test_id);
 

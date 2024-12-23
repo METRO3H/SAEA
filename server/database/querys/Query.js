@@ -71,13 +71,18 @@ export default class Query {
       //         ,?);
       //         `),
       test_question: db.prepare(/*sql*/ `
-        INSERT OR IGNORE INTO test_question (test_id, question_id, question_number, correct_answer_index)
+        INSERT INTO test_question (test_id, question_id, question_number, correct_answer_index)
         VALUES (?, ?, ?, ?)
+        ON CONFLICT(test_id, question_number) DO UPDATE SET
+          question_id = excluded.question_id,
+          correct_answer_index = excluded.correct_answer_index
         `),
 
       test_question_answer: db.prepare(/*sql*/ `
-        INSERT OR IGNORE INTO test_question_answer (test_question_id, answer_id, answer_number)
+        INSERT INTO test_question_answer (test_question_id, answer_id, answer_number)
         VALUES (?, ?, ?)
+        ON CONFLICT(test_question_id, answer_number) DO UPDATE SET
+          answer_id = excluded.answer_id
         `),
     };
 
@@ -102,7 +107,7 @@ export default class Query {
       test_question_id: db.prepare(/*sql*/ `
         SELECT id
         FROM test_question
-        WHERE test_id = ? AND question_id = ?
+        WHERE test_id = ? AND question_number = ?
       `),
     };
     return;

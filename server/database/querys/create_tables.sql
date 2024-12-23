@@ -132,7 +132,7 @@ CREATE TABLE IF NOT EXISTS
 		"question_number" INTEGER NOT NULL,
 		"correct_answer_index" INTEGER NOT NULL,
 
-		UNIQUE (test_id, question_id),
+		UNIQUE (test_id, question_number),
 		FOREIGN KEY (test_id) REFERENCES test (id),
 		FOREIGN KEY (question_id) REFERENCES question (id),
 		PRIMARY KEY ("id" AUTOINCREMENT)
