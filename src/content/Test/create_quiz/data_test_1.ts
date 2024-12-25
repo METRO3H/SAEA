@@ -408,4 +408,6 @@ export const data_test_3: Quiz = {
       correct_answer_index: 1,
     },
   ],
+  google_form_url: "",
+  quiz_creation_date: ""
 };

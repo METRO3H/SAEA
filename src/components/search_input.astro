@@ -10,7 +10,7 @@
       ></path></g
     ></svg
   >
-  <input placeholder="Buscar" type="search" id="input-search" />
+  <input placeholder="Buscar" type="search" id="input-search" autocomplete="off"/>
 </div>
 
 <style>
@@ -54,3 +54,14 @@
     height: 1rem;
   }
 </style>
+
+<script>
+  import { search_input_store } from "@content/quiz_data";
+  const search_input = document.querySelector("#input-search") as HTMLInputElement;
+  search_input.addEventListener("input", Handle_Input);
+
+  function Handle_Input(event) {
+    const input_value = event.target.value.trim().toLowerCase();
+    search_input_store.set(input_value);
+  }
+</script>

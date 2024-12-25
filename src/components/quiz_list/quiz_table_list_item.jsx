@@ -1,8 +1,8 @@
 import "@styles/quiz_table_list_item.css";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 
-export default function quiz_table_list_item({ title, subject, quiz_url, creation_date, quiz_type, generated_date }) {
+export default function quiz_table_list_item({ title, subject, quiz_url, date, quiz_type }) {
   const [is_checked, set_is_checked] = useState(false);
 
   function Handle_Checkbox_Click() {
@@ -44,14 +44,14 @@ export default function quiz_table_list_item({ title, subject, quiz_url, creatio
       <td onDoubleClick={Handle_Checkbox_Click}>
         <div className="align-items-center text-center mb-1">{subject}</div>
       </td>
-      <td className="status" onDoubleClick={Handle_Checkbox_Click}>
+      {!quiz_type ? <td className="status" onDoubleClick={Handle_Checkbox_Click}>
         <div className="mb-1">
           <span className="badge badge-success rounded-pill d-inline text-center">Active</span>
         </div>
-      </td>
+      </td> : ""}
       <td onDoubleClick={Handle_Checkbox_Click}>
         <div className="creation_date_item align-items-center text-center mb-1">
-          {quiz_type=="drafts" ? creation_date : generated_date}
+          {date}
         </div>
       </td>
       <td>

@@ -30,7 +30,7 @@ export default async function get_quiz_all() {
 
       try {
         const data = {
-          drafts: await Get_All_Query(get_all_drafts, [user_id]),
+          draft: await Get_All_Query(get_all_drafts, [user_id]),
           performed: await Get_All_Query(get_all_performed, [user_id]),
         };
         get_all_drafts.finalize();

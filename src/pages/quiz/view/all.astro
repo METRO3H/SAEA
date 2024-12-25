@@ -1,8 +1,7 @@
 ---
 import Document from "@layouts/document.astro";
 import Search_Input from "@components/search_input.astro";
-import Quiz_Table_List from "@components/quiz_list/quiz_table_list.jsx";
-
+import Quiz_Table_List from "@components/quiz_list/quiz_table_list.tsx";
 ---
 
 <Document title="Cuestionarios" description="Lista de cuestionarios">
@@ -15,11 +14,11 @@ import Quiz_Table_List from "@components/quiz_list/quiz_table_list.jsx";
         <div id="filter-options">
           Cuestionarios
           <ul id="quiz-type-options">
-            <li class="quiz-type-options-item-active" id="drafts">
+            <li id="drafted" class="quiz-type-options-item-active">
               <span>Borradores</span>
               <span class="type-counter">-</span>
             </li>
-            <li id="perform">
+            <li id="performed">
               <span>Realizados</span>
               <span class="type-counter">-</span>
             </li>
@@ -28,7 +27,7 @@ import Quiz_Table_List from "@components/quiz_list/quiz_table_list.jsx";
       </div>
 
       <div id="content-container">
-        <h4 id="content-title">Borradores de cuestionarios</h4>
+        <h4 id="content-title">Cuestionarios borradores</h4>
         <div id="card-container">
           <Quiz_Table_List client:load />
         </div>
@@ -79,12 +78,15 @@ import Quiz_Table_List from "@components/quiz_list/quiz_table_list.jsx";
     transition: all 150ms linear;
     opacity: 60%;
   }
+  span.type-counter {
+    font-family: roboto, system-ui;
+  }
 
   .quiz-type-options-item-active {
     background: white;
     border-radius: 11px;
     box-shadow: 0 2px 8px rgba(var(--black), 5%);
-    opacity: 100%!important;
+    opacity: 100% !important;
   }
 
   #content-container {
@@ -111,18 +113,39 @@ import Quiz_Table_List from "@components/quiz_list/quiz_table_list.jsx";
 </style>
 
 <script>
-  // Obtener todos los botones
-  const buttons = document.querySelectorAll("#quiz-type-options li");
+  import { quiz_type_store, quiz_list_length_store } from "@content/quiz_data";
 
-  // Agregar un event listener a cada botón
-  buttons.forEach((button) => {
-    button.addEventListener("click", () => {
-      buttons.forEach((btn) => {
-        btn.classList.remove("quiz-type-options-item-active");
-      });
+  const buttons = document.querySelectorAll("#quiz-type-options li") as NodeListOf<HTMLLIElement>;
+  const list_title = document.querySelector("#content-title") as HTMLHeadingElement;
 
-      // Agregar la clase 'active' solo al botón clickeado
-      button.classList.add("quiz-type-options-item-active");
+  buttons.forEach((btn) => {
+    btn.addEventListener("click", Handle_Click);
+  });
+
+  function Handle_Click(event) {
+    const target = event.currentTarget as HTMLLIElement;
+    console.log(target);
+    if (target.classList.contains("quiz-type-options-item-active")) return;
+
+    buttons.forEach((btn) => {
+      btn.classList.remove("quiz-type-options-item-active");
     });
+
+    target.classList.add("quiz-type-options-item-active");
+
+    list_title.textContent = !quiz_type_store.get()
+      ? "Cuestionarios borradores"
+      : "Cuestionarios realizados";
+
+    quiz_type_store.set(!quiz_type_store.get());
+  }
+
+  const draft_element = document.querySelector("#drafted .type-counter") as HTMLSpanElement;
+  const perform_element = document.querySelector("#performed .type-counter") as HTMLSpanElement;
+
+  quiz_list_length_store.subscribe(($quiz_list_length) => {
+    draft_element.textContent = $quiz_list_length.draft.toString();
+
+    perform_element.textContent = $quiz_list_length.performed.toString();
   });
 </script>

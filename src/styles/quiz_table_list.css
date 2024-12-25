@@ -13,3 +13,7 @@
     --mdb-table-hover-bg: #0000000d;
     --mdb-table-hover-color: var(--main-color-blue);
   }
+
+  .empty-table {
+   font-size: 1.15rem;
+  }
