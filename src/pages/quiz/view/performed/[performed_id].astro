@@ -5,19 +5,16 @@ import Quiz_Title_Fixed from "@components/quiz_title/quiz_title_fixed";
 import Specifications_Table_Fixed from "@components/Specifications_Table/specifications_table_fixed";
 import Questions_Data_Fixed from "@components/question/fixed/questions_data_fixed";
 import GoogleForm_btn from "@components/buttons/google_form_btn.astro";
-
 ---
-
 
 <Document title="Quiz realizado" description="Quiz realizado">
   <Quiz_Layout>
     <Quiz_Title_Fixed slot="quiz-title" client:only="react" />
-    <Specifications_Table_Fixed  slot="specifications-table" client:only="react" />
+    <Specifications_Table_Fixed slot="specifications-table" client:only="react" />
     <Questions_Data_Fixed slot="questions-data" client:only="react" />
     <a slot="google-form-button" id="link-form-btn" href="#" target="_blank">
       <GoogleForm_btn button_text="LINK DEL FORMULARIO" is_generator={false} />
     </a>
-
   </Quiz_Layout>
 </Document>
 
@@ -28,11 +25,15 @@ import GoogleForm_btn from "@components/buttons/google_form_btn.astro";
   const URL = window?.location?.href?.match(/performed\/([\w-]+)/);
   const performed_id = URL?.[1];
   const link_form_btn = document.querySelector("#link-form-btn") as HTMLAnchorElement;
+  const main_container = document.querySelector("#main-container") as HTMLDivElement;
 
-  console.log(performed_id)
- 
   fetch(`/request/get/quiz/performed/${performed_id}`)
-    .then((response) => response.json())
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("HTTP error " + response.status);
+      }
+      return response.json();
+    })
     .then((response_json) => response_json.data)
     .then((quiz_data: Quiz) => {
       console.log(quiz_data);
@@ -42,7 +43,11 @@ import GoogleForm_btn from "@components/buttons/google_form_btn.astro";
       document.title = quiz_data_store.get().quiz_title;
       link_form_btn.href = quiz_data_store.get().google_form_url;
     })
+    .then(() => (main_container.style.display = "block"))
     .catch((error) => {
+      setTimeout(() => {
+        window.location.replace("/quiz/view/all");
+      }, 200);
       console.error("Error:", error);
     });
 </script>

@@ -58,7 +58,6 @@ export default function quiz_table_list_item({ title, subject, quiz_url, date, q
         <div className="actions-container">
           <a
             href={quiz_url}
-            target="_blank"
             className={Handle_Link_button()}
             tabIndex={-1}
             role="button"

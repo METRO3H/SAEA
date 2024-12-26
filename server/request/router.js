@@ -8,5 +8,5 @@ const router = express.Router();
 router.use("/quiz", Process_Form);
 router.use("/get/quiz/all", Get_Quiz_All);
 router.use("/get/quiz/draft", Get_Quiz_Draft);
-router.use("/get/quiz/performed", Get_Quiz_Performed);
+router.use("/get/quiz/performed", Get_Quiz_Performed); 
 export default router;

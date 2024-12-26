@@ -24,11 +24,17 @@ import Modal from "@components/modal.astro";
   import type { Quiz } from "@content/quiz_data";
   import { quiz_data_store } from "@content/quiz_data";
 
+  const main_container = document.querySelector("#main-container") as HTMLDivElement;
   const URL = window?.location?.href?.match(/draft\/([a-f0-9-]+)/);
   const draft_id = URL?.[1];
 
   fetch(`/request/get/quiz/draft/${draft_id}`)
-    .then((response) => response.json())
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("HTTP error " + response.status);
+      }
+      return response.json();
+    })
     .then((response_json) => response_json.data)
     .then((quiz_data: Quiz) => {
       console.log(quiz_data);
@@ -37,7 +43,11 @@ import Modal from "@components/modal.astro";
     .then(() => {
       document.title = quiz_data_store.get().quiz_title;
     })
+    .then(() => (main_container.style.display = "block"))
     .catch((error) => {
+      setTimeout(() => {
+        window.location.replace("/quiz/view/all");
+      }, 200);
       console.error("Error:", error);
     });
 

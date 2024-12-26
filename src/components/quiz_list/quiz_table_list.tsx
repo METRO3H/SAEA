@@ -42,8 +42,6 @@ export default function quiz_table_list() {
         : item.test_title.toLowerCase().includes($search_input_value)
   );
 
-  console.log(draft_filtered_data);
-
   quiz_list_length_store.set({
     draft: draft_filtered_data.length,
     performed: performed_filtered_data.length,

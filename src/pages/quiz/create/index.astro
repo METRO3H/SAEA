@@ -23,9 +23,8 @@ import Save_Quiz_Button from "@components/buttons/save_quiz.astro";
   quiz_data_store.set(data_test_3);
 
   const Save_quiz_data_btn = document.querySelector("#save_quiz_btn") as HTMLButtonElement;
-  const Generate_Google_Form_btn = document.querySelector(
-    "#generate_google_btn"
-  ) as HTMLButtonElement;
+  const main_container = document.querySelector("#main-container") as HTMLDivElement;
+  main_container.style.display = "block";
 
   Save_quiz_data_btn?.addEventListener("click", Save_Quiz_Data);
 
@@ -36,6 +35,12 @@ import Save_Quiz_Button from "@components/buttons/save_quiz.astro";
         "Content-Type": "application/json",
       },
       body: JSON.stringify(quiz_data_store.get()),
+    })
+      .then((response) => {
+      if (!response.ok) {
+        throw new Error("HTTP error " + response.status);
+      }
+      return response.json();
     })
       .then((response) => response.json())
       .then((response_json) => {
