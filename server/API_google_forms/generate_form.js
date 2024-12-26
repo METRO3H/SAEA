@@ -22,7 +22,12 @@ export default async function (data) {
 
     Report_Status("success", "Quiz generado con éxito!");
 
-    return { data: quiz_url };
+    return {
+      data: {
+        google_form_url: quiz_url,
+        google_form_id: create_form_response.data.formId,
+      },
+    };
   } catch (error) {
     return Report_Status("error", error);
   }
@@ -165,4 +170,3 @@ async function Save_Performed_Test(test_id, google_form_data) {
     }
   );
 }
-

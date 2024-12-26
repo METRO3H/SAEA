@@ -92,6 +92,7 @@ import Modal from "@components/modal.astro";
         return response.json();
       })
       .then((response) => {
+        console.log(response);
         End_Animation(
           {
             ...response,
@@ -100,6 +101,7 @@ import Modal from "@components/modal.astro";
           false
         );
       })
+
       .then(() => Generate_Google_Form_btn.setAttribute("disabled", ""))
       .catch((error) => {
         console.error(error);
@@ -134,8 +136,15 @@ import Modal from "@components/modal.astro";
 
     if (is_error) return;
 
+    const modal_close_btn = document.querySelector("#close-modal-btn") as HTMLLinkElement;
     const btn_link_form = document.querySelector(".btn-link-form") as HTMLLinkElement;
-    btn_link_form.href = response.data;
+    
+    const performed_quiz_url = window.location.origin + "/quiz/view/performed/" + response.data.google_form_id;
+    const google_form_url = response.data.google_form_url;
+    
+    modal_close_btn.href = performed_quiz_url
+    btn_link_form.href = google_form_url;
+
     btn_link_form.style.height = "51px";
     btn_link_form.style.width = "auto";
     btn_link_form.style.paddingTop = "var(--mdb-btn-padding-top)";

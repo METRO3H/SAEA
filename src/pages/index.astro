@@ -1,13 +1,32 @@
 ---
-import BaseHead from "@layouts/BaseHead.astro";
-import { SITE_TITLE, SITE_DESCRIPTION } from "../const";
-import { Image } from "astro:assets";
-import google_form_icon_240px from "../assets/svg/google-form-icon-240px.svg";
+import Document from "@layouts/document.astro";
 ---
 
-<!doctype html>
-<html lang="en">
+<Document title="SAEA" description="SAEA">
+  <!-- List group -->
+  <div class="list-group" id="myList" role="tablist">
+    <a
+      class="list-group-item list-group-item-action active"
+      data-mdb-list-init
+      href="#home"
+      role="tab">Home</a
+    >
+    <a class="list-group-item list-group-item-action" data-mdb-list-init href="#profile" role="tab"
+      >Profile</a
+    >
+    <a class="list-group-item list-group-item-action" data-mdb-list-init href="#messages" role="tab"
+      >Messages</a
+    >
+    <a class="list-group-item list-group-item-action" data-mdb-list-init href="#settings" role="tab"
+      >Settings</a
+    >
+  </div>
 
-
-xd
-</html>
+  <!-- Tab panes -->
+  <div class="tab-content">
+    <div class="tab-pane active" id="home" role="tabpanel">HOME</div>
+    <div class="tab-pane" id="profile" role="tabpanel">PROFILE</div>
+    <div class="tab-pane" id="messages" role="tabpanel">MESSAGES</div>
+    <div class="tab-pane" id="settings" role="tabpanel">SETTINGS</div>
+  </div>
+</Document>

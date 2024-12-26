@@ -3,14 +3,15 @@ import { useStore } from "@nanostores/react";
 import Question_Content_Item from "@components/question/editable/question_content_item";
 import Question_List_Item from "@components/question/question_list_item.jsx";
 import "@styles/questions_data.css";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import { Tab, initMDB } from "mdb-ui-kit";
 
 export default function Questions_Data() {
   const $quiz_data: Quiz = useStore(quiz_data_store);
+  const [tab_state, set_tab_state] = useState<boolean>(false);
 
-  function Filter_Question_List_Items() {
+  async function Filter_Question_List_Items() {
     const $question_items = $quiz_data.questions;
     const $total_questions = $quiz_data.specifications_table.total_questions;
 
@@ -74,12 +75,14 @@ export default function Questions_Data() {
   }
 
   useEffect(() => {
-    Filter_Question_List_Items();
-  }, [$quiz_data]);
+     Filter_Question_List_Items();
 
-  useEffect(() => {
+    if (tab_state) return;
+
     initMDB({ Tab });
-  }, []);
+    set_tab_state(true);
+    
+  }, [$quiz_data]);
 
   const metadata_map = Get_Metadata_Map();
 

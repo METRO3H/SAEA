@@ -37,12 +37,11 @@ import Save_Quiz_Button from "@components/buttons/save_quiz.astro";
       body: JSON.stringify(quiz_data_store.get()),
     })
       .then((response) => {
-      if (!response.ok) {
-        throw new Error("HTTP error " + response.status);
-      }
-      return response.json();
-    })
-      .then((response) => response.json())
+        if (!response.ok) {
+          throw new Error("HTTP error " + response.status);
+        }
+        return response.json();
+      })
       .then((response_json) => {
         Save_quiz_data_btn.setAttribute("disabled", "");
         const URL = "/quiz/view/draft/" + response_json.data;
@@ -52,5 +51,4 @@ import Save_Quiz_Button from "@components/buttons/save_quiz.astro";
       })
       .catch((error) => console.error(error));
   }
-
 </script>

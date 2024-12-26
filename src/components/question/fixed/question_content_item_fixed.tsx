@@ -32,10 +32,10 @@ function Question_Content_Item({
 
   return (
     <div
-      className={`tab-pane show question-content-item ${add_class}`}
-      id={`question-content-item-${question_content_item_number}`}
+      className={"tab-pane show question-content-item " + add_class}  
+      id={"question-" + question_content_item_number} 
       role="tabpanel"
-      aria-label={`question-list-item-${question_content_item_number}`}
+      aria-label={"question-list-item-" + question_content_item_number}
     >
       <div className="question-content-item-main">
         <ul className="badge-container">

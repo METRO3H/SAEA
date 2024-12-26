@@ -1,10 +1,8 @@
 import { quiz_data_store, type Quiz, type Question_Item } from "@content/quiz_data";
 import { useStore } from "@nanostores/react";
 import Question_Content_Item from "@components/question/fixed/question_content_item_fixed";
-import Question_List_Item from "@components/question/question_list_item.jsx";
 import "@styles/questions_data.css";
 import { useEffect } from "react";
-
 import { Tab, initMDB } from "mdb-ui-kit";
 
 export default function Questions_Data() {
@@ -40,21 +38,30 @@ export default function Questions_Data() {
 
   useEffect(() => {
     initMDB({ Tab });
-  }, []);
+  }, [$quiz_data]);
+
 
   const metadata_map = Get_Metadata_Map();
 
   return (
     <div id="main-question-container">
       <div id="question-list-container">
-        <div className="list-group list-group-light" id="list-tab" role="tablist" data-tabs>
-          {$quiz_data.questions.map((item, index) => (
-            <Question_List_Item
-              key={`question_list_key_${index + 1}`}
-              question_list_item_number={index + 1}
-              add_class={index === 0 ? "active" : ""}
-              item_data={item}
-            />
+        <div className="list-group list-group-light" id="list-tab" role="tablist">
+          {$quiz_data.questions.map((_, index) => (
+            <a
+              key={"list-item-" + index}
+              title={`Pregunta ${index + 1}`}
+              className={
+                "px-3 border-0 list-group-item list-group-item-action " +
+                (index === 0 ? "active" : "")
+              }
+              data-mdb-list-init
+              href={"#question-" + (index + 1)}
+              role="tab"
+              aria-controls={`question-content-item-${index + 1}`}
+            >
+              <i className="fas fa-circle-question"></i> Pregunta {index + 1}
+            </a>
           ))}
         </div>
       </div>
