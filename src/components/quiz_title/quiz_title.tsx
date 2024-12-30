@@ -18,8 +18,6 @@ export default function Quiz_Title({}) {
     });
   }
 
-  console.log($quiz_data.quiz_title)
-
   return (
     <>
       <Special_Input_Text

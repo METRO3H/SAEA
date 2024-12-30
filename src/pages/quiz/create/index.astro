@@ -3,6 +3,7 @@ import Document from "@layouts/document.astro";
 import Quiz_Layout from "@layouts/quiz_layout.astro";
 import Quiz_Title from "@components/quiz_title/quiz_title";
 import Specifications_Table from "@components/Specifications_Table/specifications_table";
+import Specifications_Table_2 from "@components/Specifications_Table/specifications_table_2";
 import Questions_Data from "@components/question/editable/questions_data";
 import Save_Quiz_Button from "@components/buttons/save_quiz.astro";
 ---
@@ -10,23 +11,32 @@ import Save_Quiz_Button from "@components/buttons/save_quiz.astro";
 <Document title="Crear Quiz" description="Crear Quiz">
   <Quiz_Layout>
     <Quiz_Title slot="quiz-title" client:only="react" />
-    <Specifications_Table slot="specifications-table" client:only="react" />
-    <Questions_Data slot="questions-data" client:only="react" />
-    <Save_Quiz_Button slot="save-button" />
+    <Specifications_Table_2 slot="specifications-table" client:only="react" />
+    <!-- <Questions_Data slot="questions-data" client:only="react" />
+    <Save_Quiz_Button slot="save-button" /> -->
   </Quiz_Layout>
 </Document>
 
 <script>
-  import { quiz_data_store } from "@content/quiz_data";
+  import { quiz_data_store, update_spect_store } from "@content/quiz_data";
   import { data_test_3 } from "@content/Test/create_quiz/data_test_1";
   console.log(data_test_3);
   quiz_data_store.set(data_test_3);
 
   const Save_quiz_data_btn = document.querySelector("#save_quiz_btn") as HTMLButtonElement;
   const main_container = document.querySelector("#main-container") as HTMLDivElement;
+  const update_specifications_table_btn = document.querySelector(
+    "#button-next-part"
+  ) as HTMLButtonElement;
+
   main_container.style.display = "block";
 
+  update_specifications_table_btn.addEventListener("click", () => Update_Specifications_Table);
   Save_quiz_data_btn?.addEventListener("click", Save_Quiz_Data);
+
+  function Update_Specifications_Table() {
+    update_spect_store.set(true);
+  }
 
   function Save_Quiz_Data() {
     fetch(`/request/quiz/save`, {
