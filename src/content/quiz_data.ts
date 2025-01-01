@@ -15,8 +15,7 @@ export interface Quiz {
       content: string;
       objective: string;
       performed_classes: number;
-      skill_index: number;
-      skill_content: string;
+      row_skills: string[];
     }[];
   };
   questions: {
@@ -60,6 +59,8 @@ interface quiz_list_length_type {
   performed: number;
 }
 
+
+
 export let quiz_data_store = atom<Quiz>({
   quiz_id: "",
   google_form_url: "",
@@ -76,32 +77,28 @@ export let quiz_data_store = atom<Quiz>({
         content: "",
         objective: "",
         performed_classes: 0,
-        skill_index: 0,
-        skill_content: "",
+        row_skills: [],
       },
       {
         thematic_area: "",
         content: "",
         objective: "",
         performed_classes: 0,
-        skill_index: 0,
-        skill_content: "",
+        row_skills: [],
       },
       {
         thematic_area: "",
         content: "",
         objective: "",
         performed_classes: 0,
-        skill_index: 0,
-        skill_content: "",
+        row_skills: [],
       },
       {
         thematic_area: "",
         content: "",
         objective: "",
         performed_classes: 0,
-        skill_index: 0,
-        skill_content: "",
+        row_skills: [],
       },
     ],
   },

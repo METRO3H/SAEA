@@ -5,155 +5,171 @@ import Report_Status from "../../util/report_status.js";
 sqlite3.verbose();
 
 export async function Save_Quiz(data_form, unique_id, date_time) {
-  // console.log(data_form);
-  const data_base_path = path.join(process.cwd(), "server", "database", "database.db");
-  
-  const title = data_form.quiz_title;
-  const created_by = data_form.created_by;
-  const subject = data_form.quiz_subject;
-  const skills = data_form.specifications_table.quiz_skills;
-  const table_body = data_form.specifications_table.items;
+   // console.log(data_form);
+   const data_base_path = path.join(process.cwd(), "server", "database", "database.db");
 
-  const db = new sqlite3.Database(data_base_path);
-  try {
-    return new Promise((resolve, reject) => {
-      db.serialize(async () => {
-        const sql = new Query(db); 
+   const title = data_form.quiz_title;
+   const created_by = data_form.created_by;
+   const subject = data_form.quiz_subject;
+   const skills = data_form.specifications_table.quiz_skills;
+   const table_body = data_form.specifications_table.items;
 
-        db.run("BEGIN TRANSACTION"); 
+   const db = new sqlite3.Database(data_base_path);
+   try {
+      return new Promise((resolve, reject) => {
+         db.serialize(async () => {
+            const sql = new Query(db);
 
-        try {
-          // console.log(subject, created_by, date_time);
-          await Run_Query(sql.Insert.subject, [subject, created_by, date_time]);
+            db.run("BEGIN TRANSACTION");
 
-          const subject_id = (await Get_Query(sql.Get.subject_id, [subject, created_by])).id;
-          // console.log(subject_id);
+            try {
+               // console.log(subject, created_by, date_time);
+               await Run_Query(sql.Insert.subject, [subject, created_by, date_time]);
 
-          await Run_Query(sql.Insert.test, [unique_id, title, subject_id, created_by, date_time]);
+               const subject_id = (await Get_Query(sql.Get.subject_id, [subject, created_by])).id;
+               // console.log(subject_id);
 
-          const test_id = (await Get_Query(sql.Get.test_id, [title, created_by, date_time])).id;
+               await Run_Query(sql.Insert.test, [
+                  unique_id,
+                  title,
+                  subject_id,
+                  created_by,
+                  date_time,
+               ]);
 
-          skills.forEach(
-            async (skill) => await Run_Query(sql.Insert.skill, [skill, created_by, date_time])
-          );
+               const test_id = (await Get_Query(sql.Get.test_id, [title, created_by, date_time])).id;
 
-          table_body.forEach(async (row, index) => {
-            // console.log(row);
-            await Run_Query(sql.Insert.thematic_area, [row.thematic_area, created_by, date_time]);
-            await Run_Query(sql.Insert.content_area, [row.content, created_by, date_time]);
-            await Run_Query(sql.Insert.objective, [row.objective, created_by, date_time]);
+               skills.forEach(
+                  async (skill) => await Run_Query(sql.Insert.skill, [skill, created_by, date_time])
+               );
 
-            await Run_Query(sql.Insert.specifications_table, [
-              test_id,
-              index + 1,
-              row.thematic_area,
-              row.content,
-              row.objective,
-              row.performed_classes,
-            ]);
+               table_body.forEach(async (row, index) => {
+                  // console.log(row);
+                  await Run_Query(sql.Insert.thematic_area, [
+                     row.thematic_area,
+                     created_by,
+                     date_time,
+                  ]);
+                  await Run_Query(sql.Insert.content_area, [row.content, created_by, date_time]);
+                  await Run_Query(sql.Insert.objective, [row.objective, created_by, date_time]);
 
-            await Run_Query(sql.Insert.specifications_table_skill, [
-              test_id,
-              index + 1,
-              skills[row.skill_index],
-              row.skill_index,
-              row.skill_content,
-            ]);
-          });
+                  await Run_Query(sql.Insert.specifications_table, [
+                     test_id,
+                     index + 1,
+                     row.thematic_area,
+                     row.content,
+                     row.objective,
+                     row.performed_classes,
+                  ]);
+                  row.row_skills.forEach(async (skill, position) => {
+                     if (skill === "") return; // Aca deberia verificar con un Regex, pero lo dejo para despues
+                     await Run_Query(sql.Insert.specifications_table_skill, [
+                        test_id,
+                        index + 1,
+                        skills[skill_index],
+                        position,
+                        skill,
+                     ]);
 
-          for (const [question_index, question_item] of data_form.questions.entries()) {
-            await Run_Query(sql.Insert.question, [question_item.question, created_by, date_time]);
+                  });
+               });
 
-            const question_id = (
-              await Get_Query(sql.Get.question_id, [question_item.question, created_by])
-            ).id;
+               for (const [question_index, question_item] of data_form.questions.entries()) {
+                  await Run_Query(sql.Insert.question, [
+                     question_item.question,
+                     created_by,
+                     date_time,
+                  ]);
 
-            await Run_Query(sql.Insert.test_question, [
-              test_id,
-              question_id,
-              question_index + 1,
-              question_item.correct_answer_index,
-            ]);
-            const test_question_id = (
-              await Get_Query(sql.Get.test_question_id, [test_id, question_index + 1])
-            ).id;
+                  const question_id = (
+                     await Get_Query(sql.Get.question_id, [question_item.question, created_by])
+                  ).id;
 
-            for (const [answer_index, answer] of question_item.answers.entries()) {
-              await Run_Query(sql.Insert.answer, [answer, created_by, date_time]);
+                  await Run_Query(sql.Insert.test_question, [
+                     test_id,
+                     question_id,
+                     question_index + 1,
+                     question_item.correct_answer_index,
+                  ]);
+                  const test_question_id = (
+                     await Get_Query(sql.Get.test_question_id, [test_id, question_index + 1])
+                  ).id;
 
-              const answer_id = (await Get_Query(sql.Get.answer_id, [answer, created_by])).id;
+                  for (const [answer_index, answer] of question_item.answers.entries()) {
+                     await Run_Query(sql.Insert.answer, [answer, created_by, date_time]);
 
-              await Run_Query(sql.Insert.test_question_answer, [
-                test_question_id,
-                answer_id,
-                answer_index + 1,
-              ]);
+                     const answer_id = (await Get_Query(sql.Get.answer_id, [answer, created_by])).id;
+
+                     await Run_Query(sql.Insert.test_question_answer, [
+                        test_question_id,
+                        answer_id,
+                        answer_index + 1,
+                     ]);
+                  }
+               }
+
+               db.run("COMMIT");
+               sql.Finalize();
+               db.close();
+
+               Report_Status("success", "Form guardado en la base de datos con éxito!!");
+               Report_Status("divider");
+
+               resolve({
+                  data: unique_id,
+               });
+            } catch (error) {
+               console.error(error);
+               Report_Status("error", error);
+               Report_Status("divider");
+               db.run("ROLLBACK");
+
+               sql.Finalize();
+               db.close();
+
+               reject();
             }
-          }
-
-          db.run("COMMIT");
-          sql.Finalize();
-          db.close();
-          
-          Report_Status("success", "Form guardado en la base de datos con éxito!!");
-          Report_Status("divider");
-
-          resolve({
-            data: unique_id,
-          });
-
-        } catch (error) {
-          console.error(error);
-          Report_Status("error", error);
-          Report_Status("divider");
-          db.run("ROLLBACK");
-
-          sql.Finalize();
-          db.close();
-
-          reject();
-        }
+         });
       });
-    });
-  } catch (error) {
-    db.close();
-    console.error(error);
-    reject();
-  }
+   } catch (error) {
+      db.close();
+      console.error(error);
+      reject();
+   }
 }
 
 function Run_Query(query, parameters = []) {
-  return new Promise((resolve, reject) => {
-    query.run(parameters, (error) => {
-      if (error) {
-        reject(error);
-      } else {
-        resolve("Correcto");
-      }
-    });
-  });
+   return new Promise((resolve, reject) => {
+      query.run(parameters, (error) => {
+         if (error) {
+            reject(error);
+         } else {
+            resolve("Correcto");
+         }
+      });
+   });
 }
 
 function Get_Query(query, parameters = []) {
-  return new Promise((resolve, reject) => {
-    query.get(parameters, function (error, row) {
-      if (error) {
-        reject(error);
-      } else {
-        resolve(row);
-      }
-    });
-  });
+   return new Promise((resolve, reject) => {
+      query.get(parameters, function (error, row) {
+         if (error) {
+            reject(error);
+         } else {
+            resolve(row);
+         }
+      });
+   });
 }
 
 function Get_All_Query(query, parameters = []) {
-  return new Promise((resolve, reject) => {
-    query.all(parameters, function (error, data) {
-      if (error) {
-        reject(error);
-      } else {
-        resolve(data);
-      }
-    });
-  });
+   return new Promise((resolve, reject) => {
+      query.all(parameters, function (error, data) {
+         if (error) {
+            reject(error);
+         } else {
+            resolve(data);
+         }
+      });
+   });
 }
