@@ -9,7 +9,8 @@
     "astro": "astro",
     "watcher": "nodemon --watch src/**/* -e js,ts,astro --exec npm run build",
     "server": "nodemon server.js",
-    "dev": "astro dev"
+    "dev": "astro dev",
+    "test": "nodemon src/content/Test/main.js"
   },
   "dependencies": {
     "@astrojs/mdx": "^2.1.1",
