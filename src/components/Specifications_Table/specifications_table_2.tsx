@@ -3,6 +3,9 @@ import { quiz_data_store, update_spect_store, type Quiz, type RowSpan } from "@c
 import { useStore } from "@nanostores/react";
 import "@styles/table_2.css";
 
+const string_regex = /\d+(?:\s*-\s*\d+)?/g;
+
+
 export default function Specifications_Table() {
    const $quiz_data: Quiz = useStore(quiz_data_store);
    const $update_spect: boolean = useStore(update_spect_store);
@@ -71,7 +74,9 @@ export default function Specifications_Table() {
 
    function Handle_Row_Skills_Change(index: number, position: number, value: string) {
       set_editing_skill_cell(null);
-      const new_value: string = value ? value : "";
+      const new_value_matches = value.match(string_regex);
+      const new_value: string = new_value_matches ? new_value_matches.join(", ") : "";
+
       const local_quiz_aux = { ...local_quiz };
 
       const current_value = local_quiz.specifications_table.items[index].row_skills[position];
@@ -93,20 +98,22 @@ export default function Specifications_Table() {
       update_spect_store.set(false);
    }
 
-   function Get_Skill_Content_Values(skill_content_list: string[]) {
-      const result = skill_content_list.flatMap((item) => {
-         const skill_content_patron = item.match(/\d+-\d+|\d+/g) || [];
+   function Get_Skill_Content_Values(skill_content_list: string[]): number[] {
+    const result: number[] = [];
+    for (const item of skill_content_list) {
+      // console.log(item)
+       const matches = item.match(string_regex) || [];
+      //  console.log(matches)
+       for (const range of matches) {
+        if (!range.includes("-")) {result.push(+range); continue;}
+        
+        const [start, end] = range.split("-").map(Number);
+        result.push(...Array.from({ length: end - start + 1 }, (_, i) => start + i));
+       }
+    }
 
-         return skill_content_patron.flatMap((range) => {
-            if (range.includes("-")) {
-               const [start, end] = range.split("-").map(Number);
-               return Array.from({ length: end - start + 1 }, (_, i) => start + i);
-            }
-            return Number(range);
-         });
-      });
-      return result;
-   }
+    return result;
+ }
 
    function Get_Skill_Content_Columns(column_index: number) {
       const column_list = local_quiz.specifications_table.items
@@ -114,7 +121,7 @@ export default function Specifications_Table() {
          .filter((item) => item !== "");
 
       const column_values: number[] = Get_Skill_Content_Values(column_list);
-
+      // console.log(column_values);
       return column_values;
    }
    function Process_Table_Items(
@@ -381,7 +388,9 @@ export default function Specifications_Table() {
                                     (event.currentTarget.selectionStart =
                                        event.currentTarget.value.length)
                                  }
+                                 pattern="\d+-\d+|\d+"
                                  autoFocus
+                                 required
                               />
                            ) : (
                               <span>
