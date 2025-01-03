@@ -9,57 +9,55 @@ import Save_Quiz_Button from "@components/buttons/save_quiz.astro";
 ---
 
 <Document title="Crear Quiz" description="Crear Quiz">
-  <Quiz_Layout>
-    <Quiz_Title slot="quiz-title" client:only="react" />
-    <Specifications_Table_2 slot="specifications-table" client:only="react" />
-    <!-- <Questions_Data slot="questions-data" client:only="react" />
-    <Save_Quiz_Button slot="save-button" /> -->
-  </Quiz_Layout>
+   <Quiz_Layout>
+      <Quiz_Title slot="quiz-title" client:only="react" />
+      <Specifications_Table_2 slot="specifications-table" client:only="react" />
+      <Questions_Data slot="questions-data" client:only="react" />
+      <!-- <Save_Quiz_Button slot="save-button" /> -->
+   </Quiz_Layout>
 </Document>
 
 <script>
-  import { $quiz_store, $update_spect_flag } from "@content/shared/quiz_data";
-  import { data_test_3 } from "@content/Test/create_quiz/data_test_1";
-  console.log(data_test_3);
-  $quiz_store.set(data_test_3);
+   import { $quiz_store, $update_spect_flag } from "@content/shared/quiz_data";
+   import { data_test_3 } from "@content/Test/create_quiz/data_test_1";
+   console.log(data_test_3);
+   $quiz_store.set(data_test_3);
 
-  const Save_quiz_data_btn = document.querySelector("#save_quiz_btn") as HTMLButtonElement;
-  const main_container = document.querySelector("#main-container") as HTMLDivElement;
-  const update_specifications_table_btn = document.querySelector(
-    "#button-next-part"
-  ) as HTMLButtonElement;
+   const Save_quiz_data_btn = document.querySelector("#save_quiz_btn") as HTMLButtonElement;
+   const main_container = document.querySelector("#main-container") as HTMLDivElement;
+   const update_specifications_table_btn = document.querySelector("#button-next-part") as HTMLButtonElement;
 
-  main_container.style.display = "block";
+   main_container.style.display = "block";
 
-  update_specifications_table_btn?.addEventListener("click", Update_Specifications_Table);
-  Save_quiz_data_btn?.addEventListener("click", Save_Quiz_Data);
+   update_specifications_table_btn?.addEventListener("click", Update_Specifications_Table);
+   Save_quiz_data_btn?.addEventListener("click", Save_Quiz_Data);
 
-  function Update_Specifications_Table() {
-    $update_spect_flag.set(!$update_spect_flag.get());
-    console.log($quiz_store.get());
-  }
+   function Update_Specifications_Table() {
+      $update_spect_flag.set(!$update_spect_flag.get());
+      console.log($quiz_store.get());
+   }
 
-  function Save_Quiz_Data() {
-    fetch(`/request/quiz/save`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify($quiz_store.get()),
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("HTTP error " + response.status);
-        }
-        return response.json();
+   function Save_Quiz_Data() {
+      fetch(`/request/quiz/save`, {
+         method: "POST",
+         headers: {
+            "Content-Type": "application/json",
+         },
+         body: JSON.stringify($quiz_store.get()),
       })
-      .then((response_json) => {
-        Save_quiz_data_btn.setAttribute("disabled", "");
-        const URL = "/quiz/view/draft/" + response_json.data;
-        setTimeout(() => {
-          window.location.replace(URL);
-        }, 221);
-      })
-      .catch((error) => console.error(error));
-  }
+         .then((response) => {
+            if (!response.ok) {
+               throw new Error("HTTP error " + response.status);
+            }
+            return response.json();
+         })
+         .then((response_json) => {
+            Save_quiz_data_btn.setAttribute("disabled", "");
+            const URL = "/quiz/view/draft/" + response_json.data;
+            setTimeout(() => {
+               window.location.replace(URL);
+            }, 221);
+         })
+         .catch((error) => console.error(error));
+   }
 </script>

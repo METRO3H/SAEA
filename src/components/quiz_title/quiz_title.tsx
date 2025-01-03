@@ -7,15 +7,13 @@ export default function Quiz_Title({}) {
    const $quiz_title_store: string = useStore($quiz_title);
 
    function Handle_Blur(event) {
-     const new_value = event.target.value.trim();
-     const old_value = $quiz_title_store;
+      const new_value = event.target.value.trim();
+      const old_value = $quiz_title_store;
 
-      if (new_value === old_value) return;  
+      if (new_value === old_value) return;
 
       Update_Quiz_Title(new_value);
    }
-
-   console.log($quiz_title_store);
 
    return (
       <>

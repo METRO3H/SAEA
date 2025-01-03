@@ -1,24 +1,22 @@
 import type { SpecTable, RowSpan, RowsRequirement, EditCell, EditSkillCell, ProcessedItem } from "@content/types";
+import Quiz_Subject from "./quiz_subject";
 import { useEffect, useRef, useState } from "react";
 import { useStore } from "@nanostores/react";
-import { $specifications_table, $quiz_subject, $update_spect_flag } from "@content/shared/quiz_data";
-import { Update_Spec_Table, Update_Quiz_Subject } from "@content/shared/update_state";
+import { $specifications_table, $update_spect_flag } from "@content/shared/quiz_data";
+import { Update_Spec_Table } from "@content/shared/update_state";
 import "@styles/table_2.css";
 
 const string_regex = /\d+(?:\s*-\s*\d+)?/g;
 
 export default function Specifications_Table() {
-   const $subject_store = useStore($quiz_subject);
    const $spec_table_store = useStore($specifications_table);
 
    const [local_spec_table, set_local_spec_table] = useState($spec_table_store);
-   const [local_subject, set_local_subject] = useState($subject_store);
 
    const [processed_items, set_processed_items] = useState<ProcessedItem[]>([]);
    const [row_spans, set_row_spans] = useState<RowSpan | null>(null);
 
    const local_spec_table_ref = useRef(local_spec_table);
-   const local_subject_ref = useRef(local_subject);
    const rows_requirement_ref = useRef<RowsRequirement[]>([]);
 
    const [editing_cell, set_editing_cell] = useState<EditCell | null>(null);
@@ -30,8 +28,6 @@ export default function Specifications_Table() {
       if (!verification_result) return;
 
       Update_Spec_Table(local_spec_table_ref.current);
-      Update_Quiz_Subject(local_subject_ref.current);
-      1;
    }
    function Verify_Requirements_To_Update() {
       const requirements = rows_requirement_ref.current;
@@ -52,19 +48,12 @@ export default function Specifications_Table() {
       return true;
    }
 
-   function Handle_Fixed_Field_Change(field: string, value: string) {
+   function Handle_Total_Questions_Change(value: string) {
+      set_editing_total_questions(false);
       const new_value: string = value ? value : "";
-
-      if (field === "quiz_subject") {
-         return new_value.length < 50 ? set_local_subject(new_value) : new_value.slice(0, 50);
-      }
-
-      if (field === "total_questions") {
-         set_editing_total_questions(false);
-         const local_spec_table_aux = { ...local_spec_table };
-         local_spec_table_aux.total_questions = Math.max(0, Math.floor(Number(new_value) || 0));
-         set_local_spec_table(local_spec_table_aux);
-      }
+      const local_spec_table_aux = { ...local_spec_table };
+      local_spec_table_aux.total_questions = Math.max(0, Math.floor(Number(new_value) || 0));
+      set_local_spec_table(local_spec_table_aux);
    }
 
    function Handle_Field_Change(index: number, field: string, value: string) {
@@ -223,10 +212,6 @@ export default function Specifications_Table() {
       rows_requirement_ref.current = rows_requirement_aux;
    }, [local_spec_table]);
 
-   useEffect(() => {
-      local_subject_ref.current = local_subject;
-   }, [local_subject]);
-
    const total_classes = local_spec_table.items.reduce((acc, item) => acc + Math.abs(item.performed_classes), 0);
    const total_question_count = local_spec_table.total_questions;
 
@@ -235,11 +220,7 @@ export default function Specifications_Table() {
          <caption>
             <div id="caption-container">
                <div id="table-subject">
-                  <input
-                     placeholder="Asignatura"
-                     defaultValue={local_subject}
-                     onBlur={(event) => Handle_Fixed_Field_Change("quiz_subject", event.target.value.trim())}
-                  />
+                  <Quiz_Subject />
                </div>
                <div id="table-title">
                   <i className="fas fa-table fa-2x"></i>
@@ -432,7 +413,7 @@ export default function Specifications_Table() {
                   {editing_total_questions ? (
                      <input
                         defaultValue={total_question_count}
-                        onBlur={(event) => Handle_Fixed_Field_Change("total_questions", event.target.value.trim())}
+                        onBlur={(event) => Handle_Total_Questions_Change(event.target.value.trim())}
                         onFocus={(event) => (event.currentTarget.selectionStart = event.currentTarget.value.length)}
                         autoFocus
                      />
