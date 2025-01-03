@@ -18,10 +18,10 @@ import Save_Quiz_Button from "@components/buttons/save_quiz.astro";
 </Document>
 
 <script>
-  import { quiz_data_store, update_spect_store } from "@content/quiz_data";
+  import { $quiz_store, $update_spect_flag } from "@content/shared/quiz_data";
   import { data_test_3 } from "@content/Test/create_quiz/data_test_1";
   console.log(data_test_3);
-  quiz_data_store.set(data_test_3);
+  $quiz_store.set(data_test_3);
 
   const Save_quiz_data_btn = document.querySelector("#save_quiz_btn") as HTMLButtonElement;
   const main_container = document.querySelector("#main-container") as HTMLDivElement;
@@ -31,11 +31,12 @@ import Save_Quiz_Button from "@components/buttons/save_quiz.astro";
 
   main_container.style.display = "block";
 
-  update_specifications_table_btn.addEventListener("click", () => Update_Specifications_Table);
+  update_specifications_table_btn?.addEventListener("click", Update_Specifications_Table);
   Save_quiz_data_btn?.addEventListener("click", Save_Quiz_Data);
 
   function Update_Specifications_Table() {
-    update_spect_store.set(true);
+    $update_spect_flag.set(!$update_spect_flag.get());
+    console.log($quiz_store.get());
   }
 
   function Save_Quiz_Data() {
@@ -44,7 +45,7 @@ import Save_Quiz_Button from "@components/buttons/save_quiz.astro";
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(quiz_data_store.get()),
+      body: JSON.stringify($quiz_store.get()),
     })
       .then((response) => {
         if (!response.ok) {

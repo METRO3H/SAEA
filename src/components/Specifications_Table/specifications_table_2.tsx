@@ -1,75 +1,100 @@
-import { useState } from "react";
-import { quiz_data_store, update_spect_store, type Quiz, type RowSpan } from "@content/quiz_data";
+import type { SpecTable, RowSpan, RowsRequirement, EditCell, EditSkillCell, ProcessedItem } from "@content/types";
+import { useEffect, useRef, useState } from "react";
 import { useStore } from "@nanostores/react";
+import { $specifications_table, $quiz_subject, $update_spect_flag } from "@content/shared/quiz_data";
+import { Update_Spec_Table, Update_Quiz_Subject } from "@content/shared/update_state";
 import "@styles/table_2.css";
 
 const string_regex = /\d+(?:\s*-\s*\d+)?/g;
 
-
 export default function Specifications_Table() {
-   const $quiz_data: Quiz = useStore(quiz_data_store);
-   const $update_spect: boolean = useStore(update_spect_store);
+   const $subject_store = useStore($quiz_subject);
+   const $spec_table_store = useStore($specifications_table);
 
-   const [local_quiz, set_local_quiz] = useState<Quiz>($quiz_data);
+   const [local_spec_table, set_local_spec_table] = useState($spec_table_store);
+   const [local_subject, set_local_subject] = useState($subject_store);
 
-   const [editing_cell, set_editing_cell] = useState<{ index: number; field: string } | null>(null);
+   const [processed_items, set_processed_items] = useState<ProcessedItem[]>([]);
+   const [row_spans, set_row_spans] = useState<RowSpan | null>(null);
+
+   const local_spec_table_ref = useRef(local_spec_table);
+   const local_subject_ref = useRef(local_subject);
+   const rows_requirement_ref = useRef<RowsRequirement[]>([]);
+
+   const [editing_cell, set_editing_cell] = useState<EditCell | null>(null);
    const [editing_total_questions, set_editing_total_questions] = useState<boolean>(false);
-   const [editing_skill_cell, set_editing_skill_cell] = useState<{
-      index: number;
-      skill_index: number;
-   } | null>(null);
+   const [editing_skill_cell, set_editing_skill_cell] = useState<EditSkillCell | null>(null);
 
-   console.log(local_quiz.specifications_table.items);
-   const total_classes = local_quiz.specifications_table.items.reduce(
-      (acc, item) => acc + Math.abs(item.performed_classes),
-      0
-   );
-   const total_question_count = local_quiz.specifications_table.total_questions;
+   function Update_Specifications_Table() {
+      const verification_result = Verify_Requirements_To_Update();
+      if (!verification_result) return;
+
+      Update_Spec_Table(local_spec_table_ref.current);
+      Update_Quiz_Subject(local_subject_ref.current);
+      1;
+   }
+   function Verify_Requirements_To_Update() {
+      const requirements = rows_requirement_ref.current;
+      for (const requirement of requirements) {
+         if (requirement.expected_value < 1) {
+            alert("Hay un error en el total de preguntas especificado, por favor revisa la tabla de especificaciones");
+            return false;
+         } else if (requirement.real_value === requirement.expected_value) continue;
+         else if (requirement.real_value < requirement.expected_value) {
+            alert("Se han indicado menos preguntas de las necesarias, por favor revisa la tabla de especificaciones");
+            return false;
+         } else if (requirement.real_value > requirement.expected_value) {
+            alert("Se han indicado mas preguntas de las necesarias, por favor revisa la tabla de especificaciones");
+            return false;
+         }
+      }
+
+      return true;
+   }
 
    function Handle_Fixed_Field_Change(field: string, value: string) {
       const new_value: string = value ? value : "";
-      const local_quiz_aux = { ...local_quiz };
 
-      if (field === "quiz_subject") local_quiz_aux.quiz_subject = new_value;
-      else if (field === "total_questions") {
-         set_editing_total_questions(false);
-         local_quiz_aux.specifications_table.total_questions = Math.max(
-            0,
-            Math.floor(Number(new_value) || 0)
-         );
+      if (field === "quiz_subject") {
+         return new_value.length < 50 ? set_local_subject(new_value) : new_value.slice(0, 50);
       }
 
-      set_local_quiz(local_quiz_aux);
+      if (field === "total_questions") {
+         set_editing_total_questions(false);
+         const local_spec_table_aux = { ...local_spec_table };
+         local_spec_table_aux.total_questions = Math.max(0, Math.floor(Number(new_value) || 0));
+         set_local_spec_table(local_spec_table_aux);
+      }
    }
 
    function Handle_Field_Change(index: number, field: string, value: string) {
       set_editing_cell(null);
 
       const new_value: string = value ? value : "";
-      const local_quiz_aux = { ...local_quiz };
+      const local_spec_table_aux = { ...local_spec_table };
 
       if (field === "quiz_skills") {
-         const current_value = local_quiz.specifications_table.quiz_skills[index];
+         const current_value = local_spec_table.quiz_skills[index];
          if (current_value === new_value) return;
-         local_quiz_aux.specifications_table.quiz_skills[index] = new_value;
+         local_spec_table_aux.quiz_skills[index] = new_value;
       } else if (field === "thematic_area" || field === "content") {
-         const current_value = local_quiz.specifications_table.items[index][field];
+         const current_value = local_spec_table.items[index][field];
          if (current_value === new_value) return;
-         local_quiz_aux.specifications_table.items = local_quiz_aux.specifications_table.items.map(
-            (item) => (item[field] === current_value ? { ...item, [field]: new_value } : item)
+         local_spec_table_aux.items = local_spec_table_aux.items.map((item) =>
+            item[field] === current_value ? { ...item, [field]: new_value } : item
          );
       } else if (field === "objective") {
-         const current_value = local_quiz.specifications_table.items[index].objective;
+         const current_value = local_spec_table.items[index].objective;
          if (current_value === new_value) return;
-         local_quiz_aux.specifications_table.items[index].objective = new_value;
+         local_spec_table_aux.items[index].objective = new_value;
       } else if (field === "performed_classes") {
-         const current_value = local_quiz.specifications_table.items[index].performed_classes;
+         const current_value = local_spec_table.items[index].performed_classes;
          const new_value_parsed = Math.max(0, Math.floor(Number(new_value) || 0));
          if (current_value === new_value_parsed) return;
-         local_quiz_aux.specifications_table.items[index].performed_classes = new_value_parsed;
+         local_spec_table_aux.items[index].performed_classes = new_value_parsed;
       }
 
-      set_local_quiz(local_quiz_aux);
+      set_local_spec_table(local_spec_table_aux);
    }
 
    function Handle_Row_Skills_Change(index: number, position: number, value: string) {
@@ -77,46 +102,40 @@ export default function Specifications_Table() {
       const new_value_matches = value.match(string_regex);
       const new_value: string = new_value_matches ? new_value_matches.join(", ") : "";
 
-      const local_quiz_aux = { ...local_quiz };
+      const local_spec_table_aux = { ...local_spec_table };
 
-      const current_value = local_quiz.specifications_table.items[index].row_skills[position];
+      const current_value = local_spec_table.items[index].row_skills[position];
 
       if (current_value === new_value) return;
 
-      local_quiz_aux.specifications_table.items[index].row_skills[position] = new_value;
+      local_spec_table_aux.items[index].row_skills[position] = new_value;
 
-      set_local_quiz(local_quiz_aux);
-   }
-
-   function Update_Specifications_Table() {
-      quiz_data_store.set({
-         ...$quiz_data,
-         specifications_table: local_quiz.specifications_table,
-         quiz_subject: local_quiz.quiz_subject,
-      });
-
-      update_spect_store.set(false);
+      set_local_spec_table(local_spec_table_aux);
    }
 
    function Get_Skill_Content_Values(skill_content_list: string[]): number[] {
-    const result: number[] = [];
-    for (const item of skill_content_list) {
-      // console.log(item)
-       const matches = item.match(string_regex) || [];
-      //  console.log(matches)
-       for (const range of matches) {
-        if (!range.includes("-")) {result.push(+range); continue;}
-        
-        const [start, end] = range.split("-").map(Number);
-        result.push(...Array.from({ length: end - start + 1 }, (_, i) => start + i));
-       }
-    }
+      // console.log(skill_content_list)
+      const result: number[] = [];
+      for (const item of skill_content_list) {
+         // console.log(item)
+         const matches = item.match(string_regex) || [];
+         //  console.log(matches)
+         for (const range of matches) {
+            if (!range.includes("-")) {
+               result.push(+range);
+               continue;
+            }
 
-    return result;
- }
+            const [start, end] = range.split("-").map(Number);
+            result.push(...Array.from({ length: end - start + 1 }, (_, i) => start + i));
+         }
+      }
+
+      return result;
+   }
 
    function Get_Skill_Content_Columns(column_index: number) {
-      const column_list = local_quiz.specifications_table.items
+      const column_list = local_spec_table.items
          .map((item) => item.row_skills[column_index])
          .filter((item) => item !== "");
 
@@ -124,15 +143,18 @@ export default function Specifications_Table() {
       // console.log(column_values);
       return column_values;
    }
-   function Process_Table_Items(
-      items: Quiz["specifications_table"]["items"],
-      total_classes: number,
-      total_question_count: number
-   ) {
+   function Process_Table_Items(items: SpecTable["items"], total_classes: number, total_question_count: number) {
       const thematic_area_seen = new Set();
       const content_seen = new Set();
 
-      return items.map((item) => {
+      const rows_requirement_aux: RowsRequirement[] = [];
+
+      const row_spans_aux: RowSpan = {
+         thematic_area: {},
+         content: {},
+      };
+
+      const processed_items_aux = items.map((item) => {
          const is_first_thematic_area = !thematic_area_seen.has(item.thematic_area);
          const is_first_content = !content_seen.has(item.content);
 
@@ -140,9 +162,7 @@ export default function Specifications_Table() {
          if (is_first_content) content_seen.add(item.content);
 
          const classes_relation =
-            !isNaN(item.performed_classes) && !isNaN(total_classes)
-               ? item.performed_classes / total_classes
-               : 0;
+            !isNaN(item.performed_classes) && !isNaN(total_classes) ? item.performed_classes / total_classes : 0;
 
          let classes_percentage: any = classes_relation * 100;
          classes_percentage = Number.isInteger(classes_percentage)
@@ -154,14 +174,18 @@ export default function Specifications_Table() {
          const item_question_count = Get_Skill_Content_Values(item.row_skills).length;
 
          const expected_item_question_count =
-            total_question_count > 0 && classes_relation > 0
-               ? Math.round(total_question_count * classes_relation)
-               : 0;
+            total_question_count > 0 && classes_relation > 0 ? Math.round(total_question_count * classes_relation) : 0;
 
          const success_item_question_count =
-            item_question_count === expected_item_question_count
-               ? " td-total-questions-successful"
-               : "";
+            item_question_count === expected_item_question_count ? " td-total-questions-successful" : "";
+
+         rows_requirement_aux.push({
+            real_value: item_question_count,
+            expected_value: expected_item_question_count,
+         });
+
+         row_spans_aux.thematic_area[item.thematic_area] = (row_spans_aux.thematic_area[item.thematic_area] || 0) + 1;
+         row_spans_aux.content[item.content] = (row_spans_aux.content[item.content] || 0) + 1;
 
          return {
             ...item,
@@ -174,33 +198,38 @@ export default function Specifications_Table() {
             success_item_question_count,
          };
       });
+
+      return { processed_items_aux, row_spans_aux, rows_requirement_aux };
    }
 
-   function Calculate_RowSpans(items: Quiz["specifications_table"]["items"]) {
-      const row_spans: RowSpan = {
-         thematic_area: {},
-         content: {},
+   useEffect(() => {
+      const unlisten = $update_spect_flag.listen(() => Update_Specifications_Table());
+
+      return () => {
+         unlisten();
       };
+   }, []);
 
-      items.forEach((item) => {
-         const { thematic_area, content } = item;
+   useEffect(() => {
+      local_spec_table_ref.current = local_spec_table;
 
-         row_spans.thematic_area[thematic_area] = (row_spans.thematic_area[thematic_area] || 0) + 1;
-         row_spans.content[content] = (row_spans.content[content] || 0) + 1;
-      });
+      const { processed_items_aux, row_spans_aux, rows_requirement_aux } = Process_Table_Items(
+         local_spec_table.items,
+         total_classes,
+         total_question_count
+      );
+      set_processed_items(processed_items_aux);
+      set_row_spans(row_spans_aux);
+      rows_requirement_ref.current = rows_requirement_aux;
+   }, [local_spec_table]);
 
-      return row_spans;
-   }
+   useEffect(() => {
+      local_subject_ref.current = local_subject;
+   }, [local_subject]);
 
-   const row_spans = Calculate_RowSpans(local_quiz.specifications_table.items);
+   const total_classes = local_spec_table.items.reduce((acc, item) => acc + Math.abs(item.performed_classes), 0);
+   const total_question_count = local_spec_table.total_questions;
 
-   const processed_table_items = Process_Table_Items(
-      local_quiz.specifications_table.items,
-      total_classes,
-      total_question_count
-   );
-
-  //  console.log(local_quiz);
    return (
       <table className="table table-bordered caption-top">
          <caption>
@@ -208,10 +237,8 @@ export default function Specifications_Table() {
                <div id="table-subject">
                   <input
                      placeholder="Asignatura"
-                     defaultValue={local_quiz.quiz_subject}
-                     onBlur={(event) =>
-                        Handle_Fixed_Field_Change("quiz_subject", event.target.value.trim())
-                     }
+                     defaultValue={local_subject}
+                     onBlur={(event) => Handle_Fixed_Field_Change("quiz_subject", event.target.value.trim())}
                   />
                </div>
                <div id="table-title">
@@ -238,7 +265,7 @@ export default function Specifications_Table() {
                   %
                </th>
 
-               {local_quiz.specifications_table.quiz_skills.map((item, skill_index) => (
+               {local_spec_table.quiz_skills.map((item, skill_index) => (
                   <th key={"skill-index-" + skill_index} className="cell thead-input">
                      <input
                         className="text-center"
@@ -246,9 +273,7 @@ export default function Specifications_Table() {
                         placeholder="Habilidad"
                         required
                         defaultValue={item}
-                        onBlur={(event) =>
-                           Handle_Field_Change(skill_index, "quiz_skills", event.target.value.trim())
-                        }
+                        onBlur={(event) => Handle_Field_Change(skill_index, "quiz_skills", event.target.value.trim())}
                      />
                   </th>
                ))}
@@ -259,29 +284,23 @@ export default function Specifications_Table() {
          </thead>
 
          <tbody>
-            {processed_table_items.map((item, index) => {
+            {processed_items?.map((item, index) => {
                return (
                   <tr key={index}>
                      {item.render_thematic_area && (
                         <td
                            className="td-input td-thematic_area"
-                           rowSpan={row_spans.thematic_area[item.thematic_area]}
+                           rowSpan={row_spans?.thematic_area[item.thematic_area]}
                            onClick={() => set_editing_cell({ index, field: "thematic_area" })}
                         >
-                           {editing_cell?.index === index &&
-                           editing_cell?.field === "thematic_area" ? (
+                           {editing_cell?.index === index && editing_cell?.field === "thematic_area" ? (
                               <textarea
                                  defaultValue={item.thematic_area}
                                  onBlur={(event) =>
-                                    Handle_Field_Change(
-                                       index,
-                                       "thematic_area",
-                                       event.target.value.trim()
-                                    )
+                                    Handle_Field_Change(index, "thematic_area", event.target.value.trim())
                                  }
                                  onFocus={(event) =>
-                                    (event.currentTarget.selectionStart =
-                                       event.currentTarget.value.length)
+                                    (event.currentTarget.selectionStart = event.currentTarget.value.length)
                                  }
                                  autoFocus
                               />
@@ -293,18 +312,15 @@ export default function Specifications_Table() {
                      {item.render_content && (
                         <td
                            className="td-input td-content"
-                           rowSpan={row_spans.content[item.content]}
+                           rowSpan={row_spans?.content[item.content]}
                            onClick={() => set_editing_cell({ index, field: "content" })}
                         >
                            {editing_cell?.index === index && editing_cell?.field === "content" ? (
                               <textarea
                                  defaultValue={item.content}
-                                 onBlur={(event) =>
-                                    Handle_Field_Change(index, "content", event.target.value.trim())
-                                 }
+                                 onBlur={(event) => Handle_Field_Change(index, "content", event.target.value.trim())}
                                  onFocus={(event) =>
-                                    (event.currentTarget.selectionStart =
-                                       event.currentTarget.value.length)
+                                    (event.currentTarget.selectionStart = event.currentTarget.value.length)
                                  }
                                  autoFocus
                               />
@@ -320,12 +336,9 @@ export default function Specifications_Table() {
                         {editing_cell?.index === index && editing_cell?.field === "objective" ? (
                            <textarea
                               defaultValue={item.objective}
-                              onBlur={(event) =>
-                                 Handle_Field_Change(index, "objective", event.target.value.trim())
-                              }
+                              onBlur={(event) => Handle_Field_Change(index, "objective", event.target.value.trim())}
                               onFocus={(event) =>
-                                 (event.currentTarget.selectionStart =
-                                    event.currentTarget.value.length)
+                                 (event.currentTarget.selectionStart = event.currentTarget.value.length)
                               }
                               autoFocus
                            />
@@ -337,20 +350,14 @@ export default function Specifications_Table() {
                         className="td-input td-performed-classes text-center align-middle"
                         onClick={() => set_editing_cell({ index, field: "performed_classes" })}
                      >
-                        {editing_cell?.index === index &&
-                        editing_cell?.field === "performed_classes" ? (
+                        {editing_cell?.index === index && editing_cell?.field === "performed_classes" ? (
                            <input
                               defaultValue={item.performed_classes}
                               onBlur={(event) =>
-                                 Handle_Field_Change(
-                                    index,
-                                    "performed_classes",
-                                    event.target.value.trim()
-                                 )
+                                 Handle_Field_Change(index, "performed_classes", event.target.value.trim())
                               }
                               onFocus={(event) =>
-                                 (event.currentTarget.selectionStart =
-                                    event.currentTarget.value.length)
+                                 (event.currentTarget.selectionStart = event.currentTarget.value.length)
                               }
                               autoFocus
                            />
@@ -359,34 +366,25 @@ export default function Specifications_Table() {
                         )}
                      </td>
 
-                     <td className="td-percentage text-center align-middle number-cell">
-                        {" "}
-                        {item.classes_percentage}{" "}
-                     </td>
+                     <td className="td-percentage text-center align-middle number-cell"> {item.classes_percentage} </td>
 
-                     {local_quiz.specifications_table.quiz_skills.map((_, skill_index) => (
+                     {local_spec_table.quiz_skills.map((_, skill_index) => (
                         <td
                            key={"skill-index-" + skill_index}
                            className="td-input td-skill text-center align-middle"
                            onClick={() => set_editing_skill_cell({ index, skill_index })}
                         >
-                           {editing_skill_cell?.index === index &&
-                           editing_skill_cell?.skill_index === skill_index ? (
+                           {editing_skill_cell?.index === index && editing_skill_cell?.skill_index === skill_index ? (
                               <input
                                  defaultValue={
                                     // item.skill_index === skill_index ? item.skill_content : ""
                                     item.row_skills[skill_index] || ""
                                  }
                                  onBlur={(event) => {
-                                    Handle_Row_Skills_Change(
-                                       index,
-                                       skill_index,
-                                       event.target.value.trim()
-                                    );
+                                    Handle_Row_Skills_Change(index, skill_index, event.target.value.trim());
                                  }}
                                  onFocus={(event) =>
-                                    (event.currentTarget.selectionStart =
-                                       event.currentTarget.value.length)
+                                    (event.currentTarget.selectionStart = event.currentTarget.value.length)
                                  }
                                  pattern="\d+-\d+|\d+"
                                  autoFocus
@@ -403,12 +401,7 @@ export default function Specifications_Table() {
                         </td>
                      ))}
 
-                     <td
-                        className={
-                           "td-total-questions text-center align-middle" +
-                           item.success_item_question_count
-                        }
-                     >
+                     <td className={"td-total-questions text-center align-middle" + item.success_item_question_count}>
                         {item.item_question_count + "/" + item.expected_item_question_count}
                      </td>
                   </tr>
@@ -423,7 +416,7 @@ export default function Specifications_Table() {
                </td>
                <td className="text-center number-cell">{total_classes}</td>
                <td className="text-center number-cell">100%</td>
-               {local_quiz.specifications_table.quiz_skills.map((_, skill_index) => (
+               {local_spec_table.quiz_skills.map((_, skill_index) => (
                   <td key={"foot-skill-index-" + skill_index} className="text-center number-cell">
                      {Get_Skill_Content_Columns(skill_index).length}
                   </td>
@@ -439,12 +432,8 @@ export default function Specifications_Table() {
                   {editing_total_questions ? (
                      <input
                         defaultValue={total_question_count}
-                        onBlur={(event) =>
-                           Handle_Fixed_Field_Change("total_questions", event.target.value.trim())
-                        }
-                        onFocus={(event) =>
-                           (event.currentTarget.selectionStart = event.currentTarget.value.length)
-                        }
+                        onBlur={(event) => Handle_Fixed_Field_Change("total_questions", event.target.value.trim())}
+                        onFocus={(event) => (event.currentTarget.selectionStart = event.currentTarget.value.length)}
                         autoFocus
                      />
                   ) : (
