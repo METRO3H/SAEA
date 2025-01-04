@@ -56,10 +56,4 @@ export const $quiz_creation_date = computed($quiz_store, ($quiz_store) => $quiz_
 export const $specifications_table = computed($quiz_store, ($quiz_store) => $quiz_store.specifications_table);
 export const $questions = computed($quiz_store, ($quiz_store) => $quiz_store.questions);
 
-export function Update_Spec_Table(specifications_table: Quiz["specifications_table"]) {
-   console.log("llego el update a spec_table_store");
-   $quiz_store.set({
-      ...$quiz_store.get(),
-      specifications_table: specifications_table,
-   });
-}
+

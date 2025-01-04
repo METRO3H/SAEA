@@ -41,10 +41,6 @@ caption {
 #table-title > * {
   margin: 0;
 }
-.thead-fix-y-padding {
-  padding-top: 11px !important;
-  padding-bottom: 11px !important;
-}
 
 .cell {
   height: 50px;

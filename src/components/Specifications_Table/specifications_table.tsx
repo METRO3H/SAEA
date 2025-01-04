@@ -1,404 +1,400 @@
-import { quiz_data_store, type Quiz, type RowSpan } from "@content/quiz_data";
+import type { SpecTable, RowSpan, RowsRequirement, EditCell, EditSkillCell, ProcessedItem } from "@content/types";
+import Quiz_Subject from "./quiz_subject";
+import { useEffect, useRef, useState } from "react";
 import { useStore } from "@nanostores/react";
-import { useState } from "react";
+import { $specifications_table, $update_spect_flag } from "@content/shared/quiz_data";
+import { Update_Spec_Table } from "@content/shared/update_state";
+import { Get_Assigned_Questions } from "@handlers/get_assigned_questions";
 import "@styles/table_2.css";
 
 export default function Specifications_Table() {
-  const $quiz_data: Quiz = useStore(quiz_data_store);
-  const [editing_cell, set_editing_cell] = useState<{ index: number; field: string } | null>(null);
-  const [editing_skill_cell, set_editing_skill_cell] = useState<{
-    index: number;
-    skill_index: number;
-  } | null>(null);
-  const [editing_total_questions, set_editing_total_questions] = useState<boolean>(false);
-  const total_classes = $quiz_data.specifications_table.items.reduce(Sanitize_Values, 0);
-  const total_question_count = $quiz_data.specifications_table.total_questions;
-  let thematic_area_rendered: { [key: string]: boolean } = {};
-  let content_rendered: { [key: string]: boolean } = {};
+   const $spec_table_store = useStore($specifications_table);
 
-  function Calculate_RowSpans(items: Quiz["specifications_table"]["items"]) {
-    const row_spans: RowSpan = {
-      thematic_area: {},
-      content: {},
-    };
+   const [local_spec_table, set_local_spec_table] = useState($spec_table_store);
 
-    items.forEach((item) => {
-      const { thematic_area, content } = item;
+   const [processed_items, set_processed_items] = useState<ProcessedItem[]>([]);
+   const [row_spans, set_row_spans] = useState<RowSpan | null>(null);
 
-      row_spans.thematic_area[thematic_area] = (row_spans.thematic_area[thematic_area] || 0) + 1;
-      row_spans.content[content] = (row_spans.content[content] || 0) + 1;
-    });
+   const local_spec_table_ref = useRef(local_spec_table);
+   const rows_requirement_ref = useRef<RowsRequirement[]>([]);
 
-    return row_spans;
-  }
+   const [editing_cell, set_editing_cell] = useState<EditCell | null>(null);
+   const [editing_total_questions, set_editing_total_questions] = useState<boolean>(false);
+   const [editing_skill_cell, set_editing_skill_cell] = useState<EditSkillCell | null>(null);
 
-  function Handle_Blur(event, index: number, field: string, skill_index: number = -1) {
-    const old_value = $quiz_data.specifications_table.items[index][field] || "";
-    let new_value = event.target.value.trim() || "";
+   function Update_Specifications_Table() {
+      const verification_result = Verify_Requirements_To_Update();
+      if (!verification_result) return;
 
-    let updated_items: Quiz["specifications_table"]["items"] = [];
+      Update_Spec_Table(local_spec_table_ref.current);
+   }
+   function Verify_Requirements_To_Update() {
+      const requirements = rows_requirement_ref.current;
+      for (const requirement of requirements) {
+         if (requirement.expected_value < 1) {
+            alert("Hay un error en el total de preguntas especificado, por favor revisa la tabla de especificaciones");
+            return false;
+         } else if (requirement.real_value === requirement.expected_value) continue;
+         else if (requirement.real_value < requirement.expected_value) {
+            alert("Se han indicado menos preguntas de las necesarias, por favor revisa la tabla de especificaciones");
+            return false;
+         } else if (requirement.real_value > requirement.expected_value) {
+            alert("Se han indicado mas preguntas de las necesarias, por favor revisa la tabla de especificaciones");
+            return false;
+         }
+      }
 
-    if (field === "thematic_area" || field === "content" || field === "objective") {
-      updated_items = $quiz_data.specifications_table.items.map((item, item_index) =>
-        item[field] === old_value ? { ...item, [field]: new_value } : item
-      );
-    }
-    if (field === "performed_classes") {
-      updated_items = $quiz_data.specifications_table.items.map((item, item_index) =>
-        item_index === index
-          ? item[field] === old_value
-            ? { ...item, [field]: new_value }
-            : item
-          : item
-      );
-    }
-    if (field === "tbody_skills") {
-      updated_items = $quiz_data.specifications_table.items.map((item, item_index) =>
-        item_index === index && item.skill_index === skill_index
-          ? { ...item, ["skill_content"]: new_value }
-          : item
-      );
-    }
-    if (field === "total_questions") {
-      quiz_data_store.set({
-        ...$quiz_data, // Mantiene las propiedades existentes del estado
-        specifications_table: {
-          ...$quiz_data.specifications_table, // Mantiene las propiedades de specifications_table
-          total_questions: new_value ? Number(new_value) : 0,
-        },
-      });
+      return true;
+   }
+
+   function Handle_Total_Questions_Change(value: string) {
       set_editing_total_questions(false);
-      return;
-    }
+      const new_value: string = value ? value : "";
+      const local_spec_table_aux = { ...local_spec_table };
+      local_spec_table_aux.total_questions = Math.max(0, Math.floor(Number(new_value) || 0));
+      set_local_spec_table(local_spec_table_aux);
+   }
 
-    if (field === "subject") {
-      quiz_data_store.set({
-        ...$quiz_data, // Mantiene las propiedades existentes del estado
-        quiz_subject: new_value ? new_value : "",
-      });
+   function Handle_Field_Change(index: number, field: string, value: string) {
+      set_editing_cell(null);
 
-      return;
-    }
+      const new_value: string = value ? value : "";
+      const local_spec_table_aux = { ...local_spec_table };
 
-    if (field === "thead_skills") {
-      let quiz_skills = $quiz_data.specifications_table.quiz_skills;
+      if (field === "quiz_skills") {
+         const current_value = local_spec_table.quiz_skills[index];
+         if (current_value === new_value) return;
+         local_spec_table_aux.quiz_skills[index] = new_value;
+      } else if (field === "thematic_area" || field === "content") {
+         const current_value = local_spec_table.items[index][field];
+         if (current_value === new_value) return;
+         local_spec_table_aux.items = local_spec_table_aux.items.map((item) =>
+            item[field] === current_value ? { ...item, [field]: new_value } : item
+         );
+      } else if (field === "objective") {
+         const current_value = local_spec_table.items[index].objective;
+         if (current_value === new_value) return;
+         local_spec_table_aux.items[index].objective = new_value;
+      } else if (field === "performed_classes") {
+         const current_value = local_spec_table.items[index].performed_classes;
+         const new_value_parsed = Math.max(0, Math.floor(Number(new_value) || 0));
+         if (current_value === new_value_parsed) return;
+         local_spec_table_aux.items[index].performed_classes = new_value_parsed;
+      }
 
-      quiz_skills[index] = new_value ? new_value : "";
+      set_local_spec_table(local_spec_table_aux);
+   }
 
-      quiz_data_store.set({
-        ...$quiz_data, // Mantiene las propiedades existentes del estado
-        specifications_table: {
-          ...$quiz_data.specifications_table, // Mantiene las propiedades de specifications_table
-          quiz_skills: quiz_skills,
-        },
-      });
-      return;
-    }
-
-    quiz_data_store.set({
-      ...$quiz_data, // Mantiene las propiedades existentes del estado
-      specifications_table: {
-        ...$quiz_data.specifications_table, // Mantiene las propiedades de specifications_table
-        items: updated_items,
-      },
-    });
-
-    set_editing_cell(null);
-    if (field === "tbody_skills") {
+   function Handle_Row_Skills_Change(index: number, position: number, value: string) {
       set_editing_skill_cell(null);
-    }
-  }
+      const string_regex = /\d+(?:\s*-\s*\d+)?/g;
+      const new_value_matches = value.match(string_regex);
+      const new_value: string = new_value_matches ? new_value_matches.join(", ") : "";
 
-  function Get_Skill_Content_Values(skill_content_list: string[]) {
-    const result = skill_content_list.flatMap((item) => {
-      const skill_content_patron = item.match(/\d+-\d+|\d+/g) || [];
+      const local_spec_table_aux = { ...local_spec_table };
 
-      return skill_content_patron.flatMap((range) => {
-        if (range.includes("-")) {
-          const [start, end] = range.split("-").map(Number);
-          return Array.from({ length: end - start + 1 }, (_, i) => start + i);
-        }
-        return Number(range);
-      });
-    });
-    return result;
-  }
+      const current_value = local_spec_table.items[index].row_skills[position];
 
-  function Sanitize_Values(acc, item) {
-    const value = Number(item.performed_classes);
+      if (current_value === new_value) return;
 
-    if (!Number.isInteger(value) || value < 0) {
-      return "";
-    }
+      local_spec_table_aux.items[index].row_skills[position] = new_value;
 
-    if (acc === "") {
-      return acc;
-    }
+      set_local_spec_table(local_spec_table_aux);
+   }
 
-    return acc + value;
-  }
-  function Get_Skill_Content_Columns(column_index: number) {
-    const column_list = $quiz_data.specifications_table.items
-      .filter((item) => item.skill_index === column_index)
-      .map((item) => item.skill_content);
+   function Get_Skill_Content_Columns(column_index: number) {
+      const column_list = local_spec_table.items
+         .map((item) => item.row_skills[column_index])
+         .filter((item) => item !== "");
 
-    const column_values: number[] = Get_Skill_Content_Values(column_list);
+      const column_values: number[] = Get_Assigned_Questions(column_list);
+      // console.log(column_values);
+      return column_values;
+   }
+   function Process_Table_Items(items: SpecTable["items"], total_classes: number, total_question_count: number) {
+      const thematic_area_seen = new Set();
+      const content_seen = new Set();
 
-    return column_values;
-  }
-  function Process_Table_Items(items, total_classes, total_question_count) {
-    return items.map((item) => {
-      const classes_relation =
-        !isNaN(item.performed_classes) && !isNaN(total_classes)
-          ? item.performed_classes / total_classes
-          : 0;
+      const rows_requirement_aux: RowsRequirement[] = [];
 
-      let classes_percentage: any = classes_relation * 100;
-      classes_percentage = Number.isInteger(classes_percentage)
-        ? parseInt(classes_percentage)
-        : classes_percentage.toFixed(1);
-
-      classes_percentage = total_classes === 0 ? " - " : classes_percentage + "%";
-
-      const item_question_count: number = Get_Skill_Content_Values([item.skill_content]).length;
-
-      const expected_item_question_count: number =
-        total_question_count > 0 && classes_relation > 0
-          ? Math.round(total_question_count * classes_relation)
-          : 0;
-
-      const success_item_question_count =
-        item_question_count === expected_item_question_count
-          ? " td-total-questions-successful"
-          : "";
-
-      return {
-        ...item,
-        classes_relation,
-        classes_percentage,
-        item_question_count,
-        expected_item_question_count,
-        success_item_question_count,
+      const row_spans_aux: RowSpan = {
+         thematic_area: {},
+         content: {},
       };
-    });
-  }
 
-  const row_spans = Calculate_RowSpans($quiz_data.specifications_table.items);
-  const processed_table_items = Process_Table_Items(
-    $quiz_data.specifications_table.items,
-    total_classes,
-    total_question_count
-  );
-  
-  return (
-    <table className="table table-bordered caption-top">
-      <caption>
-        <div id="caption-container">
-          <div id="table-subject">
-            <input
-              placeholder="Asignatura"
-              defaultValue={$quiz_data.quiz_subject}
-              onBlur={(event) => Handle_Blur(event, 0, "subject")}
-            />
-          </div>
-          <div id="table-title">
-            <i className="fas fa-table fa-2x"></i>
-            <h2 className="h4 fw-bold">Tabla de especificaciones</h2>
-          </div>
-        </div>
-      </caption>
-      <thead className="table-dark">
-        <tr>
-          <th id="thead-axis" className="left-cell thead-fix-y-padding">
-            Eje
-          </th>
-          <th id="thead-content" className="left-cell thead-fix-y-padding">
-            Contenidos
-          </th>
-          <th id="thead-objective" className="left-cell thead-fix-y-padding">
-            Objetivos
-          </th>
-          <th id="thead-classes" className="text-center thead-fix-y-padding">
-            Clases
-          </th>
-          <th id="thead-percentage" className="text-center thead-fix-y-padding">
-            %
-          </th>
+      const processed_items_aux = items.map((item) => {
+         const is_first_thematic_area = !thematic_area_seen.has(item.thematic_area);
+         const is_first_content = !content_seen.has(item.content);
 
-          {$quiz_data.specifications_table.quiz_skills.map((item, skill_index) => (
-            <th key={"skill-index-" + skill_index} className="cell thead-input">
-              <input
-                className="text-center"
-                type="text"
-                placeholder="Habilidad"
-                required
-                defaultValue={item}
-                onBlur={(event) => Handle_Blur(event, skill_index, "thead_skills")}
-              />
-            </th>
-          ))}
-          <th>
-            <div className="text-center">Total preguntas</div>
-          </th>
-        </tr>
-      </thead>
+         if (is_first_thematic_area) thematic_area_seen.add(item.thematic_area);
+         if (is_first_content) content_seen.add(item.content);
 
-      <tbody>
-        {processed_table_items.map((item, index) => {
-          return (
-            <tr key={index}>
-              {!thematic_area_rendered[item.thematic_area] && (
-                <td
-                  className="td-input td-thematic_area"
-                  rowSpan={row_spans.thematic_area[item.thematic_area]}
-                  onClick={() => set_editing_cell({ index, field: "thematic_area" })}
-                >
-                  {editing_cell?.index === index && editing_cell?.field === "thematic_area" ? (
-                    <textarea
-                      defaultValue={item.thematic_area}
-                      onBlur={(event) => Handle_Blur(event, index, "thematic_area")}
-                      onFocus={(event) =>
-                        (event.currentTarget.selectionStart = event.currentTarget.value.length)
-                      }
-                      autoFocus
-                    />
-                  ) : (
-                    item.thematic_area
-                  )}
-                </td>
-              )}
-              {!content_rendered[item.content] && (
-                <td
-                  className="td-input td-content"
-                  rowSpan={row_spans.content[item.content]}
-                  onClick={() => set_editing_cell({ index, field: "content" })}
-                >
-                  {editing_cell?.index === index && editing_cell?.field === "content" ? (
-                    <textarea
-                      defaultValue={item.content}
-                      onBlur={(event) => Handle_Blur(event, index, "content")}
-                      onFocus={(event) =>
-                        (event.currentTarget.selectionStart = event.currentTarget.value.length)
-                      }
-                      autoFocus
-                    />
-                  ) : (
-                    item.content
-                  )}
-                </td>
-              )}
-              <td
-                className="td-input td-objective"
-                onClick={() => set_editing_cell({ index, field: "objective" })}
-              >
-                {editing_cell?.index === index && editing_cell?.field === "objective" ? (
-                  <textarea
-                    defaultValue={item.objective}
-                    onBlur={(event) => Handle_Blur(event, index, "objective")}
-                    onFocus={(event) =>
-                      (event.currentTarget.selectionStart = event.currentTarget.value.length)
-                    }
-                    autoFocus
-                  />
-                ) : (
-                  item.objective
-                )}
-              </td>
-              <td
-                className="td-input td-performed-classes text-center align-middle"
-                onClick={() => set_editing_cell({ index, field: "performed_classes" })}
-              >
-                {editing_cell?.index === index && editing_cell?.field === "performed_classes" ? (
-                  <input
-                    defaultValue={item.performed_classes}
-                    onBlur={(event) => Handle_Blur(event, index, "performed_classes")}
-                    onFocus={(event) =>
-                      (event.currentTarget.selectionStart = event.currentTarget.value.length)
-                    }
-                    autoFocus
-                  />
-                ) : (
-                  item.performed_classes
-                )}
-              </td>
+         const classes_relation =
+            !isNaN(item.performed_classes) && !isNaN(total_classes) ? item.performed_classes / total_classes : 0;
 
-              <td className="td-percentage text-center align-middle number-cell">
-                {" "}
-                {item.classes_percentage}{" "}
-              </td>
+         let classes_percentage: any = classes_relation * 100;
+         classes_percentage = Number.isInteger(classes_percentage)
+            ? parseInt(classes_percentage)
+            : classes_percentage.toFixed(1);
 
-              {$quiz_data.specifications_table.quiz_skills.map((_, skill_index) => (
-                <td
-                  key={"skill-index-" + skill_index}
-                  className="td-input td-skill text-center align-middle"
-                  onClick={() => set_editing_skill_cell({ index, skill_index })}
-                >
-                  {editing_skill_cell?.index === index &&
-                  editing_skill_cell?.skill_index === skill_index ? (
-                    <input
-                      defaultValue={item.skill_index === skill_index ? item.skill_content : ""}
-                      onBlur={(event) => Handle_Blur(event, index, "tbody_skills", skill_index)}
-                      onFocus={(event) =>
-                        (event.currentTarget.selectionStart = event.currentTarget.value.length)
-                      }
-                      autoFocus
-                    />
-                  ) : (
-                    <span>{item.skill_index === skill_index ? item.skill_content : " - "}</span>
-                  )}
-                </td>
-              ))}
+         classes_percentage = total_classes === 0 ? " - " : classes_percentage + "%";
 
-              <td
-                className={
-                  "td-total-questions text-center align-middle" + item.success_item_question_count
-                }
-              >
-                {item.item_question_count + "/" + item.expected_item_question_count}
-              </td>
+         const item_question_count = Get_Assigned_Questions(item.row_skills).length;
 
-              {(thematic_area_rendered[item.thematic_area] = true)}
-              {(content_rendered[item.content] = true)}
+         const expected_item_question_count =
+            total_question_count > 0 && classes_relation > 0 ? Math.round(total_question_count * classes_relation) : 0;
+
+         const success_item_question_count =
+            item_question_count === expected_item_question_count ? " td-total-questions-successful" : "";
+
+         rows_requirement_aux.push({
+            real_value: item_question_count,
+            expected_value: expected_item_question_count,
+         });
+
+         row_spans_aux.thematic_area[item.thematic_area] = (row_spans_aux.thematic_area[item.thematic_area] || 0) + 1;
+         row_spans_aux.content[item.content] = (row_spans_aux.content[item.content] || 0) + 1;
+
+         return {
+            ...item,
+            render_thematic_area: is_first_thematic_area,
+            render_content: is_first_content,
+            classes_relation,
+            classes_percentage,
+            item_question_count,
+            expected_item_question_count,
+            success_item_question_count,
+         };
+      });
+
+      return { processed_items_aux, row_spans_aux, rows_requirement_aux };
+   }
+
+   useEffect(() => {
+      const unlisten = $update_spect_flag.listen(() => Update_Specifications_Table());
+
+      return () => {
+         unlisten();
+      };
+   }, []);
+
+   useEffect(() => {
+      local_spec_table_ref.current = local_spec_table;
+
+      const { processed_items_aux, row_spans_aux, rows_requirement_aux } = Process_Table_Items(
+         local_spec_table.items,
+         total_classes,
+         total_question_count
+      );
+      set_processed_items(processed_items_aux);
+      set_row_spans(row_spans_aux);
+      rows_requirement_ref.current = rows_requirement_aux;
+   }, [local_spec_table]);
+
+   const total_classes = local_spec_table.items.reduce((acc, item) => acc + Math.abs(item.performed_classes), 0);
+   const total_question_count = local_spec_table.total_questions;
+
+   return (
+      <table className="table table-bordered caption-top">
+         <caption>
+            <div id="caption-container">
+               <div id="table-subject">
+                  <Quiz_Subject />
+               </div>
+               <div id="table-title">
+                  <i className="fas fa-table fa-2x"></i>
+                  <h2 className="h4 fw-bold">Tabla de especificaciones</h2>
+               </div>
+            </div>
+         </caption>
+         <thead className="table-dark">
+            <tr>
+               <th id="thead-axis" className="left-cell align-middle">
+                  Eje
+               </th>
+               <th id="thead-content" className="left-cell align-middle">
+                  Contenidos
+               </th>
+               <th id="thead-objective" className="text-start align-middle">
+                  Objetivos
+               </th>
+               <th id="thead-classes" className="text-center align-middle">
+                  Clases
+               </th>
+               <th id="thead-percentage" className="text-center align-middle">
+                  %
+               </th>
+
+               {local_spec_table.quiz_skills.map((item, skill_index) => (
+                  <th key={"skill-index-" + skill_index} className="cell thead-input">
+                     <input
+                        className="text-center"
+                        type="text"
+                        placeholder="Habilidad"
+                        required
+                        defaultValue={item}
+                        onBlur={(event) => Handle_Field_Change(skill_index, "quiz_skills", event.target.value.trim())}
+                     />
+                  </th>
+               ))}
+               <th className="text-center align-middle">Total preguntas</th>
             </tr>
-          );
-        })}
-      </tbody>
+         </thead>
 
-      <tfoot>
-        <tr>
-          <td colSpan={3} className="text-center">
-            TOTAL
-          </td>
-          <td className="text-center number-cell">{total_classes}</td>
-          <td className="text-center number-cell">100%</td>
-          {$quiz_data.specifications_table.quiz_skills.map((_, skill_index) => (
-            <td key={"foot-skill-index-" + skill_index} className="text-center number-cell">
-              {Get_Skill_Content_Columns(skill_index).length}
-            </td>
-          ))}
-          {/* <td className="text-center number-cell item-total-skill">0</td>
+         <tbody>
+            {processed_items?.map((item, index) => {
+               return (
+                  <tr key={index}>
+                     {item.render_thematic_area && (
+                        <td
+                           className="td-input td-thematic_area"
+                           rowSpan={row_spans?.thematic_area[item.thematic_area]}
+                           onClick={() => set_editing_cell({ index, field: "thematic_area" })}
+                        >
+                           {editing_cell?.index === index && editing_cell?.field === "thematic_area" ? (
+                              <textarea
+                                 defaultValue={item.thematic_area}
+                                 onBlur={(event) =>
+                                    Handle_Field_Change(index, "thematic_area", event.target.value.trim())
+                                 }
+                                 onFocus={(event) =>
+                                    (event.currentTarget.selectionStart = event.currentTarget.value.length)
+                                 }
+                                 autoFocus
+                              />
+                           ) : (
+                              item.thematic_area
+                           )}
+                        </td>
+                     )}
+                     {item.render_content && (
+                        <td
+                           className="td-input td-content"
+                           rowSpan={row_spans?.content[item.content]}
+                           onClick={() => set_editing_cell({ index, field: "content" })}
+                        >
+                           {editing_cell?.index === index && editing_cell?.field === "content" ? (
+                              <textarea
+                                 defaultValue={item.content}
+                                 onBlur={(event) => Handle_Field_Change(index, "content", event.target.value.trim())}
+                                 onFocus={(event) =>
+                                    (event.currentTarget.selectionStart = event.currentTarget.value.length)
+                                 }
+                                 autoFocus
+                              />
+                           ) : (
+                              item.content
+                           )}
+                        </td>
+                     )}
+                     <td
+                        className="td-input td-objective"
+                        onClick={() => set_editing_cell({ index, field: "objective" })}
+                     >
+                        {editing_cell?.index === index && editing_cell?.field === "objective" ? (
+                           <textarea
+                              defaultValue={item.objective}
+                              onBlur={(event) => Handle_Field_Change(index, "objective", event.target.value.trim())}
+                              onFocus={(event) =>
+                                 (event.currentTarget.selectionStart = event.currentTarget.value.length)
+                              }
+                              autoFocus
+                           />
+                        ) : (
+                           item.objective
+                        )}
+                     </td>
+                     <td
+                        className="td-input td-performed-classes text-center align-middle"
+                        onClick={() => set_editing_cell({ index, field: "performed_classes" })}
+                     >
+                        {editing_cell?.index === index && editing_cell?.field === "performed_classes" ? (
+                           <input
+                              defaultValue={item.performed_classes}
+                              onBlur={(event) =>
+                                 Handle_Field_Change(index, "performed_classes", event.target.value.trim())
+                              }
+                              onFocus={(event) =>
+                                 (event.currentTarget.selectionStart = event.currentTarget.value.length)
+                              }
+                              autoFocus
+                           />
+                        ) : (
+                           item.performed_classes
+                        )}
+                     </td>
+
+                     <td className="td-percentage text-center align-middle number-cell"> {item.classes_percentage} </td>
+
+                     {local_spec_table.quiz_skills.map((_, skill_index) => (
+                        <td
+                           key={"skill-index-" + skill_index}
+                           className="td-input td-skill text-center align-middle"
+                           onClick={() => set_editing_skill_cell({ index, skill_index })}
+                        >
+                           {editing_skill_cell?.index === index && editing_skill_cell?.skill_index === skill_index ? (
+                              <input
+                                 defaultValue={
+                                    // item.skill_index === skill_index ? item.skill_content : ""
+                                    item.row_skills[skill_index] || ""
+                                 }
+                                 onBlur={(event) => {
+                                    Handle_Row_Skills_Change(index, skill_index, event.target.value.trim());
+                                 }}
+                                 onFocus={(event) =>
+                                    (event.currentTarget.selectionStart = event.currentTarget.value.length)
+                                 }
+                                 pattern="\d+-\d+|\d+"
+                                 autoFocus
+                                 required
+                              />
+                           ) : (
+                              <span>{item.row_skills[skill_index] || " - "}</span>
+                           )}
+                        </td>
+                     ))}
+
+                     <td className={"td-total-questions text-center align-middle" + item.success_item_question_count}>
+                        {item.item_question_count + "/" + item.expected_item_question_count}
+                     </td>
+                  </tr>
+               );
+            })}
+         </tbody>
+
+         <tfoot>
+            <tr>
+               <td colSpan={3} className="text-center">
+                  TOTAL
+               </td>
+               <td className="text-center number-cell">{total_classes}</td>
+               <td className="text-center number-cell">100%</td>
+               {local_spec_table.quiz_skills.map((_, skill_index) => (
+                  <td key={"foot-skill-index-" + skill_index} className="text-center number-cell">
+                     {Get_Skill_Content_Columns(skill_index).length}
+                  </td>
+               ))}
+               {/* <td className="text-center number-cell item-total-skill">0</td>
           <td className="text-center number-cell item-total-skill">0</td>
           <td className="text-center number-cell item-total-skill">0</td> */}
-          <td
-            className="td-input text-center number-cell"
-            id="item-total-all-questions"
-            onClick={() => set_editing_total_questions(true)}
-          >
-            {editing_total_questions ? (
-              <input
-                defaultValue={total_question_count}
-                onBlur={(event) => Handle_Blur(event, 0, "total_questions")}
-                onFocus={(event) =>
-                  (event.currentTarget.selectionStart = event.currentTarget.value.length)
-                }
-                autoFocus
-              />
-            ) : (
-              total_question_count
-            )}
-          </td>
-        </tr>
-      </tfoot>
-    </table>
-  );
+               <td
+                  className="td-input text-center number-cell"
+                  id="item-total-all-questions"
+                  onClick={() => set_editing_total_questions(true)}
+               >
+                  {editing_total_questions ? (
+                     <input
+                        defaultValue={total_question_count}
+                        onBlur={(event) => Handle_Total_Questions_Change(event.target.value.trim())}
+                        onFocus={(event) => (event.currentTarget.selectionStart = event.currentTarget.value.length)}
+                        autoFocus
+                     />
+                  ) : (
+                     total_question_count
+                  )}
+               </td>
+            </tr>
+         </tfoot>
+      </table>
+   );
 }

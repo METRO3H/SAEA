@@ -6,11 +6,7 @@ export interface Quiz {
    quiz_subject: string;
    quiz_creation_date: string;
    specifications_table: SpecTable;
-   questions: {
-      question: string;
-      answers: string[];
-      correct_answer_index: number;
-   }[];
+   questions: QuestionItem[];
 }
 
 export interface SpecTable {
@@ -85,4 +81,20 @@ export interface ProcessedItem extends SpecTableItem {
    item_question_count: number;
    expected_item_question_count: number;
    success_item_question_count: string;
+}
+
+export interface Metadata {
+   thematic_area: string;
+   content: string;
+   objective: string;
+   skill: string;
+}
+
+export interface QuestionContentItem {
+   question_content_item_number: number;
+   add_class: string;
+   Update_Question_Item: any;
+   question_item_index: number;
+   data: QuestionItem;
+   metadata: Metadata;
 }

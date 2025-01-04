@@ -9,6 +9,7 @@
       "@layouts/*": ["src/layouts/*"],
       "@pages/*": ["src/pages/*"],
       "@styles/*": ["src/styles/*"],
+      "@handlers/*": ["src/handlers/*"]
     },
     "strictNullChecks": true,
     "jsx": "react-jsx",
