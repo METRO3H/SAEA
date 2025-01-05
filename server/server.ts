@@ -1,8 +1,26 @@
+import express from "express";
 
-console.log("Ya veremos dijo el ciego");
+import bodyParser from "body-parser";
+import router from "./request/router.js";
+import chalk from "chalk";
+import Report_Status from "../util/report_status.js";
+import cors from "cors"
 
-const names: string[] = ["John", "Jane", "Bob"];
+const app = express();
 
-const ages: number[] = [25, 30, 35];
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+app.use(cors())
 
-console.log(names, ages);
+
+app.use("/request", router);
+
+app.listen(8080, () => {
+  
+  console.log(
+    chalk.bgGreen.hex("#ffffff")("\n Server "),
+    chalk.whiteBright("Listening on"),
+    chalk.blueBright("http://localhost:8080/")
+  );
+  Report_Status("divider")
+});

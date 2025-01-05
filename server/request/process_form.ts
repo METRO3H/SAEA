@@ -1,3 +1,4 @@
+import type { Quiz} from "@QuizTypes";
 import express from "express";
 import Report_Status from "../../util/report_status.js";
 import Generate_Form from "../API_google_forms/generate_form.js";
@@ -17,7 +18,8 @@ router.post("/save", async (request, response) => {
 
 router.post("/update", async (request, response) => {
   Report_Status("status", "Actualizando Form en la base de datos...");
-  const quiz_data = request.body;
+  const quiz_data: Quiz = request.body;
+  
   const unique_id = quiz_data.quiz_id;
   const date_time = quiz_data.quiz_creation_date;
   await Process_Form(response, () => Save_Quiz(quiz_data, unique_id, date_time));
@@ -30,7 +32,7 @@ router.post("/generate", async (request, response) => {
 });
 
 
-async function Process_Form(response, Process) {
+async function Process_Form(response:any, Process:any) {
 
   try {
     const process_result = await Process();
