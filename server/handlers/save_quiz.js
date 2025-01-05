@@ -66,7 +66,7 @@ export async function Save_Quiz(data_form, unique_id, date_time) {
                      await Run_Query(sql.Insert.specifications_table_skill, [
                         test_id,
                         index + 1,
-                        skills[skill_index],
+                        skills[position],
                         position,
                         skill,
                      ]);

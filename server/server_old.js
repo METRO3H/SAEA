@@ -1,9 +1,9 @@
 import express from "express";
 
 import bodyParser from "body-parser";
-import router from "./server/request/router.js";
+import router from "./request/router.js";
 import chalk from "chalk";
-import Report_Status from "./util/report_status.js";
+import Report_Status from "../util/report_status.js";
 import cors from "cors"
 
 const app = express();

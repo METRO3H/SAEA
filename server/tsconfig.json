@@ -1,0 +1,25 @@
+{
+   "compilerOptions": {
+      "target": "ESNext",
+      "moduleResolution": "node",
+      "strict": true,
+      "esModuleInterop": true,
+      "forceConsistentCasingInFileNames": true,
+      "skipLibCheck": true,
+
+      "outDir": "./dist",
+      "types": ["node"],
+
+      // Treat files as modules even if it doesn't use import/export
+      "moduleDetection": "force",
+      // Ignore module structure
+      "module": "Preserve",
+      "resolveJsonModule": true,
+      // Allow JS files to be imported from TS and vice versa
+      "allowJs": true,
+
+      // Disallow features that require cross-file awareness
+      "isolatedModules": true
+   },
+   "include": ["**/*.ts"]
+}
