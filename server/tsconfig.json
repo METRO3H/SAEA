@@ -17,6 +17,8 @@
       "allowJs": true,
       // Disallow features that require cross-file awareness
       "isolatedModules": true,
+      "noEmit": true,
+      "allowImportingTsExtensions": true,
 
       "paths": {
          "@QuizTypes": ["../src/content/types.ts"]

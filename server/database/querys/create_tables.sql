@@ -1,17 +1,17 @@
-CREATE TABLE IF NOT EXISTS
-	teacher (
+CREATE TABLE
+	IF NOT EXISTS teacher (
 		"id" INTEGER NOT NULL UNIQUE,
 		"name" TEXT NOT NULL UNIQUE,
 		PRIMARY KEY ("id" AUTOINCREMENT)
 	);
 
-INSERT OR IGNORE INTO
-	teacher (name)
+INSERT
+OR IGNORE INTO teacher (name)
 VALUES
 	("Bob");
 
-CREATE TABLE IF NOT EXISTS
-	test (
+CREATE TABLE
+	IF NOT EXISTS test (
 		"id" INTEGER NOT NULL UNIQUE,
 		"unique_id" TEXT NOT NULL UNIQUE,
 		"title" TEXT NOT NULL,
@@ -25,8 +25,8 @@ CREATE TABLE IF NOT EXISTS
 		/* FOREIGN KEY (designed_for) REFERENCES grade(id), */
 	);
 
-CREATE TABLE IF NOT EXISTS
-	question (
+CREATE TABLE
+	IF NOT EXISTS question (
 		"id" INTEGER NOT NULL UNIQUE,
 		"text" TEXT NOT NULL UNIQUE,
 		"created_by" INTEGER NOT NULL,
@@ -54,7 +54,6 @@ CREATE TABLE IF NOT EXISTS
 -- 		UNIQUE (test_id, question_id),
 -- 		PRIMARY KEY ("id" AUTOINCREMENT)
 -- 	);
-
 -- CREATE TABLE IF NOT EXISTS
 -- 	test_question_metadata (
 -- 		"id" INTEGER NOT NULL UNIQUE,
@@ -68,9 +67,8 @@ CREATE TABLE IF NOT EXISTS
 -- 		UNIQUE (test_id, question_id, specifications_table_id),
 -- 		PRIMARY KEY ("id" AUTOINCREMENT)
 -- 	);
-
-CREATE TABLE IF NOT EXISTS
-	question_thematic_area (
+CREATE TABLE
+	IF NOT EXISTS question_thematic_area (
 		"id" INTEGER NOT NULL UNIQUE,
 		"text" TEXT NOT NULL UNIQUE,
 		"created_by" INTEGER NOT NULL,
@@ -80,8 +78,8 @@ CREATE TABLE IF NOT EXISTS
 		PRIMARY KEY ("id" AUTOINCREMENT)
 	);
 
-CREATE TABLE IF NOT EXISTS
-	question_content_area (
+CREATE TABLE
+	IF NOT EXISTS question_content_area (
 		"id" INTEGER NOT NULL UNIQUE,
 		"text" TEXT NOT NULL UNIQUE,
 		"created_by" INTEGER NOT NULL,
@@ -91,8 +89,8 @@ CREATE TABLE IF NOT EXISTS
 		PRIMARY KEY ("id" AUTOINCREMENT)
 	);
 
-CREATE TABLE IF NOT EXISTS
-	question_objective (
+CREATE TABLE
+	IF NOT EXISTS question_objective (
 		"id" INTEGER NOT NULL UNIQUE,
 		"text" TEXT NOT NULL UNIQUE,
 		"created_by" INTEGER NOT NULL,
@@ -102,8 +100,8 @@ CREATE TABLE IF NOT EXISTS
 		PRIMARY KEY ("id" AUTOINCREMENT)
 	);
 
-CREATE TABLE IF NOT EXISTS
-	question_skill (
+CREATE TABLE
+	IF NOT EXISTS question_skill (
 		"id" INTEGER NOT NULL UNIQUE,
 		"text" TEXT NOT NULL UNIQUE,
 		"created_by" INTEGER NOT NULL,
@@ -113,8 +111,8 @@ CREATE TABLE IF NOT EXISTS
 		PRIMARY KEY ("id" AUTOINCREMENT)
 	);
 
-CREATE TABLE IF NOT EXISTS
-	answer (
+CREATE TABLE
+	IF NOT EXISTS answer (
 		"id" INTEGER NOT NULL UNIQUE,
 		"text" TEXT NOT NULL,
 		"created_by" INTEGER NOT NULL,
@@ -124,41 +122,38 @@ CREATE TABLE IF NOT EXISTS
 		PRIMARY KEY ("id" AUTOINCREMENT)
 	);
 
-CREATE TABLE IF NOT EXISTS
-	test_question (
+CREATE TABLE
+	IF NOT EXISTS test_question (
 		"id" INTEGER NOT NULL UNIQUE,
 		"test_id" INTEGER NOT NULL,
 		"question_id" INTEGER NOT NULL,
 		"question_number" INTEGER NOT NULL,
 		"correct_answer_index" INTEGER NOT NULL,
-
 		UNIQUE (test_id, question_number),
 		FOREIGN KEY (test_id) REFERENCES test (id),
 		FOREIGN KEY (question_id) REFERENCES question (id),
 		PRIMARY KEY ("id" AUTOINCREMENT)
 	);
 
-CREATE TABLE IF NOT EXISTS
-	test_question_answer (
+CREATE TABLE
+	IF NOT EXISTS test_question_answer (
 		"test_question_id" INTEGER NOT NULL,
 		"answer_id" INTEGER NOT NULL,
 		"answer_number" INTEGER NOT NULL,
-
 		UNIQUE (test_question_id, answer_number),
-
 		FOREIGN KEY (test_question_id) REFERENCES test_question (id),
 		FOREIGN KEY (answer_id) REFERENCES answer (id)
 	);
 
-CREATE TABLE IF NOT EXISTS
-	grade (
+CREATE TABLE
+	IF NOT EXISTS grade (
 		"id" INTEGER NOT NULL UNIQUE,
 		"level" TEXT NOT NULL UNIQUE,
 		PRIMARY KEY ("id" AUTOINCREMENT)
 	);
 
-CREATE TABLE IF NOT EXISTS
-	generation (
+CREATE TABLE
+	IF NOT EXISTS generation (
 		"id" INTEGER NOT NULL UNIQUE,
 		"grade_id" INTEGER NOT NULL,
 		"year" DATE NOT NULL,
@@ -166,8 +161,8 @@ CREATE TABLE IF NOT EXISTS
 		PRIMARY KEY ("id" AUTOINCREMENT)
 	);
 
-CREATE TABLE IF NOT EXISTS
-	generation_student (
+CREATE TABLE
+	IF NOT EXISTS generation_student (
 		"id" INTEGER NOT NULL UNIQUE,
 		"generation_id" INTEGER NOT NULL,
 		"student_id" INTEGER NOT NULL,
@@ -176,15 +171,15 @@ CREATE TABLE IF NOT EXISTS
 		PRIMARY KEY ("id" AUTOINCREMENT)
 	);
 
-CREATE TABLE IF NOT EXISTS
-	student (
+CREATE TABLE
+	IF NOT EXISTS student (
 		"id" INTEGER NOT NULL UNIQUE,
 		"name" TEXT NOT NULL,
 		PRIMARY KEY ("id" AUTOINCREMENT)
 	);
 
-CREATE TABLE IF NOT EXISTS
-	test_performed (
+CREATE TABLE
+	IF NOT EXISTS test_performed (
 		"id" INTEGER NOT NULL UNIQUE,
 		"test_id" INTEGER DEFAULT NULL,
 		-- "generation_id" INTEGER NULL,
@@ -196,8 +191,8 @@ CREATE TABLE IF NOT EXISTS
 		PRIMARY KEY ("id" AUTOINCREMENT)
 	);
 
-CREATE TABLE IF NOT EXISTS
-	test_result (
+CREATE TABLE
+	IF NOT EXISTS test_result (
 		"id" INTEGER NOT NULL UNIQUE,
 		"test_performed_id" INTEGER NOT NULL,
 		"student_id" INTEGER NOT NULL,
@@ -209,8 +204,8 @@ CREATE TABLE IF NOT EXISTS
 		PRIMARY KEY ("id" AUTOINCREMENT)
 	);
 
-CREATE TABLE IF NOT EXISTS
-	subject (
+CREATE TABLE
+	IF NOT EXISTS subject (
 		"id" INTEGER NOT NULL UNIQUE,
 		"text" TEXT NOT NULL UNIQUE,
 		"created_by" INTEGER NOT NULL,
@@ -219,8 +214,8 @@ CREATE TABLE IF NOT EXISTS
 		PRIMARY KEY ("id" AUTOINCREMENT)
 	);
 
-CREATE TABLE IF NOT EXISTS
-	specifications_table (
+CREATE TABLE
+	IF NOT EXISTS specifications_table (
 		"id" INTEGER NOT NULL UNIQUE,
 		"test_id" INTEGER NOT NULL,
 		"table_row" INTEGER NOT NULL,
@@ -228,21 +223,19 @@ CREATE TABLE IF NOT EXISTS
 		"content_id" INTEGER NOT NULL,
 		"objective_id" INTEGER NOT NULL,
 		"performed_classes" INTEGER NOT NULL,
-		
 		UNIQUE (test_id, table_row),
 		FOREIGN KEY (test_id) REFERENCES test (id),
 		PRIMARY KEY ("id" AUTOINCREMENT)
 	);
 
-CREATE TABLE IF NOT EXISTS
-	specifications_table_skill (
+CREATE TABLE
+	IF NOT EXISTS specifications_table_skill (
 		"id" INTEGER NOT NULL UNIQUE,
 		"specifications_table_id" INTEGER NOT NULL,
 		"question_skill_id" INTEGER NOT NULL,
 		"position" INTEGER NOT NULL,
 		"questions_range" TEXT,
-		
-		UNIQUE(specifications_table_id, position),
+		UNIQUE (specifications_table_id, position),
 		FOREIGN KEY (specifications_table_id) REFERENCES specifications_table (id),
 		FOREIGN KEY (question_skill_id) REFERENCES question_skill (id),
 		PRIMARY KEY ("id" AUTOINCREMENT)

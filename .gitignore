@@ -22,3 +22,8 @@ pnpm-debug.log*
 
 # database
 **/*.db
+
+
+#ignore innecesary files
+*.txt
+*.pdf
