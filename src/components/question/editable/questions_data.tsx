@@ -39,19 +39,18 @@ export default function Questions_Data() {
    function Get_Metadata_Map() {
       const metadata_map_aux: Map<number, Metadata> = new Map();
       for (const item of $specifications_table_store.items) {
-
          const assigned_questions = item.row_skills.flatMap((skill, index) => {
             if (skill) {
                return Get_Questions_From_Item(skill).map((question_number) => ({
                   number: question_number,
                   skill: $specifications_table_store.quiz_skills[index],
-               })); 
+               }));
             }
             return [];
          });
 
          for (const question of assigned_questions) {
-          metadata_map_aux.set(question.number, {
+            metadata_map_aux.set(question.number, {
                thematic_area: item.thematic_area,
                content: item.content,
                objective: item.objective,
@@ -63,7 +62,8 @@ export default function Questions_Data() {
    }
 
    function Update_Question_Item(item_index: number, new_question: QuestionItem) {
-      const questions_aux = { ...$questions_store };
+      const questions_aux = [...$questions_store];
+
       questions_aux[item_index] = new_question;
 
       return Update_Questions(questions_aux);
@@ -78,7 +78,7 @@ export default function Questions_Data() {
       set_metadata_map(Get_Metadata_Map());
    }, [$specifications_table_store]);
 
-
+   console.log($questions_store);
    return (
       <div id="main-question-container">
          <div id="question-list-container">

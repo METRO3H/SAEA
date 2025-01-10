@@ -18,9 +18,9 @@ router.post("/save", async (request, response) => {
 		console.error(error);
 		return response.status(400).send({ message: "Error al procesar los datos" });
 	}
-	finally {
-		await Close_Pool();
-	}
+	// finally {
+	// 	await Close_Pool();
+	// }
 });
 
 export default router;
