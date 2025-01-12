@@ -20,12 +20,12 @@ export default async function get_quiz_all() {
         `);
 
       const get_all_drafts = db.prepare(/*sql*/ `
-        SELECT test.id, test.unique_id,test.title AS "test_title", subject.text AS "subject", test.creation_date AS "creation_date"
-        FROM test 
-        JOIN subject ON subject.id = test.subject_id
-        WHERE test.created_by = ?
-        AND NOT EXISTS (SELECT 1 FROM test_performed WHERE test_performed.test_id = test.unique_id)
-        ORDER BY test.creation_date DESC; 
+          SELECT test.id, test.unique_id,test.title AS "test_title", subject.text AS "subject", test.creation_date AS "creation_date"
+          FROM test 
+          JOIN subject ON subject.id = test.subject_id
+          WHERE test.created_by = ?
+          AND NOT EXISTS (SELECT 1 FROM test_performed WHERE test_performed.test_id = test.unique_id)
+          ORDER BY test.creation_date DESC; 
           `);
 
       try {

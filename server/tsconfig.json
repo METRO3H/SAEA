@@ -19,9 +19,10 @@
       "isolatedModules": true,
       "noEmit": true,
       "allowImportingTsExtensions": true,
-
       "paths": {
-         "@QuizTypes": ["../src/content/types.ts"]
+         "@QuizTypes": ["../src/content/types.ts"],
+         "@database": ["./database/db.js"],
+
       }
    }
    // "include": ["**/*.ts"],

@@ -19,7 +19,6 @@ export default function quiz_table_list_item({ title, subject, quiz_url, date, q
 
     return btn_class
   }
-  
 
   return (
     <tr>

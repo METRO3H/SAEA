@@ -6,7 +6,7 @@
       "@assets/*": ["src/assets/*"],
       "@components/*": ["src/components/*"],
       "@content/*": ["src/content/*"],
-      "@layouts/*": ["src/layouts/*"],
+      "@layouts/*": ["./src/layouts/*"],
       "@pages/*": ["src/pages/*"],
       "@styles/*": ["src/styles/*"],
       "@handlers/*": ["src/handlers/*"]

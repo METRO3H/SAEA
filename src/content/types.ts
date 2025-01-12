@@ -34,23 +34,18 @@ export interface QuestionItem {
 }
 
 export interface DraftListType {
-   id: number;
-   unique_id: string;
-   test_title: string;
+   uuid: number;
+   title: string;
    subject: string;
    creation_date: string;
 }
 
 export interface PerformedListType {
-   id: number;
-   unique_id: string;
-   test_title: string;
+   google_form_id: string;
+   title: string;
    subject: string;
+   google_form_url: string;
    creation_date: string;
-   draft_id: number;
-   form_id: string;
-   form_url: string;
-   generated_date: string;
 }
 
 export interface QuizListLengthType {
@@ -97,4 +92,14 @@ export interface QuestionContentItem {
    question_item_index: number;
    data: QuestionItem;
    metadata: Metadata;
+}
+
+export interface Quizzes{
+   draft: {
+      quiz_id: string;
+      title: string;
+      subject: string;
+      creation_date: string;
+   }[];
+   performed: object[];
 }

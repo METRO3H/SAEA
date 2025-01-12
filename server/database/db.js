@@ -55,3 +55,14 @@ export async function Delete_Data(query, params = []) {
 export async function Close_Pool() {
   await pool.end();
 }
+
+// Configurar ping periódico para mantener las conexiones activas
+setInterval(async () => {
+  try {
+    console.log('Ejecutando ping al pool...');
+    await pool.query('SELECT 1'); // Consulta simple para mantener el pool activo
+    console.log('Ping exitoso');
+  } catch (error) {
+    console.error('Error durante el ping al pool:', error.message);
+  }
+}, 7 * 60 * 60 * 1000); // Cada 7 horas (7 horas * 60 minutos * 60 segundos * 1000 ms)
