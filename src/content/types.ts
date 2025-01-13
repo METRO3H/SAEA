@@ -11,7 +11,7 @@ export interface Quiz {
 
 export interface SpecTable {
    total_questions: number;
-   quiz_skills: string[];
+   quiz_skills: string[] | object;
    items: SpecTableItem[];
 }
 
@@ -37,7 +37,7 @@ export interface DraftListType {
    uuid: number;
    title: string;
    subject: string;
-   creation_date: string;
+   creation_date: Date;
 }
 
 export interface PerformedListType {
@@ -46,6 +46,11 @@ export interface PerformedListType {
    subject: string;
    google_form_url: string;
    creation_date: string;
+}
+
+export interface QuizzesList{
+   draft: DraftListType[];
+   performed: PerformedListType[];
 }
 
 export interface QuizListLengthType {

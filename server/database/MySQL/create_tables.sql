@@ -1,4 +1,6 @@
 
+SET time_zone = 'America/Santiago';
+
 CREATE TABLE
     IF NOT EXISTS teacher (
         id INT NOT NULL AUTO_INCREMENT UNIQUE,

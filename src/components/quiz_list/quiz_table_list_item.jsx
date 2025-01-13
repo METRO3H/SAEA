@@ -43,11 +43,11 @@ export default function quiz_table_list_item({ title, subject, quiz_url, date, q
       <td onDoubleClick={Handle_Checkbox_Click}>
         <div className="align-items-center text-center mb-1">{subject}</div>
       </td>
-      {!quiz_type ? <td className="status" onDoubleClick={Handle_Checkbox_Click}>
+      {/* {!quiz_type ? <td className="status" onDoubleClick={Handle_Checkbox_Click}>
         <div className="mb-1">
           <span className="badge badge-success rounded-pill d-inline text-center">Active</span>
         </div>
-      </td> : ""}
+      </td> : ""} */}
       <td onDoubleClick={Handle_Checkbox_Click}>
         <div className="creation_date_item align-items-center text-center mb-1">
           {date}

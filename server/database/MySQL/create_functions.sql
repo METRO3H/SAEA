@@ -38,12 +38,29 @@ BEGIN
     DECLARE $drafts JSON;
     DECLARE $performed JSON;
 
-    SELECT JSON_ARRAYAGG(JSON_OBJECT('uuid', quiz.uuid, 'title', quiz.title, 'subject', spect_subject.statement, 'creation_date', quiz.creation_date)) INTO $drafts
-        FROM quiz 
-        JOIN spect_subject ON spect_subject.id = quiz.spect_subject_id
-        WHERE quiz.teacher_id = 1
-        AND NOT EXISTS (SELECT 1 FROM quiz_performed WHERE quiz_performed.quiz_id = quiz.uuid)
-        ORDER BY quiz.creation_date DESC;
+    SELECT 
+    JSON_ARRAYAGG(
+        JSON_OBJECT(
+            'uuid', uuid,
+            'title', title,
+            'subject', statement,
+            'creation_date', creation_date
+        )
+    ) 
+    INTO $drafts
+        FROM (
+            SELECT 
+                quiz.uuid,
+                quiz.title,
+                spect_subject.statement,
+                quiz.creation_date
+            FROM quiz
+            JOIN spect_subject ON spect_subject.id = quiz.spect_subject_id
+            WHERE quiz.teacher_id = 1
+            AND NOT EXISTS (SELECT 1  FROM quiz_performed WHERE quiz_performed.quiz_id = quiz.uuid)
+            ORDER BY quiz.creation_date DESC
+        ) AS ordered_data;
+
 
 
     SELECT 
@@ -67,8 +84,8 @@ BEGIN
             ORDER BY quiz_performed.creation_date DESC
         ) AS ordered_data;
 
-
-    RETURN JSON_OBJECT('drafts', $drafts, 'performed', $performed);
+    SET $quizzes = JSON_OBJECT('drafts', $drafts, 'performed', $performed);
+    RETURN $quizzes;
 END;
 
 

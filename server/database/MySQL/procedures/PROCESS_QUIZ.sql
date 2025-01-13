@@ -30,7 +30,7 @@ CREATE PROCEDURE $PROCESS_QUIZ(IN $quiz_data JSON)
     CALL $PROCESS_SKILLS($quiz_id, $teacher_id, $creation_date, $quiz_skills);
 
     SET $spect_items = JSON_EXTRACT($quiz_data, '$.specifications_table.items');
-    CALL $PROCESS_SPECTIFICATIONS_TABLE($quiz_id, $teacher_id, $creation_date, $spect_items);
+    CALL $PROCESS_SPECTIFICATIONS_TABLE($quiz_id, $teacher_id, $creation_date, $spect_items, $quiz_skills);
 
     SET $question_items = JSON_EXTRACT($quiz_data, '$.questions');
     CALL $PROCESS_QUESTIONS($quiz_id, $teacher_id, $creation_date, $question_items);

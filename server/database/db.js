@@ -8,6 +8,7 @@ const pool = mysql.createPool({
   port: 3306,
   password: '201271', // Cambia por tu contraseña
   database: 'SAEA',     // Cambia por tu base de datos
+  dateStrings: true,
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0

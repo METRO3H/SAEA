@@ -3,15 +3,12 @@ import { useEffect, useState } from "react";
 import { useStore } from "@nanostores/react";
 import Quiz_Table_List_Item from "./quiz_table_list_item";
 import { search_input_store, quiz_type_store, quiz_list_length_store } from "@content/quiz_data";
-import type { DraftListType, PerformedListType } from "@content/types";
+import type { DraftListType, PerformedListType, QuizzesList } from "@content/types";
 
 export default function quiz_table_list() {
    const $search_input_value: string = useStore(search_input_store);
    const $quiz_type: boolean = useStore(quiz_type_store);
-   const [data_list, set_data_list] = useState<{
-      draft: DraftListType[];
-      performed: PerformedListType[];
-   }>({
+   const [data_list, set_data_list] = useState<QuizzesList>({
       draft: [],
       performed: [],
    });
@@ -38,8 +35,7 @@ export default function quiz_table_list() {
       draft: draft_filtered_data.length,
       performed: performed_filtered_data.length,
    });
-
-   console.log(draft_filtered_data)
+   
 
    return (
       <table className="table table-sm table-hover align-middle mb-0 bg-white">

@@ -11,7 +11,7 @@
     "server_old": "nodemon server/server_old.js",
     "server:check": "tsc --noEmit -p server/tsconfig.json",
     "server:fearless": "tsx ./server/server.ts",
-    "server": "nodemon --watch server --ext ts --exec \"npm run server:check && npm run server:fearless\" ",
+    "server": "nodemon --watch server --ext ts,js --exec \"npm run server:check && npm run server:fearless || exit 1\" ",
     "dev": "astro dev",
     "test": "nodemon src/content/Test/main.js"
   },

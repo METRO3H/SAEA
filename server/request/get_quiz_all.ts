@@ -8,15 +8,16 @@ const router = express.Router();
 router.get("/", async function (request, response) {
   
   await Process_Request(response, async () => {
-      const query:string = /*sql*/ `SELECT Get_Quiz_All_Draft() AS "result"`;
+      const query:string = /*sql*/ `CALL $GET_QUIZZES()`;
       
       const db_response: any =  await Execute_Query(query);
 
-      const quizzes = db_response[0]?.result;
-
-      const result = JSON.stringify(quizzes, null, 2);
-       
-      console.log(quizzes);
+      const [drafts, performed] = db_response;
+      
+      const quizzes = {
+         drafts: drafts,
+         performed: performed
+      }
 
       Report_Status("success", "User quizzes have been sent!");
       Report_Status("divider");

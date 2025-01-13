@@ -113,7 +113,7 @@ import Quiz_Table_List from "@components/quiz_list/quiz_table_list.tsx";
 </style>
 
 <script>
-  import { quiz_type_store, quiz_list_length_store } from "@content/quiz_data";
+  import { quiz_type_store, quiz_list_length_store } from "@content/quiz_data.ts";
 
   const buttons = document.querySelectorAll("#quiz-type-options li") as NodeListOf<HTMLLIElement>;
   const list_title = document.querySelector("#content-title") as HTMLHeadingElement;
@@ -124,7 +124,7 @@ import Quiz_Table_List from "@components/quiz_list/quiz_table_list.tsx";
 
   function Handle_Click(event) {
     const target = event.currentTarget as HTMLLIElement;
-    console.log(target);
+
     if (target.classList.contains("quiz-type-options-item-active")) return;
 
     buttons.forEach((btn) => {
