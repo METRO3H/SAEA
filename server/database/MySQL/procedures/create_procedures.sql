@@ -193,20 +193,6 @@ CREATE PROCEDURE $PROCESS_SPECTIFICATIONS_TABLE( IN $quiz_id INT, IN $teacher_id
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 CREATE PROCEDURE $SAVE_QUESTION(IN $question VARCHAR(255), IN $teacher_id INT, IN $creation_date DATETIME) 
 	BEGIN
 		INSERT IGNORE INTO
@@ -347,7 +333,4 @@ CREATE PROCEDURE $GET_QUIZZES()
 		SELECT * FROM performed;
 
 	END;
-
-
-
 

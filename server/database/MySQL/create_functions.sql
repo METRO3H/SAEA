@@ -29,69 +29,179 @@ END;
 
 
 
-DROP FUNCTION IF EXISTS Get_Quiz_All_Draft;
 
+DROP FUNCTION IF EXISTS Get_Quiz_Metadata;
 
-CREATE FUNCTION Get_Quiz_All_Draft() RETURNS JSON READS SQL DATA
-BEGIN
-    DECLARE $quizzes JSON;
-    DECLARE $drafts JSON;
-    DECLARE $performed JSON;
-
-    SELECT 
-    JSON_ARRAYAGG(
-        JSON_OBJECT(
-            'uuid', uuid,
-            'title', title,
-            'subject', statement,
-            'creation_date', creation_date
-        )
-    ) 
-    INTO $drafts
-        FROM (
+CREATE FUNCTION Get_Quiz_Metadata($quiz_uuid VARCHAR(36)) RETURNS JSON READS SQL DATA
+	BEGIN
+        DECLARE $quiz_metadata JSON;
             SELECT 
-                quiz.uuid,
-                quiz.title,
-                spect_subject.statement,
-                quiz.creation_date
+                JSON_OBJECT(
+                    'uuid', quiz.uuid,
+                    'title', quiz.title,
+                    'subject', spect_subject.statement,
+                    'teacher_id', quiz.teacher_id,
+                    'creation_date', quiz.creation_date 
+                ) AS quiz_metadata
+            INTO $quiz_metadata
             FROM quiz
             JOIN spect_subject ON spect_subject.id = quiz.spect_subject_id
-            WHERE quiz.teacher_id = 1
-            AND NOT EXISTS (SELECT 1  FROM quiz_performed WHERE quiz_performed.quiz_id = quiz.uuid)
-            ORDER BY quiz.creation_date DESC
-        ) AS ordered_data;
+            WHERE quiz.uuid = $quiz_uuid
+            LIMIT 1;
 
+            RETURN $quiz_metadata;
+	END;
 
+DROP FUNCTION IF EXISTS Get_Quiz_Skills;
+CREATE FUNCTION Get_Quiz_Skills($quiz_uuid VARCHAR(36)) RETURNS JSON READS SQL DATA
+	BEGIN
+        DECLARE $quiz_skills JSON;
 
-    SELECT 
-    JSON_ARRAYAGG(
-        JSON_OBJECT(
-            'title', title,
-            'subject', statement,
-            'google_form_id', google_form_id,
-            'google_form_url', google_form_url,
-            'creation_date', creation_date
-        )
-    )
-    INTO $performed
-        FROM (
             SELECT 
-                quiz.uuid, quiz.title, spect_subject.statement, quiz_performed.google_form_id ,quiz_performed.google_form_url, quiz_performed.creation_date
-            FROM quiz
-            JOIN spect_subject ON spect_subject.id = quiz.spect_subject_id
-            JOIN quiz_performed ON quiz_performed.quiz_id = quiz.id
-            WHERE quiz.teacher_id = 1
-            ORDER BY quiz_performed.creation_date DESC
-        ) AS ordered_data;
+            JSON_ARRAYAGG(skill) AS quiz_skills
+            INTO $quiz_skills
+            FROM (
+                SELECT spect_skill.statement AS skill, column_position
+                
+                FROM quiz
+                JOIN specifications_table ON specifications_table.quiz_id = quiz.id
+                JOIN specifications_table_skill ON specifications_table_skill.specifications_table_id = specifications_table.id
+                JOIN spect_skill ON spect_skill.id = specifications_table_skill.spect_skill_id
+                WHERE quiz.uuid = $quiz_uuid
+                GROUP BY column_position, spect_skill.statement
+            ) AS quiz_skills;
 
-    SET $quizzes = JSON_OBJECT('drafts', $drafts, 'performed', $performed);
-    RETURN $quizzes;
-END;
-
-
-
-
-
-
+        RETURN $quiz_skills;
+    END;
 
 
+DROP FUNCTION IF EXISTS Get_Spect_Items;
+CREATE FUNCTION Get_Spect_Items($quiz_uuid VARCHAR(36)) RETURNS JSON READS SQL DATA
+	BEGIN
+        DECLARE $quiz_items JSON;
+
+        SELECT
+            JSON_ARRAYAGG(
+                JSON_OBJECT(
+                    'row_position', row_position,
+                    'thematic_area', thematic_area,
+                    'content', content,
+                    'objective', objective,
+                    'performed_classes', performed_classes,
+                    'cell_statement', cell_statement
+                )
+            )
+        INTO $quiz_items
+        FROM (
+                SELECT
+                    specifications_table.row_position,
+                    spect_thematic_area.statement AS thematic_area,
+                    spect_content.statement AS content,
+                    spect_objective.statement AS objective,
+                    specifications_table.performed_classes,
+                    JSON_ARRAYAGG(specifications_table_skill.cell_statement) AS cell_statement
+                FROM quiz
+                JOIN specifications_table ON specifications_table.quiz_id = quiz.id
+                JOIN spect_thematic_area ON spect_thematic_area.id = specifications_table.thematic_area_id
+                JOIN spect_content ON spect_content.id = specifications_table.content_id
+                JOIN spect_objective ON spect_objective.id = specifications_table.objective_id
+                JOIN specifications_table_skill ON specifications_table_skill.specifications_table_id = specifications_table.id
+                WHERE quiz.uuid = "c7906442-d141-11ef-8d62-0242ac120002"
+                GROUP BY row_position
+            ) AS spect_items;  
+            
+
+        RETURN $quiz_items;
+    END;
+
+
+
+DROP FUNCTION IF EXISTS Get_Questions;
+CREATE FUNCTION Get_Questions($quiz_uuid VARCHAR(36)) RETURNS JSON READS SQL DATA
+	BEGIN
+        DECLARE $quiz_questions JSON;
+
+        SELECT
+            JSON_ARRAYAGG(
+                JSON_OBJECT(
+                    'question', question,
+                    'answers', answers,
+                    'correct_answer_index', correct_answer_index
+                )
+            )
+        INTO $quiz_questions
+        FROM
+            (
+                SELECT 
+                    quiz_question.position AS question_position, 
+                    question.statement AS question,
+                    JSON_ARRAYAGG(answer.statement) AS answers,
+                    quiz_question.correct_answer_index
+                FROM quiz
+                JOIN quiz_question ON quiz_question.quiz_id = quiz.id
+                JOIN question ON question.id = quiz_question.question_id
+                JOIN quiz_question_answer ON quiz_question_answer.quiz_question_id = quiz_question.id
+                JOIN answer ON answer.id = quiz_question_answer.answer_id
+                WHERE quiz.uuid = $quiz_uuid
+                GROUP BY question_position, question, correct_answer_index
+                ORDER BY question_position ASC
+            ) AS quiz_question_answers;      
+
+        RETURN $quiz_questions;
+    END; 
+
+
+-- GET QUIZ
+
+
+DROP FUNCTION IF EXISTS GET_QUIZ;
+
+CREATE FUNCTION GET_QUIZ($quiz_uuid VARCHAR(36)) RETURNS JSON READS SQL DATA
+	BEGIN
+		DECLARE $quiz_data JSON;
+
+		DECLARE $quiz_metadata JSON;
+		DECLARE $quiz_title VARCHAR(255);
+		DECLARE $teacher_id INT;
+		DECLARE $quiz_subject VARCHAR(255);
+		DECLARE $creation_date VARCHAR(255);
+		
+		DECLARE $quiz_skills JSON;
+		DECLARE $spect_items JSON;
+		DECLARE $questions JSON;
+
+		SET $quiz_metadata = Get_Quiz_Metadata($quiz_uuid);
+		SET $quiz_skills = Get_Quiz_Skills($quiz_uuid);
+		SET $spect_items = Get_Spect_Items($quiz_uuid);
+		SET $questions = Get_Questions($quiz_uuid);
+
+		SET $quiz_title = JSON_UNQUOTE(JSON_EXTRACT($quiz_metadata, '$.title'));
+		SET $teacher_id = JSON_UNQUOTE(JSON_EXTRACT($quiz_metadata, '$.teacher_id'));
+		SET $quiz_subject = JSON_UNQUOTE(JSON_EXTRACT($quiz_metadata, '$.subject'));
+
+		SET $creation_date = JSON_UNQUOTE(JSON_EXTRACT($quiz_metadata, '$.creation_date'));
+        SET $creation_date = (
+            CASE 
+                WHEN DATE($creation_date) = CURDATE() 
+                    THEN DATE_FORMAT($creation_date, '%H:%i')
+                    ELSE DATE_FORMAT($creation_date, '%d/%m/%Y') 
+            END
+        );
+
+		SET $quiz_data = JSON_OBJECT(
+			'quiz_id', $quiz_uuid,
+			'quiz_title', $quiz_title,
+			'created_by', $teacher_id,
+			'quiz_subject', $quiz_subject,
+			'creation_date', $creation_date,
+			'specifications_table', JSON_OBJECT(
+				'total_questions', JSON_LENGTH($questions),
+				'quiz_skills', $quiz_skills,
+				'items', $spect_items
+			),
+			'questions', $questions
+		);
+
+		RETURN $quiz_data;
+
+	END;

@@ -13,7 +13,8 @@
     "server:fearless": "tsx ./server/server.ts",
     "server": "nodemon --watch server --ext ts,js --exec \"npm run server:check && npm run server:fearless || exit 1\" ",
     "dev": "astro dev",
-    "test": "nodemon src/content/Test/main.js"
+    "test": "nodemon src/content/Test/main.js",
+    "stest": "nodemon ./server/test.ts"
   },
   "dependencies": {
     "@astrojs/mdx": "^2.1.1",
