@@ -106,6 +106,8 @@ export default function Specifications_Table() {
       const column_list = local_spec_table.items
          .map((item) => item.row_skills[column_index])
          .filter((item) => item !== "");
+         
+      console.log(column_list);
 
       const column_values: number[] = Get_Assigned_Questions(column_list);
       // console.log(column_values);

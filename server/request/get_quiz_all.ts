@@ -2,7 +2,6 @@ import express from "express";
 import Report_Status from "../../util/report_status.js";
 import { Execute_Query } from "../database/db.js"; // Asegúrate de importar la función de cierre del pool
 import { Process_Request } from "./handle_request.js";
-import type { Quiz } from "@QuizTypes";
 const router = express.Router();
 
 router.get("/", async function (request, response) {

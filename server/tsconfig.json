@@ -21,7 +21,7 @@
       "allowImportingTsExtensions": true,
       "paths": {
          "@QuizTypes": ["../src/content/types.ts"],
-         "@database": ["./database/db.js"],
+         "@Database": ["./database/db.js"],
 
       }
    }

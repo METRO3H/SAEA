@@ -304,7 +304,7 @@ CREATE VIEW drafts AS
 	AND NOT EXISTS (
 		SELECT 1 
 		FROM quiz_performed 
-		WHERE quiz_performed.quiz_id = quiz.uuid
+		WHERE quiz_performed.quiz_id = quiz.id
 	)
 	ORDER BY quiz.creation_date DESC;
 

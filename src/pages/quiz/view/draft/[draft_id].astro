@@ -22,12 +22,22 @@ import Modal from "@components/modal.astro";
 
 <script>
   import type { Quiz } from "@content/types";
-  import { quiz_data_store } from "@content/quiz_data";
+  import { $quiz_store, $update_spect_flag } from "@content/shared/quiz_data";
 
   const main_container = document.querySelector("#main-container") as HTMLDivElement;
   const URL = window?.location?.href?.match(/draft\/([a-f0-9-]+)/);
   const draft_id = URL?.[1];
 
+  const update_specifications_table_btn = document.querySelector("#button-next-part") as HTMLButtonElement;
+
+main_container.style.display = "block";
+
+update_specifications_table_btn?.addEventListener("click", Update_Specifications_Table);
+
+function Update_Specifications_Table() {
+      $update_spect_flag.set(!$update_spect_flag.get());
+      console.log($quiz_store.get());
+   }
   fetch(`/request/get/quiz/draft/${draft_id}`)
     .then((response) => {
       if (!response.ok) {
@@ -38,10 +48,10 @@ import Modal from "@components/modal.astro";
     .then((response_json) => response_json.data)
     .then((quiz_data: Quiz) => {
       console.log(quiz_data);
-      quiz_data_store.set(quiz_data);
+      $quiz_store.set(quiz_data);
     })
     .then(() => {
-      document.title = quiz_data_store.get().quiz_title;
+      document.title = $quiz_store.get().quiz_title;
     })
     .then(() => (main_container.style.display = "block"))
     .catch((error) => {
@@ -65,12 +75,12 @@ import Modal from "@components/modal.astro";
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(quiz_data_store.get()),
+      body: JSON.stringify($quiz_store.get()),
     })
       .then((response) => response.json())
       .then((response_json) =>
-        quiz_data_store.set({
-          ...quiz_data_store.get(),
+        $quiz_store.set({
+          ...$quiz_store.get(),
           quiz_id: response_json.data,
         })
       )
@@ -83,7 +93,7 @@ import Modal from "@components/modal.astro";
     fetch("/request/quiz/generate", {
       method: "POST",
       headers: { "content-type": "application/json" },
-      body: JSON.stringify(quiz_data_store.get()),
+      body: JSON.stringify($quiz_store.get()),
     })
       .then((response) => {
         if (!response.ok) {

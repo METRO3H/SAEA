@@ -88,7 +88,7 @@ CREATE FUNCTION Get_Spect_Items($quiz_uuid VARCHAR(36)) RETURNS JSON READS SQL D
                     'content', content,
                     'objective', objective,
                     'performed_classes', performed_classes,
-                    'cell_statement', cell_statement
+                    'row_skills', cell_statement
                 )
             )
         INTO $quiz_items
@@ -99,15 +99,18 @@ CREATE FUNCTION Get_Spect_Items($quiz_uuid VARCHAR(36)) RETURNS JSON READS SQL D
                     spect_content.statement AS content,
                     spect_objective.statement AS objective,
                     specifications_table.performed_classes,
-                    JSON_ARRAYAGG(specifications_table_skill.cell_statement) AS cell_statement
+                    JSON_ARRAYAGG(JSON_OBJECT(
+                        'cell_statement', cell_statement,
+                        'column_position', column_position
+                    )) AS cell_statement
                 FROM quiz
                 JOIN specifications_table ON specifications_table.quiz_id = quiz.id
                 JOIN spect_thematic_area ON spect_thematic_area.id = specifications_table.thematic_area_id
                 JOIN spect_content ON spect_content.id = specifications_table.content_id
                 JOIN spect_objective ON spect_objective.id = specifications_table.objective_id
                 JOIN specifications_table_skill ON specifications_table_skill.specifications_table_id = specifications_table.id
-                WHERE quiz.uuid = "c7906442-d141-11ef-8d62-0242ac120002"
-                GROUP BY row_position
+                WHERE quiz.uuid = $quiz_uuid
+                GROUP BY row_position, thematic_area, content, objective, performed_classes
             ) AS spect_items;  
             
 
@@ -205,3 +208,13 @@ CREATE FUNCTION GET_QUIZ($quiz_uuid VARCHAR(36)) RETURNS JSON READS SQL DATA
 		RETURN $quiz_data;
 
 	END;
+
+
+
+
+
+
+
+
+
+

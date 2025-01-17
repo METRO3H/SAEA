@@ -78,7 +78,6 @@ export default function Questions_Data() {
       set_metadata_map(Get_Metadata_Map());
    }, [$specifications_table_store]);
 
-   console.log($questions_store);
    return (
       <div id="main-question-container">
          <div id="question-list-container">

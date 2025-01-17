@@ -11,7 +11,7 @@ export interface Quiz {
 
 export interface SpecTable {
    total_questions: number;
-   quiz_skills: string[] | object;
+   quiz_skills: string[];
    items: SpecTableItem[];
 }
 
@@ -20,7 +20,24 @@ export interface SpecTableItem{
     content: string;
     objective: string;
     performed_classes: number;
-    row_skills: string[];
+    row_skills: string [];
+}
+
+
+export interface QuizUnprocessed extends Omit<Quiz, "specifications_table"> {
+   specifications_table: SpecTableUnprocessed;
+}
+
+export interface SpecTableUnprocessed extends Omit<SpecTable, "items"> {
+   items: SpecTableItemUnprocessed[];
+}
+export interface SpecTableItemUnprocessed extends Omit<SpecTableItem, "row_skills"> {
+   row_skills: RowSkillUnprocessed[];
+}
+
+export interface RowSkillUnprocessed {
+   cell_statement: string;
+   column_position: number;
 }
 
 export interface RowSpan {
