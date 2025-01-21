@@ -1,6 +1,6 @@
 DROP PROCEDURE IF EXISTS $SAVE_TEACHER;
 DROP PROCEDURE IF EXISTS $SAVE_SPECT_SUBJECT;
-DROP PROCEDURE IF EXISTS $SAVE_QUIZ;
+DROP PROCEDURE IF EXISTS $SAVE_QUIZ_METADATA;
 DROP PROCEDURE IF EXISTS $SAVE_SPECT_SKILL;
 DROP PROCEDURE IF EXISTS $SAVE_SPECT_THEMATIC_AREA;
 DROP PROCEDURE IF EXISTS $SAVE_SPECT_CONTENT;
@@ -15,9 +15,9 @@ DROP PROCEDURE IF EXISTS $SAVE_ANSWER;
 DROP PROCEDURE IF EXISTS $SAVE_QUIZ_QUESTION_ANSWER;
 DROP PROCEDURE IF EXISTS $PROCESS_ANSWERS;
 DROP PROCEDURE IF EXISTS $PROCESS_QUESTIONS;
+DROP PROCEDURE IF EXISTS $GET_QUIZZES;
 DROP VIEW IF EXISTS drafts;
 DROP VIEW IF EXISTS performed;
-DROP PROCEDURE IF EXISTS $GET_QUIZZES;
 
 CREATE PROCEDURE 
     $SAVE_TEACHER(IN $name VARCHAR(255), IN $last_name VARCHAR(255), IN $email VARCHAR(255))
@@ -40,12 +40,15 @@ CREATE PROCEDURE
 
 
 
-CREATE PROCEDURE $SAVE_QUIZ(IN $uuid CHAR(36), IN $statement VARCHAR(255), IN $teacher_id INT, IN $title VARCHAR(255), IN $creation_date DATETIME) 
+CREATE PROCEDURE $SAVE_QUIZ_METADATA(IN $uuid CHAR(36), IN $statement VARCHAR(255), IN $teacher_id INT, IN $title VARCHAR(255), IN $creation_date DATETIME) 
 	BEGIN
-		INSERT IGNORE INTO
+		INSERT INTO
 		quiz (uuid, spect_subject_id, teacher_id, title, creation_date)
 		VALUES
-		($uuid, (SELECT id FROM spect_subject WHERE statement = $statement), $teacher_id, $title, $creation_date);
+		($uuid, (SELECT id FROM spect_subject WHERE statement = $statement), $teacher_id, $title, $creation_date)
+		ON DUPLICATE KEY UPDATE 
+			title = VALUES(title),
+			spect_subject_id = VALUES(spect_subject_id);
 	END;
 
 
@@ -107,10 +110,16 @@ CREATE PROCEDURE $PROCESS_SKILLS( IN $quiz_id INT, IN $teacher_id INT, IN $creat
 
 CREATE PROCEDURE $SAVE_SPECIFICATIONS_TABLE(IN $quiz_id INT, IN $thematic_area VARCHAR(255), IN $content VARCHAR(255), IN $objective VARCHAR(255), IN $performed_classes INT, IN $row_position INT)
 	BEGIN
-		INSERT IGNORE INTO
+		INSERT INTO
 		specifications_table (quiz_id, thematic_area_id, content_id, objective_id, performed_classes, row_position)
 		VALUES
-		($quiz_id, (SELECT id FROM spect_thematic_area WHERE statement = $thematic_area), (SELECT id FROM spect_content WHERE statement = $content), (SELECT id FROM spect_objective WHERE statement = $objective), $performed_classes, $row_position);
+		($quiz_id, (SELECT id FROM spect_thematic_area WHERE statement = $thematic_area), (SELECT id FROM spect_content WHERE statement = $content), (SELECT id FROM spect_objective WHERE statement = $objective), $performed_classes, $row_position)
+		ON DUPLICATE KEY UPDATE 
+			thematic_area_id = VALUES(thematic_area_id),
+			content_id = VALUES(content_id),
+			objective_id = VALUES(objective_id),
+			performed_classes = VALUES(performed_classes)
+		;
 	END;
 
 CREATE PROCEDURE $PROCESS_SPECIFICATIONS_TABLE_ROW_SKILLS(IN $quiz_id INT, IN $row_position INT, IN $quiz_skills JSON, IN $row_skills JSON)
@@ -122,20 +131,15 @@ CREATE PROCEDURE $PROCESS_SPECIFICATIONS_TABLE_ROW_SKILLS(IN $quiz_id INT, IN $r
 
 		SET $row_skill_length = JSON_LENGTH(JSON_EXTRACT($row_skills, '$'));
 
-		
-		row_skill_loop: WHILE $row_skill_index < $row_skill_length DO
+		WHILE $row_skill_index < $row_skill_length DO
 			
 			SET $cell_statement = JSON_UNQUOTE(JSON_EXTRACT($row_skills, CONCAT('$[', $row_skill_index, ']')));
-
-			IF $cell_statement IS NULL OR TRIM($cell_statement) = '' THEN
-				SET $row_skill_index = $row_skill_index + 1;
-				ITERATE row_skill_loop;
-			END IF;
+			SET $cell_statement = TRIM($cell_statement);
 
 			SET $skill = JSON_UNQUOTE(JSON_EXTRACT($quiz_skills, CONCAT('$[', $row_skill_index, ']')));
 
 
-				INSERT IGNORE INTO
+				INSERT INTO
 				specifications_table_skill (specifications_table_id, spect_skill_id, cell_statement, column_position)
 				VALUES
 				(
@@ -143,11 +147,15 @@ CREATE PROCEDURE $PROCESS_SPECIFICATIONS_TABLE_ROW_SKILLS(IN $quiz_id INT, IN $r
 					(SELECT id FROM spect_skill WHERE statement = $skill), 
 					$cell_statement, 
 					$row_skill_index
-				);
+				)
+				ON DUPLICATE KEY UPDATE
+					spect_skill_id = VALUES(spect_skill_id),
+					cell_statement = VALUES(cell_statement)
+				;
 
 			SET $row_skill_index = $row_skill_index + 1;
 
-		END WHILE row_skill_loop;
+		END WHILE;
 
 	END;
 
@@ -192,6 +200,13 @@ CREATE PROCEDURE $PROCESS_SPECTIFICATIONS_TABLE( IN $quiz_id INT, IN $teacher_id
 	END;
 
 
+DROP PROCEDURE IF EXISTS $BALANCE_QUESTIONS;
+CREATE PROCEDURE $BALANCE_QUESTIONS(IN $quiz_id INT, IN $questions_length INT)
+	BEGIN
+		DELETE FROM
+			quiz_question
+			WHERE quiz_id = $quiz_id AND position > $questions_length;
+	END;
 
 CREATE PROCEDURE $SAVE_QUESTION(IN $question VARCHAR(255), IN $teacher_id INT, IN $creation_date DATETIME) 
 	BEGIN
@@ -203,10 +218,14 @@ CREATE PROCEDURE $SAVE_QUESTION(IN $question VARCHAR(255), IN $teacher_id INT, I
 
 CREATE PROCEDURE $SAVE_QUIZ_QUESTION(IN $quiz_id INT, IN $question_statement VARCHAR(255), IN $position INT, IN $correct_answer_index INT) 
 	BEGIN
-		INSERT IGNORE INTO
+		INSERT INTO
 		quiz_question (quiz_id, question_id, position, correct_answer_index)
 		VALUES
-		($quiz_id, (SELECT id FROM question WHERE statement = $question_statement), $position, $correct_answer_index);
+		($quiz_id, (SELECT id FROM question WHERE statement = $question_statement), $position, $correct_answer_index)
+		ON DUPLICATE KEY UPDATE 
+			question_id = VALUES(question_id),
+			correct_answer_index = VALUES(correct_answer_index)
+		;
 	END;
 
 CREATE PROCEDURE $SAVE_ANSWER(IN $answer VARCHAR(255), IN $teacher_id INT, IN $creation_date DATETIME) 
@@ -217,13 +236,23 @@ CREATE PROCEDURE $SAVE_ANSWER(IN $answer VARCHAR(255), IN $teacher_id INT, IN $c
 		($answer, $teacher_id, $creation_date);
 	END;
 
+DROP PROCEDURE IF EXISTS $BALANCE_ANSWERS;
+CREATE PROCEDURE $BALANCE_ANSWERS(IN $quiz_question_id INT, IN $answers_length INT)
+	BEGIN
+		DELETE FROM
+			quiz_question_answer
+			WHERE quiz_question_id = $quiz_question_id AND position > $answers_length;
+	END;
+
 CREATE PROCEDURE $SAVE_QUIZ_QUESTION_ANSWER(IN $quiz_question_id INT, IN $answer_statement VARCHAR(255), $position INT)
 	BEGIN
-		INSERT IGNORE INTO
+		INSERT INTO
 			quiz_question_answer (quiz_question_id, answer_id, position)
 			VALUES
-			($quiz_question_id, (SELECT id FROM answer WHERE statement = $answer_statement), $position);
-
+			($quiz_question_id, (SELECT id FROM answer WHERE statement = $answer_statement), $position)
+			ON DUPLICATE KEY UPDATE 
+				answer_id = VALUES(answer_id)
+				;
 	END;
 
 CREATE PROCEDURE $PROCESS_ANSWERS( IN $quiz_id INT, IN $teacher_id INT, IN $creation_date DATETIME, IN $quiz_question_id INT, IN $answers JSON)
@@ -234,6 +263,8 @@ CREATE PROCEDURE $PROCESS_ANSWERS( IN $quiz_id INT, IN $teacher_id INT, IN $crea
 
 		SET $answers_length = JSON_LENGTH($answers);
 		SET $answers_index = 0;
+
+		CALL $BALANCE_ANSWERS($quiz_question_id, $answers_length);
 
 		WHILE $answers_index < $answers_length DO
 
@@ -257,11 +288,14 @@ CREATE PROCEDURE $PROCESS_QUESTIONS( IN $quiz_id INT, IN $teacher_id INT, IN $cr
 		DECLARE $question_item JSON;
 		DECLARE $question_statement VARCHAR(255);
 		DECLARE $answers JSON;
+		DECLARE $answers_length INT DEFAULT 0;
 		DECLARE $correct_answer_index INT DEFAULT -1;
 		DECLARE $quiz_question_id INT;
 
 		SET $questions_length = JSON_LENGTH($questions);
 		SET $questions_index = 0;
+
+		CALL $BALANCE_QUESTIONS($quiz_id, $questions_length);
 
 		WHILE $questions_index < $questions_length DO
 
@@ -269,7 +303,12 @@ CREATE PROCEDURE $PROCESS_QUESTIONS( IN $quiz_id INT, IN $teacher_id INT, IN $cr
 
 			SET $question_statement = JSON_UNQUOTE(JSON_EXTRACT($question_item, '$.question'));
 			SET $answers = JSON_EXTRACT($question_item, '$.answers');
+			SET $answers_length = JSON_LENGTH($answers);
 			SET $correct_answer_index = JSON_EXTRACT($question_item, '$.correct_answer_index');
+			
+			IF $correct_answer_index > ($answers_length - 1) THEN
+				SET $correct_answer_index = -1;
+			END IF;
 
 			CALL $SAVE_QUESTION($question_statement, $teacher_id, $creation_date);
 
@@ -286,6 +325,70 @@ CREATE PROCEDURE $PROCESS_QUESTIONS( IN $quiz_id INT, IN $teacher_id INT, IN $cr
 	
 	END;
 	
+DROP PROCEDURE IF EXISTS $PROCESS_QUIZ;
+CREATE PROCEDURE $PROCESS_QUIZ(IN $quiz_uuid CHAR(36), IN $creation_date DATETIME, IN $quiz_data JSON)
+  BEGIN 
+    DECLARE $teacher_id INT;
+    DECLARE $subject_statement VARCHAR(255);
+    DECLARE $subject_id INT;
+    DECLARE $quiz_title VARCHAR(255);
+    DECLARE $quiz_id INT;
+
+    DECLARE $quiz_skills JSON;
+    DECLARE $spect_items JSON;
+    DECLARE $question_items JSON;
+
+    
+    SET $teacher_id = 1;
+    SET $quiz_title = JSON_UNQUOTE(JSON_EXTRACT($quiz_data, '$.quiz_title'));
+    SET $subject_statement = JSON_UNQUOTE(JSON_EXTRACT($quiz_data, '$.quiz_subject'));
+    
+    CALL $SAVE_TEACHER("bob", "esponja", "bob@esponja.cl");
+    CALL $SAVE_SPECT_SUBJECT ($subject_statement, $teacher_id, $creation_date);
+    CALL $SAVE_QUIZ_METADATA($quiz_uuid, $subject_statement, $teacher_id, $quiz_title, $creation_date);
+		
+
+    SET $quiz_id = Get_Quiz_ID($quiz_title, $teacher_id, $creation_date);
+	
+
+    SET $quiz_skills = JSON_EXTRACT($quiz_data, '$.specifications_table.quiz_skills');
+    CALL $PROCESS_SKILLS($quiz_id, $teacher_id, $creation_date, $quiz_skills);
+
+    SET $spect_items = JSON_EXTRACT($quiz_data, '$.specifications_table.items');
+    CALL $PROCESS_SPECTIFICATIONS_TABLE($quiz_id, $teacher_id, $creation_date, $spect_items, $quiz_skills);
+
+    SET $question_items = JSON_EXTRACT($quiz_data, '$.questions');
+    CALL $PROCESS_QUESTIONS($quiz_id, $teacher_id, $creation_date, $question_items);
+
+    
+  END;
+
+DROP PROCEDURE IF EXISTS $SAVE_QUIZ;
+CREATE PROCEDURE $SAVE_QUIZ(IN $quiz_data JSON)
+	BEGIN
+		DECLARE $quiz_uuid CHAR(36);
+		DECLARE $creation_date DATETIME;
+
+		SET $quiz_uuid = UUID();
+		SET $creation_date = NOW();
+
+		CALL $PROCESS_QUIZ($quiz_uuid, $creation_date, $quiz_data);
+		SELECT $quiz_uuid AS quiz_uuid;
+	END;
+
+DROP PROCEDURE IF EXISTS $UPDATE_QUIZ;
+CREATE PROCEDURE $UPDATE_QUIZ(IN $quiz_uuid CHAR(36), IN $creation_date DATETIME, IN $quiz_data JSON)
+	BEGIN
+		CALL $PROCESS_QUIZ($quiz_uuid, $creation_date, $quiz_data);
+	END;
+
+
+
+
+
+
+
+
 
 CREATE VIEW drafts AS
 	SELECT 
@@ -333,4 +436,3 @@ CREATE PROCEDURE $GET_QUIZZES()
 		SELECT * FROM performed;
 
 	END;
-

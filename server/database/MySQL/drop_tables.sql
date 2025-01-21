@@ -1,0 +1,14 @@
+DROP TABLE IF EXISTS specifications_table_skill;
+DROP TABLE IF EXISTS specifications_table;
+DROP TABLE IF EXISTS quiz_performed;
+DROP TABLE IF EXISTS quiz_question_answer;
+DROP TABLE IF EXISTS quiz_question;
+DROP TABLE IF EXISTS answer;
+DROP TABLE IF EXISTS spect_skill;
+DROP TABLE IF EXISTS spect_objective;
+DROP TABLE IF EXISTS spect_content;
+DROP TABLE IF EXISTS spect_thematic_area;
+DROP TABLE IF EXISTS question;
+DROP TABLE IF EXISTS quiz;
+DROP TABLE IF EXISTS spect_subject;
+DROP TABLE IF EXISTS teacher;

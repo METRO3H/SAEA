@@ -1,14 +1,15 @@
 "use strict";
+import { authenticate } from "@google-cloud/local-auth";
+import Report_Status from "../../util/report_status.js";
+import type { Quiz } from "@QuizTypes";
 import path from "path";
 import google from "@googleapis/forms";
-import { authenticate } from "@google-cloud/local-auth";
 import sqlite3 from "sqlite3";
 import moment from "moment";
-import Report_Status from "../../util/report_status.js";
 import chalk from "chalk";
 
 sqlite3.verbose();
-export default async function (data) {
+export default async function (data: Quiz) {
   try {
     if (!data.quiz_id.trim()) throw new Error("No se ha especificado el ID del Quiz");
 
@@ -47,7 +48,7 @@ async function User_Authentication() {
 
   return forms;
 }
-async function Create_Form(form_access, form_title) {
+async function Create_Form(form_access: any, form_title: string) {
   const newForm = {
     info: {
       title: form_title,
@@ -82,7 +83,7 @@ async function Create_Form(form_access, form_title) {
   return create_form_response;
 }
 
-async function Fill_Form(access_form_response, create_form_response, quiz_data) {
+async function Fill_Form(access_form_response: google.forms_v1.Forms, create_form_response: any, quiz_data: Quiz) {
   const questions = quiz_data.questions;
 
   for (let i = 0; i < questions.length; i++) {
@@ -104,7 +105,7 @@ async function Fill_Form(access_form_response, create_form_response, quiz_data) 
   return;
 }
 
-async function Create_Item(question, answers_map, correct_answers_map, position) {
+async function Create_Item(question: string, answers_map: object[], correct_answers_map: object[], position: number) {
   const new_item = {
     requests: [
       {
@@ -141,7 +142,7 @@ async function Create_Item(question, answers_map, correct_answers_map, position)
   return new_item;
 }
 
-async function Save_Performed_Test(test_id, google_form_data) {
+async function Save_Performed_Test(test_id : string, google_form_data: google.forms_v1.Schema$Form) {
   const data_base_path = path.join(process.cwd(), "server", "database", "database.db");
   const date_time = moment().format("YYYY-MM-DD HH:mm:ss");
   const google_form_id = google_form_data.formId;
@@ -156,7 +157,7 @@ async function Save_Performed_Test(test_id, google_form_data) {
     [test_id, google_form_id, google_form_data.responderUri, date_time],
     (error) => {
       if (error) {
-        throw new Error(error);
+        throw new Error(error.message);
       }
 
       save_generated_data.finalize();

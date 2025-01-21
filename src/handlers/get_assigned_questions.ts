@@ -5,7 +5,8 @@ export function Get_Assigned_Questions(skill_content_list: string[]): number[] {
 }
 
 export function Get_Questions_From_Item(item: string) {
-   console.log(item)
+   
+   if (!item) return [];
    
    const matches = item.match(string_regex) || [];
    

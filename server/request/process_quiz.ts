@@ -11,12 +11,48 @@ router.post("/save", async (request, response) => {
 
       const quiz_data_json = JSON.stringify(quiz_data);
 
-      const query = /*sql*/ ` CALL $PROCESS_QUIZ(?)`;
+      const query = /*sql*/ ` CALL $SAVE_QUIZ(?)`;
 
-      await Execute_Query(query, [quiz_data_json]);
+      const [[db_response]]: any = await Execute_Query(query, [quiz_data_json]);
+      const quiz_uuid = db_response.quiz_uuid; 
+
 
       const message = "Quiz '" + quiz_data.quiz_title + "' guardado con exito";
       Report_Status("success", message);
+      Report_Status("divider");
+
+      response.status(200).send({ message, data: quiz_uuid });
+   });
+});
+
+router.put("/update", async (request, response) => {
+   await Process_Request(response, async () => {
+      const quiz_data: Quiz = request.body;
+      const quiz_uuid = quiz_data.quiz_id;
+      const creation_date = quiz_data.creation_date;
+
+      const quiz_data_json = JSON.stringify(quiz_data);
+
+      const query = /*sql*/ ` CALL $UPDATE_QUIZ(?, ?, ?)`;
+
+      await Execute_Query(query, [quiz_uuid, creation_date, quiz_data_json]);
+
+      const message = "Quiz '" + quiz_data.quiz_title + "' actualizado con exito";
+      Report_Status("success", message);
+
+      response.status(200).send({ message });
+   });
+});
+
+router.post("/generate", async (request, response) => {
+   await Process_Request(response, async () => {
+      const quiz_data: Quiz = request.body;
+      const quiz_uuid = quiz_data.quiz_id;
+
+
+      const message = "Google Form generado con exito";
+      Report_Status("success", message);
+      Report_Status("divider");
 
       response.status(200).send({ message });
    });

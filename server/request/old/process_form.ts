@@ -21,7 +21,7 @@ router.post("/update", async (request, response) => {
    const quiz_data: Quiz = request.body;
 
    const unique_id = quiz_data.quiz_id;
-   const date_time = quiz_data.quiz_creation_date;
+   const date_time = quiz_data.creation_date;
    await Process_Form(response, () => Save_Quiz(quiz_data, unique_id, date_time));
 });
 

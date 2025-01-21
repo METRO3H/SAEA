@@ -99,10 +99,7 @@ CREATE FUNCTION Get_Spect_Items($quiz_uuid VARCHAR(36)) RETURNS JSON READS SQL D
                     spect_content.statement AS content,
                     spect_objective.statement AS objective,
                     specifications_table.performed_classes,
-                    JSON_ARRAYAGG(JSON_OBJECT(
-                        'cell_statement', cell_statement,
-                        'column_position', column_position
-                    )) AS cell_statement
+                    JSON_ARRAYAGG(cell_statement) AS cell_statement
                 FROM quiz
                 JOIN specifications_table ON specifications_table.quiz_id = quiz.id
                 JOIN spect_thematic_area ON spect_thematic_area.id = specifications_table.thematic_area_id
@@ -157,9 +154,9 @@ CREATE FUNCTION Get_Questions($quiz_uuid VARCHAR(36)) RETURNS JSON READS SQL DAT
 -- GET QUIZ
 
 
-DROP FUNCTION IF EXISTS GET_QUIZ;
+DROP FUNCTION IF EXISTS Get_Quiz;
 
-CREATE FUNCTION GET_QUIZ($quiz_uuid VARCHAR(36)) RETURNS JSON READS SQL DATA
+CREATE FUNCTION Get_Quiz($quiz_uuid VARCHAR(36)) RETURNS JSON READS SQL DATA
 	BEGIN
 		DECLARE $quiz_data JSON;
 
@@ -183,13 +180,13 @@ CREATE FUNCTION GET_QUIZ($quiz_uuid VARCHAR(36)) RETURNS JSON READS SQL DATA
 		SET $quiz_subject = JSON_UNQUOTE(JSON_EXTRACT($quiz_metadata, '$.subject'));
 
 		SET $creation_date = JSON_UNQUOTE(JSON_EXTRACT($quiz_metadata, '$.creation_date'));
-        SET $creation_date = (
-            CASE 
-                WHEN DATE($creation_date) = CURDATE() 
-                    THEN DATE_FORMAT($creation_date, '%H:%i')
-                    ELSE DATE_FORMAT($creation_date, '%d/%m/%Y') 
-            END
-        );
+        -- SET $creation_date = (
+        --     CASE 
+        --         WHEN DATE($creation_date) = CURDATE() 
+        --             THEN DATE_FORMAT($creation_date, '%H:%i')
+        --             ELSE DATE_FORMAT($creation_date, '%d/%m/%Y') 
+        --     END
+        -- );
 
 		SET $quiz_data = JSON_OBJECT(
 			'quiz_id', $quiz_uuid,

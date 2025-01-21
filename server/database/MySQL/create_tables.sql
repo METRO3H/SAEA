@@ -1,6 +1,22 @@
 
 SET time_zone = 'America/Santiago';
 
+DROP TABLE IF EXISTS specifications_table_skill;
+DROP TABLE IF EXISTS specifications_table;
+DROP TABLE IF EXISTS quiz_performed;
+DROP TABLE IF EXISTS quiz_question_answer;
+DROP TABLE IF EXISTS quiz_question;
+DROP TABLE IF EXISTS answer;
+DROP TABLE IF EXISTS spect_skill;
+DROP TABLE IF EXISTS spect_objective;
+DROP TABLE IF EXISTS spect_content;
+DROP TABLE IF EXISTS spect_thematic_area;
+DROP TABLE IF EXISTS question;
+DROP TABLE IF EXISTS quiz;
+DROP TABLE IF EXISTS spect_subject;
+DROP TABLE IF EXISTS teacher;
+
+
 CREATE TABLE
     IF NOT EXISTS teacher (
         id INT NOT NULL AUTO_INCREMENT UNIQUE,
@@ -20,7 +36,7 @@ CREATE TABLE
         id INT NOT NULL AUTO_INCREMENT UNIQUE,
         statement VARCHAR(255) NOT NULL UNIQUE,
         teacher_id INT NOT NULL,
-        creation_date DATETIME NOT NULL,
+        creation_date DATETIME(0) NOT NULL,
         FOREIGN KEY (teacher_id) REFERENCES teacher (id),
         PRIMARY KEY (id)
     ) ENGINE = InnoDB;
@@ -32,7 +48,7 @@ CREATE TABLE
         spect_subject_id INT NOT NULL,
         teacher_id INT NOT NULL,
         title VARCHAR(255) NOT NULL,
-        creation_date DATETIME NOT NULL,
+        creation_date DATETIME(0) NOT NULL,
         UNIQUE (teacher_id, title, creation_date),
         FOREIGN KEY (spect_subject_id) REFERENCES spect_subject (id),
         FOREIGN KEY (teacher_id) REFERENCES teacher (id),
@@ -44,7 +60,7 @@ CREATE TABLE
         id INT NOT NULL AUTO_INCREMENT,
         statement VARCHAR(255) NOT NULL UNIQUE,
         teacher_id INT NOT NULL,
-        creation_date DATETIME NOT NULL,
+        creation_date DATETIME(0) NOT NULL,
         FOREIGN KEY (teacher_id) REFERENCES teacher (id),
         PRIMARY KEY (id)
     ) ENGINE = InnoDB;
@@ -54,7 +70,7 @@ CREATE TABLE
         id INT NOT NULL AUTO_INCREMENT UNIQUE,
         statement VARCHAR(255) NOT NULL UNIQUE,
         teacher_id INT NOT NULL,
-        creation_date DATETIME NOT NULL,
+        creation_date DATETIME(0) NOT NULL,
         FOREIGN KEY (teacher_id) REFERENCES teacher (id),
         PRIMARY KEY (id)
     ) ENGINE = InnoDB;
@@ -64,7 +80,7 @@ CREATE TABLE
         id INT NOT NULL AUTO_INCREMENT UNIQUE,
         statement VARCHAR(255) NOT NULL UNIQUE,
         teacher_id INT NOT NULL,
-        creation_date DATETIME NOT NULL,
+        creation_date DATETIME(0) NOT NULL,
         FOREIGN KEY (teacher_id) REFERENCES teacher (id),
         PRIMARY KEY (id)
     ) ENGINE = InnoDB;
@@ -74,7 +90,7 @@ CREATE TABLE
         id INT NOT NULL AUTO_INCREMENT UNIQUE,
         statement VARCHAR(255) NOT NULL UNIQUE,
         teacher_id INT NOT NULL,
-        creation_date DATETIME NOT NULL,
+        creation_date DATETIME(0) NOT NULL,
         FOREIGN KEY (teacher_id) REFERENCES teacher (id),
         PRIMARY KEY (id)
     ) ENGINE = InnoDB;
@@ -84,7 +100,7 @@ CREATE TABLE
         id INT NOT NULL AUTO_INCREMENT UNIQUE,
         statement VARCHAR(255) NOT NULL UNIQUE,
         teacher_id INT NOT NULL,
-        creation_date DATETIME NOT NULL,
+        creation_date DATETIME(0) NOT NULL,
         FOREIGN KEY (teacher_id) REFERENCES teacher (id),
         PRIMARY KEY (id)
     ) ENGINE = InnoDB;
@@ -94,7 +110,7 @@ CREATE TABLE
         id INT NOT NULL AUTO_INCREMENT UNIQUE,
         statement VARCHAR(255) NOT NULL UNIQUE,
         teacher_id INT NOT NULL,
-        creation_date DATETIME NOT NULL,
+        creation_date DATETIME(0) NOT NULL,
         FOREIGN KEY (teacher_id) REFERENCES teacher (id),
         PRIMARY KEY (id)
     ) ENGINE = InnoDB;
@@ -118,7 +134,7 @@ CREATE TABLE
         answer_id INT NOT NULL,
         position INT NOT NULL,
         UNIQUE (quiz_question_id, position),
-        FOREIGN KEY (quiz_question_id) REFERENCES quiz_question (id),
+        FOREIGN KEY (quiz_question_id) REFERENCES quiz_question (id) ON DELETE CASCADE,
         FOREIGN KEY (answer_id) REFERENCES answer (id)
     ) ENGINE = InnoDB;
 
@@ -153,7 +169,7 @@ CREATE TABLE
         quiz_id INT NOT NULL,
         google_form_id VARCHAR(255) NOT NULL UNIQUE,
         google_form_url VARCHAR(255) NOT NULL UNIQUE,
-        creation_date DATETIME NOT NULL,
+        creation_date DATETIME(0) NOT NULL,
         FOREIGN KEY (quiz_id) REFERENCES quiz (id),
         PRIMARY KEY (id)
     ) ENGINE = InnoDB;

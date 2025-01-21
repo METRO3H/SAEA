@@ -4,7 +4,7 @@ export interface Quiz {
    quiz_title: string;
    created_by: number;
    quiz_subject: string;
-   quiz_creation_date: string;
+   creation_date: string;
    specifications_table: SpecTable;
    questions: QuestionItem[];
 }
@@ -23,22 +23,6 @@ export interface SpecTableItem{
     row_skills: string [];
 }
 
-
-export interface QuizUnprocessed extends Omit<Quiz, "specifications_table"> {
-   specifications_table: SpecTableUnprocessed;
-}
-
-export interface SpecTableUnprocessed extends Omit<SpecTable, "items"> {
-   items: SpecTableItemUnprocessed[];
-}
-export interface SpecTableItemUnprocessed extends Omit<SpecTableItem, "row_skills"> {
-   row_skills: RowSkillUnprocessed[];
-}
-
-export interface RowSkillUnprocessed {
-   cell_statement: string;
-   column_position: number;
-}
 
 export interface RowSpan {
    thematic_area: { [key: string]: number };

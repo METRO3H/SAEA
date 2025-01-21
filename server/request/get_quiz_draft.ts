@@ -2,7 +2,7 @@ import express from "express";
 import { Process_Request } from "./handle_request.js";
 import { Fetch_Data } from "../database/db.js";
 import Report_Status from "../../util/report_status.js";
-import { Quiz, QuizUnprocessed, SpecTableItem, SpecTableItemUnprocessed } from "@QuizTypes";
+import { Quiz } from "@QuizTypes";
 
 const router = express.Router();
 
@@ -20,9 +20,7 @@ router.get("/:quiz_uuid", async function (request, response) {
          return;
       }
 
-      const quiz_data_unprocessed: QuizUnprocessed = await Get_Quiz_Draft(quiz_uuid);
-
-      const quiz_data: Quiz = Fix_Quiz(quiz_data_unprocessed);
+      const quiz_data: Quiz = await Get_Quiz_Draft(quiz_uuid);
 
       message = "Quiz found!";
       const server_response = {
@@ -57,38 +55,9 @@ async function Is_Drafted(quiz_uuid: string): Promise<boolean> {
 }
 
 async function Get_Quiz_Draft(quiz_uuid: string) {
-   const query = /*sql*/ `SELECT GET_QUIZ(?) AS quiz_data`;
+   const query = /*sql*/ `SELECT Get_Quiz(?) AS quiz_data`;
    const [db_response]: any = await Fetch_Data(query, [quiz_uuid]);
-   const quiz_data: QuizUnprocessed = db_response.quiz_data;
-   return quiz_data;
-}
-
-function Fix_Quiz(quiz_data_unprocessed: QuizUnprocessed): Quiz {
-   const quiz_skills_length = quiz_data_unprocessed.specifications_table.quiz_skills.length;
-   const spect_items = quiz_data_unprocessed.specifications_table.items;
-
-   const spect_items_aux: SpecTableItem[] = new Array(spect_items.length);
-
-   spect_items.forEach((item, index) => {
-      const row_skills_aux: string[] = new Array(quiz_skills_length).fill("");
-
-      item.row_skills.forEach((row_skill) => {
-         row_skills_aux[row_skill.column_position] = row_skill.cell_statement;
-      });
-      
-      spect_items_aux[index] = {
-         ...item,
-         row_skills: row_skills_aux,
-      };
-   })
-
-   const quiz_data: Quiz = {
-      ...quiz_data_unprocessed,
-      specifications_table: {
-         ...quiz_data_unprocessed.specifications_table,
-         items: spect_items_aux,
-      },
-   };
+   const quiz_data: Quiz = db_response.quiz_data;
    return quiz_data;
 }
 

@@ -107,7 +107,6 @@ export default function Specifications_Table() {
          .map((item) => item.row_skills[column_index])
          .filter((item) => item !== "");
          
-      console.log(column_list);
 
       const column_values: number[] = Get_Assigned_Questions(column_list);
       // console.log(column_values);
@@ -192,6 +191,10 @@ export default function Specifications_Table() {
       set_row_spans(row_spans_aux);
       rows_requirement_ref.current = rows_requirement_aux;
    }, [local_spec_table]);
+
+   useEffect(() => {
+      set_local_spec_table($spec_table_store);
+   }, [$spec_table_store]);
 
    const total_classes = local_spec_table.items.reduce((acc, item) => acc + Math.abs(item.performed_classes), 0);
    const total_question_count = local_spec_table.total_questions;
