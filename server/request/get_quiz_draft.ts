@@ -2,8 +2,8 @@ import express from "express";
 import Report_Status from "../../util/report_status.js";
 import { Quiz } from "@QuizTypes";
 import { Process_Request } from "./handle_request.js";
-import { Fetch_Data } from "../database/db.js";
 import { Is_Drafted } from "../handlers/is_drafted.js";
+import { Get_Quiz } from "../handlers/get_quiz.js";
 
 const router = express.Router();
 
@@ -22,9 +22,9 @@ router.get("/:quiz_uuid", async function (request, response) {
          return;
       }
 
-      const quiz_data: Quiz = await Get_Quiz_Draft(quiz_uuid);
+      const quiz_data: Quiz = await Get_Quiz(quiz_uuid);
 
-      message = "Quiz found!";
+      message = "Quiz draft found!";
       const server_response = {
          message: message,
          data: quiz_data,
@@ -36,13 +36,5 @@ router.get("/:quiz_uuid", async function (request, response) {
       Report_Status("divider");
    });
 });
-
-
-export async function Get_Quiz_Draft(quiz_uuid: string) {
-   const query = /*sql*/ `SELECT Get_Quiz(?) AS quiz_data`;
-   const [db_response]: any = await Fetch_Data(query, [quiz_uuid]);
-   const quiz_data: Quiz = db_response.quiz_data;
-   return quiz_data;
-}
 
 export default router;

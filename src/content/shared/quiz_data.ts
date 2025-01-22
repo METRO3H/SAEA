@@ -7,7 +7,7 @@ export const $quiz_store = atom<Quiz>({
    quiz_title: "",
    created_by: -1,
    quiz_subject: "",
-   quiz_creation_date: "",
+   creation_date: "",
    specifications_table: {
       total_questions: 0,
       quiz_skills: ["", "", ""],
@@ -52,7 +52,7 @@ export const $quiz_google_form_url = computed($quiz_store, ($quiz_store) => $qui
 export const $quiz_title = computed($quiz_store, ($quiz_store) => $quiz_store.quiz_title);
 export const $created_by = computed($quiz_store, ($quiz_store) => $quiz_store.created_by);
 export const $quiz_subject = computed($quiz_store, ($quiz_store) => $quiz_store.quiz_subject);
-export const $quiz_creation_date = computed($quiz_store, ($quiz_store) => $quiz_store.quiz_creation_date);
+export const $quiz_creation_date = computed($quiz_store, ($quiz_store) => $quiz_store.creation_date);
 export const $specifications_table = computed($quiz_store, ($quiz_store) => $quiz_store.specifications_table);
 export const $questions = computed($quiz_store, ($quiz_store) => $quiz_store.questions);
 

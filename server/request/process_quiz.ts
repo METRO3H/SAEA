@@ -5,7 +5,8 @@ import Generate_Google_Form from "../handlers/generate_google_form.js";
 import { Execute_Query } from "../database/db.js";
 import { Process_Request } from "./handle_request.js";
 import { Is_Drafted } from "../handlers/is_drafted.js";
-import { Get_Quiz_Draft } from "./get_quiz_draft.js";
+import { Get_Quiz } from "../handlers/get_quiz.js";
+
 
 const router = express.Router();
 
@@ -50,7 +51,6 @@ router.put("/update", async (request, response) => {
 router.post("/generate", async (request, response) => {
    let message: string = "";
    await Process_Request(response, async () => {
-
       const quiz_uuid = request.body.quiz_uuid;
 
       const is_drafted = await Is_Drafted(quiz_uuid);
@@ -63,18 +63,18 @@ router.post("/generate", async (request, response) => {
          return;
       }
 
-      const quiz_data: Quiz = await Get_Quiz_Draft(quiz_uuid);
+      const quiz_data: Quiz = await Get_Quiz(quiz_uuid);
 
-      const {google_form_url, google_form_id} = await Generate_Google_Form(quiz_data);
+      const { google_form_url, google_form_id } = await Generate_Google_Form(quiz_data);
 
       const query = /*sql*/ ` CALL $SAVE_PERFORMED_QUIZ(?, ?, ?)`;
 
       const [db_response]: any = await Execute_Query(query, [quiz_uuid, google_form_id, google_form_url]);
 
       const [success, error_message] = db_response;
-      
+
       if (!success) throw new Error(error_message);
-      
+
       message = "Google Form generado con exito";
       Report_Status("success", message);
       Report_Status("divider");

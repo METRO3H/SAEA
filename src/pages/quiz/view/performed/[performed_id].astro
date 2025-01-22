@@ -8,46 +8,47 @@ import GoogleForm_btn from "@components/buttons/google_form_btn.astro";
 ---
 
 <Document title="Quiz realizado" description="Quiz realizado">
-  <Quiz_Layout>
-    <Quiz_Title_Fixed slot="quiz-title" client:only="react" />
-    <Specifications_Table_Fixed slot="specifications-table" client:only="react" />
-    <Questions_Data_Fixed slot="questions-data" client:only="react" />
-    <a slot="google-form-button" id="link-form-btn" href="#" target="_blank">
-      <GoogleForm_btn button_text="LINK DEL FORMULARIO" is_generator={false} />
-    </a>
-  </Quiz_Layout>
+   <Quiz_Layout>
+      <Quiz_Title_Fixed slot="quiz-title" client:only="react" />
+      <Specifications_Table_Fixed slot="specifications-table" client:only="react" />
+      <Questions_Data_Fixed slot="questions-data" client:only="react" />
+      <a slot="google-form-button" id="link-form-btn" href="#" target="_blank">
+         <GoogleForm_btn button_text="LINK DEL FORMULARIO" is_generator={false} />
+      </a>
+   </Quiz_Layout>
 </Document>
 
 <script>
-  import type { Quiz } from "@content/quiz_data";
-  import { quiz_data_store } from "@content/quiz_data";
+   import type { Quiz } from "@content/types";
+   import { $quiz_store } from "@content/shared/quiz_data.ts";
 
-  const URL = window?.location?.href?.match(/performed\/([\w-]+)/);
-  const performed_id = URL?.[1];
-  const link_form_btn = document.querySelector("#link-form-btn") as HTMLAnchorElement;
-  const main_container = document.querySelector("#main-container") as HTMLDivElement;
+   const URL = window?.location?.href?.match(/performed\/([\w-]+)/);
+   const performed_id = URL?.[1];
+   const link_form_btn = document.querySelector("#link-form-btn") as HTMLAnchorElement;
+   const main_container = document.querySelector("#main-container") as HTMLDivElement;
 
-  fetch(`/request/get/quiz/performed/${performed_id}`)
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error("HTTP error " + response.status);
-      }
-      return response.json();
-    })
-    .then((response_json) => response_json.data)
-    .then((quiz_data: Quiz) => {
-      console.log(quiz_data);
-      quiz_data_store.set(quiz_data);
-    })
-    .then(() => {
-      document.title = quiz_data_store.get().quiz_title;
-      link_form_btn.href = quiz_data_store.get().google_form_url;
-    })
-    .then(() => (main_container.style.display = "block"))
-    .catch((error) => {
-      setTimeout(() => {
-        window.location.replace("/quiz/view/all");
-      }, 200);
-      console.error("Error:", error);
-    });
+   fetch(`/request/get/quiz/performed/${performed_id}`)
+      .then((response) => {
+         if (!response.ok) {
+            throw new Error("HTTP error " + response.status);
+         }
+         return response.json();
+      })
+      .then((response_json) => response_json.data)
+      .then((quiz_data: Quiz) => {
+         console.log(quiz_data);
+         $quiz_store.set(quiz_data);
+      })
+      .then(() => {
+         console.log($quiz_store.get());
+         document.title = $quiz_store.get().quiz_title;
+         link_form_btn.href = $quiz_store.get().google_form_url;
+      })
+      .then(() => (main_container.style.display = "block"))
+      .catch((error) => {
+         setTimeout(() => {
+            window.location.replace("/quiz/view/all");
+         }, 200);
+         console.error("Error:", error);
+      });
 </script>

@@ -1,214 +1,218 @@
 caption {
-  padding: 0 !important;
+   padding: 0 !important;
 }
 #caption-container {
-  display: flex;
-  /* padding-top: 35px; */
-  width: 100%;
-  box-sizing: border-box;
-  justify-content: space-between;
+   display: flex;
+   /* padding-top: 35px; */
+   width: 100%;
+   box-sizing: border-box;
+   justify-content: space-between;
 }
 #table-subject {
-  /* width: 20%; */
-  max-width: 300px;
-  background: var(--main-color-blue);
-  border: 1px solid rgb(92, 87, 87);
-  border-top-left-radius: 11px;
-  border-top-right-radius: 11px;
-  border-bottom: 0;
+   min-width: min-content;
+   height: 30px;
+   width: 175px;
+   background: var(--main-color-blue);
+   border: 1px solid rgb(92, 87, 87);
+   border-top-left-radius: 11px;
+   border-top-right-radius: 11px;
+   border-bottom: 0;
+   color: var(--main-color-blue-contrast);
+   padding-inline: 0.7rem;
+   align-content: center;
+   font-size: 1rem;
 }
 #table-subject > input {
-  height: 100%;
-  width: 100%;
-  background: transparent;
-  padding-left: 0.7rem;
-  outline: 0;
-  border: 0;
-  border-top-left-radius: 11px;
-  border-top-right-radius: 11px;
+   height: 100%;
+   width: 100%;
+   background: transparent;
+   padding: 0;
+   outline: 0;
+   border: 0;
+   border-top-left-radius: 11px;
+   border-top-right-radius: 11px;
 }
 #table-title {
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  /* padding: 0 0 0 111px; */
-  gap: 11px;
-  white-space: nowrap;
-  box-sizing: border-box;
-  overflow: hidden;
-  color: var(--main-color-blue) !important;
+   display: flex;
+   justify-content: flex-start;
+   align-items: center;
+   /* padding: 0 0 0 111px; */
+   gap: 11px;
+   white-space: nowrap;
+   box-sizing: border-box;
+   overflow: hidden;
+   color: var(--main-color-blue) !important;
 }
 #table-title > * {
-  margin: 0;
+   margin: 0;
 }
 
 .cell {
-  height: 50px;
+   height: 50px;
+   font-size: 1rem;
+   padding: 0;
 }
 .cell > input {
-  background-color: transparent;
-  width: 100%;
-  height: 100%;
-  border: none;
-  outline: none;
+   background-color: transparent;
+   width: 100%;
+   height: 100%;
+   border: none;
+   outline: none;
+   padding: 0;
 }
 
 #thead-axis {
-  width: 11%;
+   width: 11%;
 }
 #thead-content {
-  width: 17%;
+   width: 17%;
 }
 #thead-objective {
-  width: 21%;
+   width: 21%;
 }
 
 #thead-classes {
-  width: 6%;
-  max-width: 70px;
+   width: 6%;
+   max-width: 70px;
 }
 #thead-percentage {
-  width: 5%;
-  max-width: 40px;
+   width: 5%;
+   max-width: 40px;
 }
 
 table {
-  height: 100%;
+   height: 100%;
 }
 td,
 th,
 tbody {
-  padding: 0.25rem !important;
+   padding: 0.25rem !important;
 }
 
 .left-cell {
-  padding-left: 0.7rem !important;
+   padding-left: 0.7rem !important;
 }
 
 .number-cell {
-  font-family: Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
-  cursor: cell;
+   font-family: Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+   cursor: cell;
 }
 
 thead > tr > :last-child {
-  padding-top: 0 !important;
-  padding-bottom: 0 !important;
-  height: 0px;
-  width: 8%;
+   padding-top: 0 !important;
+   padding-bottom: 0 !important;
+   height: 0px;
+   width: 8%;
 }
 
 #table-subject > input,
+.thead-input,
 .thead-input > input {
-  color: var(--main-color-blue-contrast);
+   color: var(--main-color-blue-contrast)!important;
 }
 tfoot > tr > td {
-  padding: 0 !important;
-  background: rgba(34, 41, 57, 0.851) !important;
-  color: white !important;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
+   padding: 0 !important;
+   background: rgba(34, 41, 57, 0.851) !important;
+   color: white !important;
+   white-space: nowrap;
+   text-overflow: ellipsis;
+   overflow: hidden;
 }
 #item-total-class {
-  max-width: 70px;
+   max-width: 70px;
 }
 
 thead > tr > th {
-  background-color: var(--main-color-blue) !important;
+   background-color: var(--main-color-blue) !important;
 }
 
 input::placeholder {
-  opacity: 60%;
+   opacity: 60%;
 }
 @media (max-width: 768px) {
-  thead > tr > :nth-child(1) {
-    padding-left: 0 !important;
-    text-align: center;
-  }
-  tbody > tr > :nth-child(1) {
-    padding-left: 0 !important;
-  }
+   thead > tr > :nth-child(1) {
+      padding-left: 0 !important;
+      text-align: center;
+   }
+   tbody > tr > :nth-child(1) {
+      padding-left: 0 !important;
+   }
 }
 
-
 .td-input {
-  position: relative;
-  min-height: 50px;
-  cursor: cell;
-  height: 100%;
-  padding: 0;
-  
+   position: relative;
+   min-height: 50px;
+   cursor: cell;
+   height: 100%;
+   padding: 0;
 }
 
 .td-input > textarea,
 .td-input > input {
-  width: 100%;
-  max-width: 100%;
-  height: 100%;
-  padding: 0;
-  box-sizing: border-box;
-  border: none;
-  outline-width: 3px;
-  outline-style: solid;
-  outline-color: transparent;
-  outline-offset: 2px;
-
+   width: 100%;
+   max-width: 100%;
+   height: 100%;
+   padding: 0;
+   box-sizing: border-box;
+   border: none;
+   outline-width: 3px;
+   outline-style: solid;
+   outline-color: transparent;
+   outline-offset: 2px;
 }
 
 .td-input > textarea {
-  resize: none;
+   resize: none;
 }
 .td-input > input {
-  
-  text-align: center;
-  line-height: 100%;
-  font-size: 0.9rem;
-  font-weight: 500;
+   text-align: center;
+   line-height: 100%;
+   font-size: 0.9rem;
+   font-weight: 500;
 }
 
 .td-input > textarea:focus,
 .td-input > input:focus {
-  outline-color: var(--main-color-google-form) !important;
-  background-color: rgba(var(--main-color-google-form-dynamic), 16%) ;
+   outline-color: var(--main-color-google-form) !important;
+   background-color: rgba(var(--main-color-google-form-dynamic), 16%);
 }
 
-.td-input > span{
-  position: absolute;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.td-input > span {
+   position: absolute;
+   display: flex;
+   justify-content: center;
+   align-items: center;
 
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
+   top: 0;
+   right: 0;
+   bottom: 0;
+   left: 0;
 }
 
-.td-total-questions-successful{
-  color: var(--main-color-google-form) !important;
+.td-total-questions-successful {
+   color: var(--main-color-google-form) !important;
 }
 
 #item-total-all-questions {
-  background: var(--main-color-google-form) !important;
+   background: var(--main-color-google-form) !important;
 }
 #item-total-all-questions > input,
 #item-total-all-questions > input::placeholder {
-  background: var(--main-color-google-form) !important;
-  color: white;
+   background: var(--main-color-google-form) !important;
+   color: white;
 }
 
-.input-invisible{
-  visibility: hidden;
+.input-invisible {
+   visibility: hidden;
 }
 
-tr{
-  --mdb-table-bg: none;
-
+tr {
+   --mdb-table-bg: none;
 }
-tr:hover{
-  background-color: var(--main-color-google-form-light)!important;
+tr:hover {
+   background-color: var(--main-color-google-form-light) !important;
 }
 
-td:hover{
-  background-color: rgba(var(--main-color-google-form-dynamic), 8%) ;
+td:hover {
+   background-color: rgba(var(--main-color-google-form-dynamic), 8%);
 }

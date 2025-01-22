@@ -7,10 +7,10 @@ export async function Process_Request(response: express.Response, Handler: () =>
  
        await Handler();
  
-    } catch (error ) {
-       console.error(error);
+    } catch (err) {
+       const error = err as Error; 
        response.status(400).send({ message: "Error al procesar los datos" });
-       Report_Status("error", error);
+       Report_Status("error", error.stack);
        Report_Status("divider");
     }
  }

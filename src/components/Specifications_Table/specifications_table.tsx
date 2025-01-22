@@ -1,10 +1,12 @@
-import type { SpecTable, RowSpan, RowsRequirement, EditCell, EditSkillCell, ProcessedItem } from "@content/types";
+import type { RowSpan, RowsRequirement, EditCell, EditSkillCell, ProcessedItem } from "@content/types";
 import Quiz_Subject from "./quiz_subject";
 import { useEffect, useRef, useState } from "react";
 import { useStore } from "@nanostores/react";
 import { $specifications_table, $update_spect_flag } from "@content/shared/quiz_data";
 import { Update_Spec_Table } from "@content/shared/update_state";
-import { Get_Assigned_Questions } from "@handlers/get_assigned_questions";
+import { Process_Table_Items } from "@handlers/process_table_items";
+import { Get_Skill_Content_Columns } from "@handlers/get_skill_content_columns";
+
 import "@styles/table_2.css";
 
 export default function Specifications_Table() {
@@ -102,74 +104,6 @@ export default function Specifications_Table() {
       set_local_spec_table(local_spec_table_aux);
    }
 
-   function Get_Skill_Content_Columns(column_index: number) {
-      const column_list = local_spec_table.items
-         .map((item) => item.row_skills[column_index])
-         .filter((item) => item !== "");
-         
-
-      const column_values: number[] = Get_Assigned_Questions(column_list);
-      // console.log(column_values);
-      return column_values;
-   }
-   function Process_Table_Items(items: SpecTable["items"], total_classes: number, total_question_count: number) {
-      const thematic_area_seen = new Set();
-      const content_seen = new Set();
-
-      const rows_requirement_aux: RowsRequirement[] = [];
-
-      const row_spans_aux: RowSpan = {
-         thematic_area: {},
-         content: {},
-      };
-
-      const processed_items_aux = items.map((item) => {
-         const is_first_thematic_area = !thematic_area_seen.has(item.thematic_area);
-         const is_first_content = !content_seen.has(item.content);
-
-         if (is_first_thematic_area) thematic_area_seen.add(item.thematic_area);
-         if (is_first_content) content_seen.add(item.content);
-
-         const classes_relation =
-            !isNaN(item.performed_classes) && !isNaN(total_classes) ? item.performed_classes / total_classes : 0;
-
-         let classes_percentage: any = classes_relation * 100;
-         classes_percentage = Number.isInteger(classes_percentage)
-            ? parseInt(classes_percentage)
-            : classes_percentage.toFixed(1);
-
-         classes_percentage = total_classes === 0 ? " - " : classes_percentage + "%";
-
-         const item_question_count = Get_Assigned_Questions(item.row_skills).length;
-
-         const expected_item_question_count =
-            total_question_count > 0 && classes_relation > 0 ? Math.round(total_question_count * classes_relation) : 0;
-
-         const success_item_question_count =
-            item_question_count === expected_item_question_count ? " td-total-questions-successful" : "";
-
-         rows_requirement_aux.push({
-            real_value: item_question_count,
-            expected_value: expected_item_question_count,
-         });
-
-         row_spans_aux.thematic_area[item.thematic_area] = (row_spans_aux.thematic_area[item.thematic_area] || 0) + 1;
-         row_spans_aux.content[item.content] = (row_spans_aux.content[item.content] || 0) + 1;
-
-         return {
-            ...item,
-            render_thematic_area: is_first_thematic_area,
-            render_content: is_first_content,
-            classes_relation,
-            classes_percentage,
-            item_question_count,
-            expected_item_question_count,
-            success_item_question_count,
-         };
-      });
-
-      return { processed_items_aux, row_spans_aux, rows_requirement_aux };
-   }
 
    useEffect(() => {
       const unlisten = $update_spect_flag.listen(() => Update_Specifications_Table());
@@ -182,14 +116,14 @@ export default function Specifications_Table() {
    useEffect(() => {
       local_spec_table_ref.current = local_spec_table;
 
-      const { processed_items_aux, row_spans_aux, rows_requirement_aux } = Process_Table_Items(
+      const { processed_items, row_spans, rows_requirement } = Process_Table_Items(
          local_spec_table.items,
          total_classes,
          total_question_count
       );
-      set_processed_items(processed_items_aux);
-      set_row_spans(row_spans_aux);
-      rows_requirement_ref.current = rows_requirement_aux;
+      set_processed_items(processed_items);
+      set_row_spans(row_spans);
+      rows_requirement_ref.current = rows_requirement;
    }, [local_spec_table]);
 
    useEffect(() => {
@@ -376,7 +310,7 @@ export default function Specifications_Table() {
                <td className="text-center number-cell">100%</td>
                {local_spec_table.quiz_skills.map((_, skill_index) => (
                   <td key={"foot-skill-index-" + skill_index} className="text-center number-cell">
-                     {Get_Skill_Content_Columns(skill_index).length}
+                     {Get_Skill_Content_Columns(skill_index, local_spec_table.items).length}
                   </td>
                ))}
                {/* <td className="text-center number-cell item-total-skill">0</td>
