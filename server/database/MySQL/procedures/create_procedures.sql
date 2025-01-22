@@ -384,12 +384,6 @@ CREATE PROCEDURE $UPDATE_QUIZ(IN $quiz_uuid CHAR(36), IN $creation_date DATETIME
 
 
 
-
-
-
-
-
-
 CREATE VIEW drafts AS
 	SELECT 
 		quiz.uuid,
@@ -436,3 +430,43 @@ CREATE PROCEDURE $GET_QUIZZES()
 		SELECT * FROM performed;
 
 	END;
+
+DROP PROCEDURE IF EXISTS $SAVE_PERFORMED_QUIZ;
+CREATE PROCEDURE $SAVE_PERFORMED_QUIZ(
+    IN $quiz_uuid CHAR(36), 
+    IN $google_form_id VARCHAR(255), 
+    IN $google_form_url VARCHAR(255)
+)
+BEGIN
+    DECLARE $success BOOLEAN DEFAULT FALSE;
+    DECLARE $error_message VARCHAR(255) DEFAULT NULL;
+
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION, SQLWARNING
+    BEGIN
+        -- Manejo de errores
+        SET $success = FALSE;
+        SET $error_message = IFNULL($error_message, 'Error inesperado al ejecutar el procedimiento.');
+        ROLLBACK;
+        SELECT $success AS success, $error_message AS error_message;
+    END;
+
+    -- Iniciar transacción
+    START TRANSACTION;
+    
+    INSERT IGNORE INTO quiz_performed (quiz_id, google_form_id, google_form_url, creation_date)
+    VALUES ((SELECT id FROM quiz WHERE uuid = $quiz_uuid), $google_form_id, $google_form_url, NOW());
+
+    IF ROW_COUNT() = 0 THEN
+        SET $error_message = 'No se realizó la inserción debido a un conflicto de datos.';
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = $error_message;
+    END IF;
+
+    -- Confirmar transacción
+    SET $success = TRUE;
+    SET $error_message = NULL;
+
+    COMMIT;
+
+    SELECT $success AS success, $error_message AS error_message;
+END;
+

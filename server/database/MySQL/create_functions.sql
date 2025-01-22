@@ -27,9 +27,6 @@ BEGIN
 END;
 
 
-
-
-
 DROP FUNCTION IF EXISTS Get_Quiz_Metadata;
 
 CREATE FUNCTION Get_Quiz_Metadata($quiz_uuid VARCHAR(36)) RETURNS JSON READS SQL DATA
@@ -205,8 +202,6 @@ CREATE FUNCTION Get_Quiz($quiz_uuid VARCHAR(36)) RETURNS JSON READS SQL DATA
 		RETURN $quiz_data;
 
 	END;
-
-
 
 
 

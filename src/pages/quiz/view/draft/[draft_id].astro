@@ -93,7 +93,7 @@ function Update_Specifications_Table() {
     fetch("/request/quiz/generate", {
       method: "POST",
       headers: { "content-type": "application/json" },
-      body: JSON.stringify($quiz_store.get()),
+      body: JSON.stringify({ quiz_uuid: draft_id }),
     })
       .then((response) => {
         if (!response.ok) {
@@ -115,7 +115,7 @@ function Update_Specifications_Table() {
       .then(() => Generate_Google_Form_btn.setAttribute("disabled", ""))
       .catch((error) => {
         console.error(error);
-        End_Animation(error, true);
+        End_Animation("Error al generar formulario!", true);
       });
   }
 

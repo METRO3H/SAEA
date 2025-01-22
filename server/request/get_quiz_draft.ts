@@ -1,16 +1,18 @@
 import express from "express";
-import { Process_Request } from "./handle_request.js";
-import { Fetch_Data } from "../database/db.js";
 import Report_Status from "../../util/report_status.js";
 import { Quiz } from "@QuizTypes";
+import { Process_Request } from "./handle_request.js";
+import { Fetch_Data } from "../database/db.js";
+import { Is_Drafted } from "../handlers/is_drafted.js";
 
 const router = express.Router();
 
 router.get("/:quiz_uuid", async function (request, response) {
    let message: string = "";
+
    await Process_Request(response, async () => {
       const quiz_uuid = request.params.quiz_uuid;
-      const is_drafted: boolean = await Is_Drafted(quiz_uuid);
+      const is_drafted = await Is_Drafted(quiz_uuid);
 
       if (!is_drafted) {
          message = "Quiz not found!";
@@ -35,26 +37,8 @@ router.get("/:quiz_uuid", async function (request, response) {
    });
 });
 
-async function Is_Drafted(quiz_uuid: string): Promise<boolean> {
-   const query = /*sql*/ ` 
-        SELECT 
-        NOT EXISTS (
-            SELECT 1 
-            FROM quiz_performed 
-            JOIN quiz 
-            ON quiz.id = quiz_performed.quiz_id
-            WHERE quiz.uuid = ?
-        ) AS is_drafted
-    `;
 
-   const [db_response]: any = await Fetch_Data(query, [quiz_uuid]);
-
-   const is_drafted = db_response.is_drafted;
-
-   return is_drafted;
-}
-
-async function Get_Quiz_Draft(quiz_uuid: string) {
+export async function Get_Quiz_Draft(quiz_uuid: string) {
    const query = /*sql*/ `SELECT Get_Quiz(?) AS quiz_data`;
    const [db_response]: any = await Fetch_Data(query, [quiz_uuid]);
    const quiz_data: Quiz = db_response.quiz_data;
