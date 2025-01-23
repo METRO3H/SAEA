@@ -109,3 +109,4 @@ export interface Quizzes{
    }[];
    performed: object[];
 }
+

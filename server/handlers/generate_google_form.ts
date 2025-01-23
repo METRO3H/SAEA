@@ -4,8 +4,6 @@ import Report_Status from "../../util/report_status.js";
 import type { Quiz } from "@QuizTypes";
 import path from "path";
 import google from "@googleapis/forms";
-import moment from "moment";
-import chalk from "chalk";
 
 export default async function (data: Quiz) {
     if (!data.quiz_id.trim()) throw new Error("No se ha especificado el ID del Quiz");
@@ -20,7 +18,6 @@ export default async function (data: Quiz) {
     Report_Status("success", "Quiz generado con éxito!");
 
     return {
-     
         google_form_url: quiz_url,
         google_form_id: create_form_response.data.formId,
     
@@ -78,6 +75,9 @@ async function Create_Form(form_access: any, form_title: string) {
 
 async function Fill_Form(access_form_response: google.forms_v1.Forms, create_form_response: any, quiz_data: Quiz) {
   const questions = quiz_data.questions;
+  const new_items: { requests: any[] } = {
+    requests: [],
+  }
 
   for (let i = 0; i < questions.length; i++) {
     const question_item = questions[i];
@@ -85,51 +85,44 @@ async function Fill_Form(access_form_response: google.forms_v1.Forms, create_for
     const correct_answers = [answers[question_item.correct_answer_index]];
 
     const new_item = await Create_Item(question_item.question, answers, correct_answers, i);
-
-    await access_form_response.forms.batchUpdate({
-      formId: create_form_response.data.formId,
-      requestBody: new_item,
-    });
-
-    console.log(chalk.greenBright(`   ➕    Pregunta ${i + 1} agregada...`));
-    // console.log(` ▶ Pregunta ${i + 1} agregada...`);
+    new_items.requests.push(new_item);
   }
 
-  return;
+  await access_form_response.forms.batchUpdate({
+    formId: create_form_response.data.formId,
+    requestBody: new_items,
+  });
+
 }
 
 async function Create_Item(question: string, answers_map: object[], correct_answers_map: object[], position: number) {
-  const new_item = {
-    requests: [
-      {
-        createItem: {
-          item: {
-            title: question,
-            questionItem: {
-              question: {
-                required: true,
-                grading: {
-                  pointValue: 2,
-                  correctAnswers: {
-                    answers: correct_answers_map,
-                  },
-                  whenRight: { text: "You got it!" },
-                  whenWrong: { text: "Sorry, that's wrong" },
-                },
-                choiceQuestion: {
-                  type: "RADIO",
-                  options: answers_map,
-                },
+  const new_item =   {
+    createItem: {
+      item: {
+        title: question,
+        questionItem: {
+          question: {
+            required: true,
+            grading: {
+              pointValue: 2,
+              correctAnswers: {
+                answers: correct_answers_map,
               },
+              whenRight: { text: "You got it!" },
+              whenWrong: { text: "Sorry, that's wrong" },
             },
-          },
-
-          location: {
-            index: position,
+            choiceQuestion: {
+              type: "RADIO",
+              options: answers_map,
+            },
           },
         },
       },
-    ],
+
+      location: {
+        index: position,
+      },
+    },
   };
 
   return new_item;

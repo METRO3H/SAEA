@@ -5,7 +5,7 @@ import google from "@googleapis/forms";
 import {authenticate} from "@google-cloud/local-auth";
 
 
-export default async function runSample(query) {
+export default async function runSample() {
   const authClient = await authenticate({
     keyfilePath: path.join(process.cwd(), "credentials.json"),
     scopes: "https://www.googleapis.com/auth/drive",
@@ -45,6 +45,8 @@ export default async function runSample(query) {
     requestBody: updateRequest,
   });
 
+  const requestaciones = { requests: [] };
+
   for (let i = 0; i < 4; i++) {
 
     const question =
@@ -59,62 +61,59 @@ export default async function runSample(query) {
     const answers_map = answers.map((name) => ({ value: name }));
     const correct_answers_map = correct_answers.map((name) => ({value: name}))
 
-    console.log(answers_map)
-    console.log(correct_answers_map)
     
-    const request_new_item = Create_Item(question, answers_map, correct_answers_map, i);
+    const new_item = Create_Item(question, answers_map, correct_answers_map, i);
 
-    await Add_New_Item(forms, createResponse, request_new_item);
+    requestaciones.requests.push(new_item);
+
   }
+
+  await Add_New_Item(forms, createResponse, requestaciones);
 
   return
 }
 
-async function Add_New_Item(forms, createResponse, request_new_item) {
+async function Add_New_Item(forms, createResponse, new_item) {
   const response_add_item = await forms.forms.batchUpdate({
     formId: createResponse.data.formId,
-    requestBody: request_new_item,
+    requestBody: new_item,
   });
 
   return response_add_item.data;
 }
 
 function Create_Item(question, answers_map, correct_answers_map, position) {
-  console.log(position)
   const request_new_item = {
-    requests: [
-      {
-        createItem: {
-          item: {
-            title: question,
-            questionItem: {
-              question: {
-                required: true,
-                grading: {
-                  pointValue: 2,
-                  correctAnswers: {
-                    answers: correct_answers_map
-                  },
-                  whenRight: { text: "You got it!" },
-                  whenWrong: { text: "Sorry, that's wrong" },
-                },
-                choiceQuestion: {
-                  type: "RADIO",
-                  options: answers_map,
-                },
+    createItem: {
+      item: {
+        title: question,
+        questionItem: {
+          question: {
+            required: true,
+            grading: {
+              pointValue: 2,
+              correctAnswers: {
+                answers: correct_answers_map
               },
+              whenRight: { text: "You got it!" },
+              whenWrong: { text: "Sorry, that's wrong" },
             },
-          },
-
-          location: {
-            index: position,
+            choiceQuestion: {
+              type: "RADIO",
+              options: answers_map,
+            },
           },
         },
       },
-    ],
+
+      location: {
+        index: position,
+      },
+    },
   };
 
   return request_new_item;
 }
 
 
+await runSample();

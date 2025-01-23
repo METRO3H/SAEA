@@ -134,7 +134,7 @@ function Update_Specifications_Table() {
     // ) as HTMLDivElement;
 
     const modal_message_text = document.querySelector("#modal-message-text") as HTMLDivElement;
-    modal_message_text.textContent = response.message || "";
+    modal_message_text.textContent = response.message || "Ha ocurrido un error al generar el formulario";
 
     const btn_close_modal = document.querySelector(".btn-close-modal") as HTMLElement;
 
