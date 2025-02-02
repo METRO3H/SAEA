@@ -1,14 +1,12 @@
 "use strict";
-import { authenticate } from "@google-cloud/local-auth";
-import Report_Status from "../../util/report_status.js";
 import type { Quiz } from "@QuizTypes";
-import path from "path";
 import google from "@googleapis/forms";
+import Report_Status from "../../util/report_status.js";
 
-export default async function (data: Quiz) {
+export default async function (oauth2Client: any, data: Quiz) {
     if (!data.quiz_id.trim()) throw new Error("No se ha especificado el ID del Quiz");
 
-    const access_form_response = await User_Authentication();
+    const access_form_response = await User_Authentication(oauth2Client);
     const create_form_response = await Create_Form(access_form_response, data.quiz_title);
     await Fill_Form(access_form_response, create_form_response, data);
     // console.log(create_form_response.data);
@@ -24,16 +22,16 @@ export default async function (data: Quiz) {
     };
 }
 
-async function User_Authentication() {
-  const main_folder = process.cwd();
-  const authClient = await authenticate({
-    keyfilePath: path.join(main_folder, "credentials.json"),
-    scopes: "https://www.googleapis.com/auth/drive",
-  });
+async function User_Authentication(oauth2Client:any) {
+  // const main_folder = process.cwd();
+  // const authClient = await authenticate({
+  //   keyfilePath: path.join(main_folder, "credentials.json"),
+  //   scopes: "https://www.googleapis.com/auth/drive",
+  // });
 
   const forms = google.forms({
     version: "v1",
-    auth: authClient,
+    auth: oauth2Client,
   });
 
   return forms;

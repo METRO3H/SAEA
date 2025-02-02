@@ -48,39 +48,39 @@ router.put("/update", async (request, response) => {
    });
 });
 
-router.post("/generate", async (request, response) => {
-   let message: string = "";
-   await Process_Request(response, async () => {
-      const quiz_uuid = request.body.quiz_uuid;
+// router.post("/generate", async (request, response) => {
+//    let message: string = "";
+//    await Process_Request(response, async () => {
+//       const quiz_uuid = request.body.quiz_uuid;
 
-      const is_drafted = await Is_Drafted(quiz_uuid);
+//       const is_drafted = await Is_Drafted(quiz_uuid);
 
-      if (!is_drafted) {
-         message = "Quiz not found!";
-         response.status(404).send({ message });
-         Report_Status("error", message);
-         Report_Status("divider");
-         return;
-      }
+//       if (!is_drafted) {
+//          message = "Quiz not found!";
+//          response.status(404).send({ message });
+//          Report_Status("error", message);
+//          Report_Status("divider");
+//          return;
+//       }
 
-      const quiz_data: Quiz = await Get_Quiz(quiz_uuid);
+//       const quiz_data: Quiz = await Get_Quiz(quiz_uuid);
 
-      const { google_form_url, google_form_id } = await Generate_Google_Form(quiz_data);
+//       const { google_form_url, google_form_id } = await Generate_Google_Form(quiz_data);
 
-      const query = /*sql*/ ` CALL $SAVE_PERFORMED_QUIZ(?, ?, ?)`;
+//       const query = /*sql*/ ` CALL $SAVE_PERFORMED_QUIZ(?, ?, ?)`;
 
-      const [db_response]: any = await Execute_Query(query, [quiz_uuid, google_form_id, google_form_url]);
+//       const [db_response]: any = await Execute_Query(query, [quiz_uuid, google_form_id, google_form_url]);
 
-      const [success, error_message] = db_response;
+//       const [success, error_message] = db_response;
 
-      if (!success) throw new Error(error_message);
+//       if (!success) throw new Error(error_message);
 
-      message = "Google Form generado con exito";
-      Report_Status("success", message);
-      Report_Status("divider");
+//       message = "Google Form generado con exito";
+//       Report_Status("success", message);
+//       Report_Status("divider");
 
-      response.status(200).send({ message, data: { google_form_url, google_form_id } });
-   });
-});
+//       response.status(200).send({ message, data: { google_form_url, google_form_id } });
+//    });
+// });
 
 export default router;

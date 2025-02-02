@@ -21,6 +21,7 @@ export interface SpecTableItem{
     objective: string;
     performed_classes: number;
     row_skills: string [];
+    row_position: number;
 }
 
 
