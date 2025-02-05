@@ -1,17 +1,22 @@
+import { Close_Pool } from "./database/db.js"; // Asegúrate de importar la función de cierre del pool
+import Report_Status from "../util/report_status.js";
 import express from "express";
 import bodyParser from "body-parser";
 import router from "./request/router.js";
 import chalk from "chalk";
-import Report_Status from "../util/report_status.js";
 import cors from "cors";
-import { Close_Pool } from "./database/db.js"; // Asegúrate de importar la función de cierre del pool
+import cookie_parser from "cookie-parser";
 
 const app = express();
 
 // Configuración de middlewares
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-app.use(cors());
+app.use(cors({
+   origin: "http://localhost:4321",
+   credentials: true
+}));
+app.use(cookie_parser());
 
 // Rutas
 app.use("/request", router);

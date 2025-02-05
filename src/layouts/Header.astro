@@ -1,52 +1,59 @@
 ---
 import HeaderLink from "./HeaderLink.astro";
 import { SITE_TITLE } from "../const";
+import type { ProfileData } from "../content/types";
+import ProfileDropdown from "../components/profile_dropdown.astro";
+
+const { profile_data } = Astro.props;
+const { name, last_name, email } = profile_data || {};
 ---
 
 <header>
-  <nav>
-    <h2><a href="/">{SITE_TITLE}</a></h2>
-    <div class="internal-links">
-      <HeaderLink href="/">Home</HeaderLink>
-      <HeaderLink href="/quiz/view/all">Cuestionarios</HeaderLink>
-      <HeaderLink href="/quiz/create">Crear cuestionario</HeaderLink>
-      <HeaderLink href="/test">Test</HeaderLink>
-    </div>
-  </nav>
+   <nav>
+      <h2><a href="/">{SITE_TITLE}</a></h2>
+      <div class="internal-links">
+         <HeaderLink href="/">Home</HeaderLink>
+         <HeaderLink href="/quiz/view/all">Cuestionarios</HeaderLink>
+         <HeaderLink href="/quiz/create">Crear cuestionario</HeaderLink>
+         <ProfileDropdown email={email} name={name} last_name={last_name}/>
+      </div>
+   </nav>
 </header>
 <style>
-  header {
-    margin: 0;
-    padding: 0 1em;
-    background: white;
-    box-shadow: 0 2px 8px rgba(var(--black), 5%);
-  }
-  h2 {
-    margin: 0;
-    font-size: 1em;
-  }
+   header {
+      margin: 0;
+      padding: 0 1em;
+      background: white;
+      box-shadow: 0 2px 8px rgba(var(--black), 5%);
+   }
+   h2 {
+      margin: 0;
+      font-size: 1em;
+   }
 
-  h2 a,
-  h2 a.active {
-    text-decoration: none;
-  }
-  nav {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-  nav a {
-    padding: 8px 0.5em;
-    color: var(--black);
-    border-bottom: 4px solid transparent;
-    text-decoration: none;
-  }
-  nav a.active {
-    text-decoration: none;
-    border-bottom-color: var(--accent);
-  }
-  .internal-links {
-    margin: 0 auto;
-    padding-right: 71px;
-  }
+   h2 a,
+   h2 a.active {
+      text-decoration: none;
+   }
+   nav {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+   }
+   nav a {
+      padding: 15px 0.5em;
+      color: var(--black);
+      border-bottom: 4px solid transparent;
+      text-decoration: none;
+   }
+   nav a.active {
+      text-decoration: none;
+      border-bottom-color: var(--accent);
+   }
+   .internal-links {
+      height: 100%;
+      margin: 0 auto;
+      padding-right: 71px;
+   }
 </style>

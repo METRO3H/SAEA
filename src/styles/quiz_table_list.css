@@ -1,7 +1,7 @@
 #table-head {
     position: sticky;
     top: 0;
-    z-index: 9999;
+    z-index: 555;
     --mdb-table-bg: var(--main-color-blue);
     --mdb-table-color: white;
     /* background: blue; */

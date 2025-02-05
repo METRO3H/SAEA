@@ -20,16 +20,22 @@ DROP TABLE IF EXISTS teacher;
 CREATE TABLE
     IF NOT EXISTS teacher (
         id INT NOT NULL AUTO_INCREMENT UNIQUE,
+        google_id VARCHAR(255) UNIQUE NOT NULL,
+        email VARCHAR(255) NOT NULL UNIQUE,
         name VARCHAR(255) NOT NULL,
         last_name VARCHAR(255) DEFAULT NULL,
-        email VARCHAR(255) NOT NULL UNIQUE,
+        access_token TEXT NOT NULL,
+        refresh_token TEXT NOT NULL,
+        token_expiry DATETIME NOT NULL,
+        
         PRIMARY KEY (id)
     ) ENGINE = InnoDB;
 
-INSERT INTO
-    teacher (name, last_name, email)
-VALUES
-    ("Bob", "Smith", "bob@gmail.com");
+
+-- INSERT INTO
+--     teacher (name, last_name, email)
+-- VALUES
+--     ("Bob", "Smith", "bob@gmail.com");
 
 CREATE TABLE
     IF NOT EXISTS spect_subject (

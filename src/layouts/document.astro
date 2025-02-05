@@ -3,7 +3,7 @@ import BaseHead from "@layouts/BaseHead.astro";
 import Header from "@layouts/Header.astro";
 import Footer from "@layouts/Footer.astro";
 
-const { title, description } = Astro.props;
+const { title, description, show_header = true, profile_data = null } = Astro.props;
 ---
 
 <html lang="en">
@@ -11,7 +11,7 @@ const { title, description } = Astro.props;
     <BaseHead title={title} description={description} />
   </head>
   <body>
-    <Header />
+    {show_header && <Header profile_data={profile_data} />}
     <main>
       <slot />
     </main>

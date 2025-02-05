@@ -1,32 +1,13 @@
 ---
 import Document from "@layouts/document.astro";
+import { Get_Profile_Data } from "@handlers/get_profile_data";
+
+if (!Astro.cookies.has("session_token")) return Astro.redirect("/login");
+const session_token =  Astro.cookies.get("session_token")?.value as string;
+const profile_data = await Get_Profile_Data(session_token);
 ---
 
-<Document title="SAEA" description="SAEA">
-  <!-- List group -->
-  <div class="list-group" id="myList" role="tablist">
-    <a
-      class="list-group-item list-group-item-action active"
-      data-mdb-list-init
-      href="#home"
-      role="tab">Home</a
-    >
-    <a class="list-group-item list-group-item-action" data-mdb-list-init href="#profile" role="tab"
-      >Profile</a
-    >
-    <a class="list-group-item list-group-item-action" data-mdb-list-init href="#messages" role="tab"
-      >Messages</a
-    >
-    <a class="list-group-item list-group-item-action" data-mdb-list-init href="#settings" role="tab"
-      >Settings</a
-    >
-  </div>
+<Document title="SAEA" description="SAEA" profile_data={profile_data}>
 
-  <!-- Tab panes -->
-  <div class="tab-content">
-    <div class="tab-pane active" id="home" role="tabpanel">HOME</div>
-    <div class="tab-pane" id="profile" role="tabpanel">PROFILE</div>
-    <div class="tab-pane" id="messages" role="tabpanel">MESSAGES</div>
-    <div class="tab-pane" id="settings" role="tabpanel">SETTINGS</div>
-  </div>
+   <h1>SAEA</h1>
 </Document>

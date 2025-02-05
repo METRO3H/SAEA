@@ -2,9 +2,14 @@
 import Document from "@layouts/document.astro";
 import Search_Input from "@components/search_input.astro";
 import Quiz_Table_List from "@components/quiz_list/quiz_table_list.tsx";
+import { Get_Profile_Data } from "@handlers/get_profile_data";
+
+if (!Astro.cookies.has("session_token")) return Astro.redirect("/login");
+const session_token =  Astro.cookies.get("session_token")?.value as string;
+const profile_data = await Get_Profile_Data(session_token);
 ---
 
-<Document title="Cuestionarios" description="Lista de cuestionarios">
+<Document title="Cuestionarios" description="Lista de cuestionarios" profile_data={profile_data}>
   <div id="main">
     <div id="main-container">
       <div id="filter-container">

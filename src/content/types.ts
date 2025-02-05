@@ -1,3 +1,4 @@
+
 export interface Quiz {
    quiz_id: string;
    google_form_url: string;
@@ -111,3 +112,9 @@ export interface Quizzes{
    performed: object[];
 }
 
+
+export interface ProfileData{
+   name: string;
+   last_name: string;
+   email: string;
+}

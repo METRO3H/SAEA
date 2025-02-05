@@ -1,0 +1,60 @@
+---
+const { name, last_name, email } = Astro.props;
+---
+
+<!-- Link -->
+<div class="btn-group drop-btn-group shadow-0">
+   <a
+      type="button"
+      class="btn btn-link dropdown-toggle btn-lg"
+      data-mdb-dropdown-init
+      data-mdb-ripple-init
+      aria-expanded="false"
+      data-mdb-display="static"
+      data-mdb-auto-close="outside"
+      data-mdb-dropdown-animation="off"
+   >
+   {name}
+   </a>
+   <ul class="dropdown-menu">
+    <li><h6 class="dropdown-header text-primary">{name} {last_name}</h6></li>
+      <li><hr class="dropdown-divider text-" /></li>
+      <li><a class="dropdown-item" href="#">Perfil</a></li>
+      <li><a class="dropdown-item" href="#">Configuraciones</a></li>
+      <li><hr class="dropdown-divider" /></li>
+      <li><a id="logout" class="dropdown-item" href="#">Cerrar sesión</a></li>
+   </ul>
+</div>
+
+<style>
+   .drop-btn-group {
+      height: 100%;
+   }
+   a.btn-link {
+      align-content: center;
+   }
+</style>
+
+<script>  
+  // link
+  const logout = document.querySelector("#logout") as HTMLAnchorElement;
+
+  logout.addEventListener("click", async (event) => {
+    event.preventDefault();
+    const response = await fetch("/request/oauth2/google/logout", {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        "X-Requested-With": "XmlHttpRequest", 
+      },
+    });
+
+    if (response.ok) {
+      window.location.reload();
+    } else {
+      console.error("Error:", response.statusText);
+    }
+  });
+</script>
+

@@ -5,9 +5,14 @@ import Quiz_Title_Fixed from "@components/quiz_title/quiz_title_fixed";
 import Specifications_Table_Fixed from "@components/Specifications_Table/specifications_table_fixed";
 import Questions_Data_Fixed from "@components/question/fixed/questions_data_fixed";
 import GoogleForm_btn from "@components/buttons/google_form_btn.astro";
+import { Get_Profile_Data } from "@handlers/get_profile_data";
+
+if (!Astro.cookies.has("session_token")) return Astro.redirect("/login");
+const session_token =  Astro.cookies.get("session_token")?.value as string;
+const profile_data = await Get_Profile_Data(session_token);
 ---
 
-<Document title="Quiz realizado" description="Quiz realizado">
+<Document title="Quiz realizado" description="Quiz realizado" profile_data={profile_data}>
    <Quiz_Layout>
       <Quiz_Title_Fixed slot="quiz-title" client:only="react" />
       <Specifications_Table_Fixed slot="specifications-table" client:only="react" />

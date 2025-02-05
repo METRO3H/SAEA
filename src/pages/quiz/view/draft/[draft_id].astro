@@ -7,9 +7,14 @@ import Questions_Data from "@components/question/editable/questions_data";
 import Save_Quiz_Button from "@components/buttons/save_quiz.astro";
 import GoogleForm_btn from "@components/buttons/google_form_btn.astro";
 import Modal from "@components/modal.astro";
+import { Get_Profile_Data } from "@handlers/get_profile_data";
+
+if (!Astro.cookies.has("session_token")) return Astro.redirect("/login");
+const session_token =  Astro.cookies.get("session_token")?.value as string;
+const profile_data = await Get_Profile_Data(session_token);
 ---
 
-<Document title="Crear Quiz" description="Crear Quiz">
+<Document title="Crear Quiz" description="Crear Quiz" profile_data={profile_data}>
   <Quiz_Layout>
     <Quiz_Title slot="quiz-title" client:only="react" />
     <Specifications_Table slot="specifications-table" client:only="react" />

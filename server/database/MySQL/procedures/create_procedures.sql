@@ -470,3 +470,52 @@ BEGIN
     SELECT $success AS success, $error_message AS error_message;
 END;
 
+
+DROP PROCEDURE IF EXISTS $SAVE_TEACHER;
+CREATE PROCEDURE $SAVE_TEACHER(
+	IN $google_id VARCHAR(255),
+	IN $email VARCHAR(255), 
+	IN $name VARCHAR(255), 
+	IN $last_name VARCHAR(255), 
+	IN $access_token TEXT, 
+	IN $refresh_token TEXT, 
+	IN $token_expiry INT
+ )
+	BEGIN
+
+		DECLARE $success BOOLEAN DEFAULT FALSE;
+		DECLARE $error_message VARCHAR(255) DEFAULT NULL;
+
+		-- Declarar un manejador para errores SQL
+		DECLARE EXIT HANDLER FOR SQLEXCEPTION
+      BEGIN
+        -- Capturar el mensaje de error
+        GET DIAGNOSTICS CONDITION 1 $error_message = MESSAGE_TEXT;
+
+        SELECT $success AS success, $error_message AS error_message;
+
+        ROLLBACK;
+      END;
+
+		START TRANSACTION;
+
+			INSERT INTO teacher (google_id, email, name, last_name, access_token, refresh_token, token_expiry)
+			VALUES ( $google_id, $email, $name, $last_name, $access_token, $refresh_token, FROM_UNIXTIME($token_expiry))
+			ON DUPLICATE KEY UPDATE
+			access_token = VALUES(access_token),
+			refresh_token = VALUES(refresh_token);
+
+			IF ROW_COUNT() = 0 THEN
+				SET $error_message = 'No se realizó la inserción debido a un conflicto de datos.';
+				SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = $error_message;
+			END IF;
+
+			-- Confirmar transacción
+			SET $success = TRUE;
+
+		COMMIT;
+
+		SELECT $success AS success, $error_message AS error_message;
+
+	END;
+
