@@ -39,7 +39,7 @@ const { name, last_name, email } = Astro.props;
   // link
   const logout = document.querySelector("#logout") as HTMLAnchorElement;
 
-  logout.addEventListener("click", async (event) => {
+  logout?.addEventListener("click", async (event) => {
     event.preventDefault();
     const response = await fetch("/request/oauth2/google/logout", {
       method: "POST",

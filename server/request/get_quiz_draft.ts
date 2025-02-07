@@ -4,15 +4,17 @@ import { Quiz } from "@QuizTypes";
 import { Process_Request } from "./handle_request.js";
 import { Is_Drafted } from "../handlers/is_drafted.js";
 import { Get_Quiz } from "../handlers/get_quiz.js";
+import { Verify_Session_Token } from "../handlers/verify_session_token.js";
 
 const router = express.Router();
 
-router.get("/:quiz_uuid", async function (request, response) {
+router.get("/:quiz_uuid", Verify_Session_Token,async function (request:any, response) {
    let message: string = "";
 
    await Process_Request(response, async () => {
+      const teacher_id = request.user_data.teacher_id;
       const quiz_uuid = request.params.quiz_uuid;
-      const is_drafted = await Is_Drafted(quiz_uuid);
+      const is_drafted = await Is_Drafted(teacher_id, quiz_uuid);
 
       if (!is_drafted) {
          message = "Quiz not found!";

@@ -19,13 +19,6 @@ DROP PROCEDURE IF EXISTS $GET_QUIZZES;
 DROP VIEW IF EXISTS drafts;
 DROP VIEW IF EXISTS performed;
 
-CREATE PROCEDURE 
-    $SAVE_TEACHER(IN $name VARCHAR(255), IN $last_name VARCHAR(255), IN $email VARCHAR(255))
-	BEGIN
-		INSERT IGNORE INTO teacher (name, last_name, email)
-		VALUES ($name, $last_name, $email);
-	END;
-
 
 CREATE PROCEDURE
     $SAVE_SPECT_SUBJECT (IN $statement VARCHAR(255), IN $teacher_id INT, IN $creation_date DATETIME) 
@@ -326,9 +319,8 @@ CREATE PROCEDURE $PROCESS_QUESTIONS( IN $quiz_id INT, IN $teacher_id INT, IN $cr
 	END;
 	
 DROP PROCEDURE IF EXISTS $PROCESS_QUIZ;
-CREATE PROCEDURE $PROCESS_QUIZ(IN $quiz_uuid CHAR(36), IN $creation_date DATETIME, IN $quiz_data JSON)
+CREATE PROCEDURE $PROCESS_QUIZ(IN $teacher_id INT, IN $quiz_uuid CHAR(36), IN $creation_date DATETIME, IN $quiz_data JSON)
   BEGIN 
-    DECLARE $teacher_id INT;
     DECLARE $subject_statement VARCHAR(255);
     DECLARE $subject_id INT;
     DECLARE $quiz_title VARCHAR(255);
@@ -339,11 +331,9 @@ CREATE PROCEDURE $PROCESS_QUIZ(IN $quiz_uuid CHAR(36), IN $creation_date DATETIM
     DECLARE $question_items JSON;
 
     
-    SET $teacher_id = 1;
     SET $quiz_title = JSON_UNQUOTE(JSON_EXTRACT($quiz_data, '$.quiz_title'));
     SET $subject_statement = JSON_UNQUOTE(JSON_EXTRACT($quiz_data, '$.quiz_subject'));
     
-    CALL $SAVE_TEACHER("bob", "esponja", "bob@esponja.cl");
     CALL $SAVE_SPECT_SUBJECT ($subject_statement, $teacher_id, $creation_date);
     CALL $SAVE_QUIZ_METADATA($quiz_uuid, $subject_statement, $teacher_id, $quiz_title, $creation_date);
 		
@@ -364,7 +354,7 @@ CREATE PROCEDURE $PROCESS_QUIZ(IN $quiz_uuid CHAR(36), IN $creation_date DATETIM
   END;
 
 DROP PROCEDURE IF EXISTS $SAVE_QUIZ;
-CREATE PROCEDURE $SAVE_QUIZ(IN $quiz_data JSON)
+CREATE PROCEDURE $SAVE_QUIZ(IN $teacher_id INT, IN $quiz_data JSON) 
 	BEGIN
 		DECLARE $quiz_uuid CHAR(36);
 		DECLARE $creation_date DATETIME;
@@ -372,14 +362,14 @@ CREATE PROCEDURE $SAVE_QUIZ(IN $quiz_data JSON)
 		SET $quiz_uuid = UUID();
 		SET $creation_date = NOW();
 
-		CALL $PROCESS_QUIZ($quiz_uuid, $creation_date, $quiz_data);
+		CALL $PROCESS_QUIZ($teacher_id, $quiz_uuid, $creation_date, $quiz_data);
 		SELECT $quiz_uuid AS quiz_uuid;
 	END;
 
 DROP PROCEDURE IF EXISTS $UPDATE_QUIZ;
-CREATE PROCEDURE $UPDATE_QUIZ(IN $quiz_uuid CHAR(36), IN $creation_date DATETIME, IN $quiz_data JSON)
+CREATE PROCEDURE $UPDATE_QUIZ(IN $teacher_id INT, IN $quiz_uuid CHAR(36), IN $creation_date DATETIME, IN $quiz_data JSON)
 	BEGIN
-		CALL $PROCESS_QUIZ($quiz_uuid, $creation_date, $quiz_data);
+		CALL $PROCESS_QUIZ($teacher_id, $quiz_uuid, $creation_date, $quiz_data);
 	END;
 
 
@@ -394,10 +384,10 @@ CREATE VIEW drafts AS
 				DATE_FORMAT(quiz.creation_date, '%H:%i')  -- Solo hora y minutos
 			ELSE 
 				DATE_FORMAT(quiz.creation_date, '%d/%m/%Y') -- Solo fecha en formato deseado
-		END AS creation_date
+		END AS creation_date,
+		quiz.teacher_id
 	FROM quiz
 	JOIN spect_subject ON spect_subject.id = quiz.spect_subject_id
-	WHERE quiz.teacher_id = 1
 	AND NOT EXISTS (
 		SELECT 1 
 		FROM quiz_performed 
@@ -406,7 +396,7 @@ CREATE VIEW drafts AS
 	ORDER BY quiz.creation_date DESC;
 
 CREATE VIEW performed AS
-	SELECT 
+	SELECT
 		quiz.title, 
 		spect_subject.statement AS subject,
 		 quiz_performed.google_form_id,
@@ -416,18 +406,18 @@ CREATE VIEW performed AS
 				DATE_FORMAT(quiz_performed.creation_date, '%H:%i')  -- Solo hora y minutos
 			ELSE 
 				DATE_FORMAT(quiz_performed.creation_date, '%d/%m/%Y') -- Solo fecha en formato deseado
-		END AS creation_date
+		END AS creation_date,
+		quiz.teacher_id
 	FROM quiz
 	JOIN spect_subject ON spect_subject.id = quiz.spect_subject_id
 	JOIN quiz_performed ON quiz_performed.quiz_id = quiz.id
-	WHERE quiz.teacher_id = 1
 	ORDER BY quiz_performed.creation_date DESC;
 
-CREATE PROCEDURE $GET_QUIZZES()
+CREATE PROCEDURE $GET_QUIZZES(IN $teacher_id INT)
 	BEGIN
-		SELECT * FROM drafts;
+		SELECT uuid, title, subject, creation_date FROM drafts WHERE teacher_id = $teacher_id;
 
-		SELECT * FROM performed;
+		SELECT title, subject, google_form_id, google_form_url, creation_date FROM performed WHERE teacher_id = $teacher_id;
 
 	END;
 
@@ -477,13 +467,12 @@ CREATE PROCEDURE $SAVE_TEACHER(
 	IN $email VARCHAR(255), 
 	IN $name VARCHAR(255), 
 	IN $last_name VARCHAR(255), 
-	IN $access_token TEXT, 
-	IN $refresh_token TEXT, 
-	IN $token_expiry INT
+	IN $refresh_token TEXT
  )
 	BEGIN
 
 		DECLARE $success BOOLEAN DEFAULT FALSE;
+    	DECLARE $teacher_id INT DEFAULT NULL;
 		DECLARE $error_message VARCHAR(255) DEFAULT NULL;
 
 		-- Declarar un manejador para errores SQL
@@ -492,18 +481,17 @@ CREATE PROCEDURE $SAVE_TEACHER(
         -- Capturar el mensaje de error
         GET DIAGNOSTICS CONDITION 1 $error_message = MESSAGE_TEXT;
 
-        SELECT $success AS success, $error_message AS error_message;
+        SELECT $success AS success, $teacher_id AS teacher_id, $error_message AS error_message;
 
         ROLLBACK;
       END;
 
 		START TRANSACTION;
 
-			INSERT INTO teacher (google_id, email, name, last_name, access_token, refresh_token, token_expiry)
-			VALUES ( $google_id, $email, $name, $last_name, $access_token, $refresh_token, FROM_UNIXTIME($token_expiry))
+			INSERT INTO teacher (google_id, email, name, last_name, refresh_token)
+			VALUES ( $google_id, $email, $name, $last_name, $refresh_token)
 			ON DUPLICATE KEY UPDATE
-			access_token = VALUES(access_token),
-			refresh_token = VALUES(refresh_token);
+				refresh_token = VALUES(refresh_token);
 
 			IF ROW_COUNT() = 0 THEN
 				SET $error_message = 'No se realizó la inserción debido a un conflicto de datos.';
@@ -513,9 +501,12 @@ CREATE PROCEDURE $SAVE_TEACHER(
 			-- Confirmar transacción
 			SET $success = TRUE;
 
+			SELECT id INTO $teacher_id FROM teacher WHERE google_id = $google_id;
+
 		COMMIT;
 
-		SELECT $success AS success, $error_message AS error_message;
+		
+
+		SELECT $success AS success, $teacher_id AS teacher_id, $error_message AS error_message;
 
 	END;
-

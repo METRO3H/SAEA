@@ -3,7 +3,6 @@ export interface Quiz {
    quiz_id: string;
    google_form_url: string;
    quiz_title: string;
-   created_by: number;
    quiz_subject: string;
    creation_date: string;
    specifications_table: SpecTable;

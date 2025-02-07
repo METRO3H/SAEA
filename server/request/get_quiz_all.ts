@@ -1,15 +1,19 @@
 import express from "express";
 import Report_Status from "../../util/report_status.js";
-import { Execute_Query } from "../database/db.js"; // Asegúrate de importar la función de cierre del pool
+import { Fetch_Data } from "../database/db.js"; // Asegúrate de importar la función de cierre del pool
 import { Process_Request } from "./handle_request.js";
+import { Verify_Session_Token } from "../handlers/verify_session_token.js";
 const router = express.Router();
 
-router.get("/", async function (request, response) {
+router.get("/", Verify_Session_Token, async function (request:any, response) {
   
   await Process_Request(response, async () => {
-      const query:string = /*sql*/ `CALL $GET_QUIZZES()`;
+
+      const teacher_id = request.user_data.teacher_id;
+
+      const query:string = /*sql*/ `CALL $GET_QUIZZES(?)`;
       
-      const db_response: any =  await Execute_Query(query);
+      const db_response: any =  await Fetch_Data(query, [teacher_id]);
 
       const [drafts, performed] = db_response;
       

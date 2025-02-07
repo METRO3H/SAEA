@@ -159,7 +159,6 @@ CREATE FUNCTION Get_Quiz($quiz_uuid VARCHAR(36)) RETURNS JSON READS SQL DATA
 
 		DECLARE $quiz_metadata JSON;
 		DECLARE $quiz_title VARCHAR(255);
-		DECLARE $teacher_id INT;
 		DECLARE $quiz_subject VARCHAR(255);
 		DECLARE $creation_date VARCHAR(255);
 		
@@ -173,22 +172,13 @@ CREATE FUNCTION Get_Quiz($quiz_uuid VARCHAR(36)) RETURNS JSON READS SQL DATA
 		SET $questions = Get_Questions($quiz_uuid);
 
 		SET $quiz_title = JSON_UNQUOTE(JSON_EXTRACT($quiz_metadata, '$.title'));
-		SET $teacher_id = JSON_UNQUOTE(JSON_EXTRACT($quiz_metadata, '$.teacher_id'));
 		SET $quiz_subject = JSON_UNQUOTE(JSON_EXTRACT($quiz_metadata, '$.subject'));
 
 		SET $creation_date = JSON_UNQUOTE(JSON_EXTRACT($quiz_metadata, '$.creation_date'));
-        -- SET $creation_date = (
-        --     CASE 
-        --         WHEN DATE($creation_date) = CURDATE() 
-        --             THEN DATE_FORMAT($creation_date, '%H:%i')
-        --             ELSE DATE_FORMAT($creation_date, '%d/%m/%Y') 
-        --     END
-        -- );
 
 		SET $quiz_data = JSON_OBJECT(
 			'quiz_id', $quiz_uuid,
 			'quiz_title', $quiz_title,
-			'created_by', $teacher_id,
 			'quiz_subject', $quiz_subject,
 			'creation_date', $creation_date,
 			'specifications_table', JSON_OBJECT(

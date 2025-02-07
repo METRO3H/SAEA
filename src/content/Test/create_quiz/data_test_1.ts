@@ -1,4 +1,4 @@
-import type { Quiz } from "@content/quiz_data";
+import type { Quiz } from "@content/types";
 export const data_test_1 = {
   quiz_title: "Test " + (Math.floor(Math.random() * (1000 - 2 + 1)) + 2),
   quiz_subject: "Matemáticas",
@@ -283,7 +283,6 @@ export const data_test_2 = {
 export const data_test_3: Quiz = {
   quiz_id: "",
   quiz_title: "Test " + (Math.floor(Math.random() * (1000 - 2 + 1)) + 2),
-  created_by: 1,
   quiz_subject: "Matemáticas",
   specifications_table: {
     total_questions: 15,
@@ -295,6 +294,7 @@ export const data_test_3: Quiz = {
         objective: "Identificar números naturales",
         performed_classes: 3,
         row_skills: ["1-2", "", ""],
+        row_position: 0,
       },
       {
         thematic_area: "Números",
@@ -302,6 +302,7 @@ export const data_test_3: Quiz = {
         objective: "Identificar números enteros",
         performed_classes: 3,
         row_skills: ["3-4", "", ""],
+        row_position: 1,
 
       },
       {
@@ -310,6 +311,7 @@ export const data_test_3: Quiz = {
         objective: "Realizar operaciones con números enteros",
         performed_classes: 4,
         row_skills: ["", "5-7", ""],
+        row_position: 2,
       },
       {
         thematic_area: "Álgebra",
@@ -317,6 +319,7 @@ export const data_test_3: Quiz = {
         objective: "Simplificar expresiones algebraicas",
         performed_classes: 5,
         row_skills: ["", "8-11", ""],
+        row_position: 3,
       },
       {
         thematic_area: "Álgebra",
@@ -324,6 +327,7 @@ export const data_test_3: Quiz = {
         objective: "Resolver ecuaciones",
         performed_classes: 5,
         row_skills: ["", "", "12-15"],
+        row_position: 4,
       },
     ],
   },
@@ -405,5 +409,5 @@ export const data_test_3: Quiz = {
     },
   ],
   google_form_url: "",
-  quiz_creation_date: ""
+  creation_date: ""
 };

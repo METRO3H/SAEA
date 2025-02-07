@@ -24,9 +24,7 @@ CREATE TABLE
         email VARCHAR(255) NOT NULL UNIQUE,
         name VARCHAR(255) NOT NULL,
         last_name VARCHAR(255) DEFAULT NULL,
-        access_token TEXT NOT NULL,
         refresh_token TEXT NOT NULL,
-        token_expiry DATETIME NOT NULL,
         
         PRIMARY KEY (id)
     ) ENGINE = InnoDB;
