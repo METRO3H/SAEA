@@ -1,5 +1,8 @@
 import { Fetch_Data } from "../database/db.js";
 import { google } from "googleapis";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 // OAuth 2.0 configuration
 export const oauth2Client = new google.auth.OAuth2(
@@ -15,6 +18,7 @@ export async function Get_Authorization(teacher_id: number){
     
        const [db_response]: any = await Fetch_Data(query, [teacher_id]);
        const refresh_token = db_response.refresh_token;
+       
 
        oauth2Client.setCredentials({refresh_token});
 
