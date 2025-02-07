@@ -42,7 +42,7 @@ const client = google.accounts.oauth2.initCodeClient({
 
 function Handle_Response_Code(google_response) {
    
-   fetch("request/oauth2/google", {
+   fetch("request/oauth2/google/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",

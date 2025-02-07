@@ -14,7 +14,7 @@ const router = express.Router();
 
 const jwt_secret = process.env.JWT_SECRET as string;
 
-router.post("/", async (request, response) => {
+router.post("/login", async (request: Request, response: Response) => {
    const oauth2_code = request.body.code;
 
    if (!oauth2_code) {
@@ -64,6 +64,7 @@ router.post("/logout", Verify_Session_Token,(request:any, response) => {
    response.clearCookie("session_token");
    response.status(200).send({ success: true });
    Report_Status("success", `Usuario '${user_email}' ha cerrado sesión`);
+   Report_Status("divider");
 });
 
 function Generate_JWT(user_data: oauth2_v2.Schema$Userinfo, teacher_id: number) {
