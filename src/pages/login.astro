@@ -33,22 +33,23 @@ if (session_token)
 
 <script is:inline>
 const client = google.accounts.oauth2.initCodeClient({
-  client_id: '706618631917-btquac8lmool5kc1ph5709eqsb0ocluq.apps.googleusercontent.com',
-  scope: 'https://www.googleapis.com/auth/calendar.readonly',
-  ux_mode: 'popup',
+  client_id: "706618631917-btquac8lmool5kc1ph5709eqsb0ocluq.apps.googleusercontent.com",
+  scope: "https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/forms.body",
+  ux_mode: "popup",
   callback: Handle_Response_Code,
+  
 });
 
 function Handle_Response_Code(google_response) {
    
    fetch("request/oauth2/google", {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'X-Requested-With': 'XmlHttpRequest' // Manteniendo la cabecera CSRF
+        "Content-Type": "application/x-www-form-urlencoded",
+        "X-Requested-With": "XmlHttpRequest" // Manteniendo la cabecera CSRF
       },
-      credentials: 'include',
-      body: 'code=' + google_response.code
+      credentials: "include",
+      body: "code=" + google_response.code
     })
     .then(response => response.json())
     .then(data => {
@@ -58,7 +59,7 @@ function Handle_Response_Code(google_response) {
          console.error("Auth error:", data.error);
       }
    })
-   .catch(error => console.error('Error:', error));
+   .catch(error => console.error("Error:", error));
 }
 
 </script>
