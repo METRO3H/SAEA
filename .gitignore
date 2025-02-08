@@ -27,3 +27,6 @@ pnpm-debug.log*
 #ignore innecesary files
 *.txt
 *.pdf
+
+#ignore folders
+server/test/*

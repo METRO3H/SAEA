@@ -8,6 +8,7 @@ export default async function (oauth2Client: any, data: Quiz) {
 
    const access_form_response = await User_Authentication(oauth2Client);
    const create_form_response = await Create_Form(access_form_response, data.quiz_title);
+
    await Fill_Form(access_form_response, create_form_response, data);
    // console.log(create_form_response.data);
    const quiz_url = create_form_response.data.responderUri;
@@ -45,14 +46,17 @@ async function Create_Form(form_access: any, form_title: string) {
    const create_form_response = await form_access.forms.create({
       requestBody: newForm,
    });
+   return create_form_response;
+}
 
-   // Request body to convert form to a quiz
-   const updateRequest = {
+async function Fill_Form(access_form_response: google.forms_v1.Forms, create_form_response: any, quiz_data: Quiz) {
+   const questions = quiz_data.questions;
+   const update_request:any = {
       requests: [
          {
             updateFormInfo: {
                info: {
-                  description: "Quiz created by SAEA",
+                  description: "Quiz creado por SAEA",
                },
                updateMask: "description",
             },
@@ -63,25 +67,12 @@ async function Create_Form(form_access: any, form_title: string) {
                   quizSettings: {
                      isQuiz: true,
                   },
+                  emailCollectionType: "VERIFIED",
                },
-               updateMask: "quizSettings.isQuiz",
+               updateMask: "quizSettings.isQuiz, emailCollectionType",
             },
          },
       ],
-   };
-
-   await form_access.forms.batchUpdate({
-      formId: create_form_response.data.formId,
-      requestBody: updateRequest,
-   });
-
-   return create_form_response;
-}
-
-async function Fill_Form(access_form_response: google.forms_v1.Forms, create_form_response: any, quiz_data: Quiz) {
-   const questions = quiz_data.questions;
-   const new_items: { requests: any[] } = {
-      requests: [],
    };
 
    for (let i = 0; i < questions.length; i++) {
@@ -90,12 +81,12 @@ async function Fill_Form(access_form_response: google.forms_v1.Forms, create_for
       const correct_answers = [answers[question_item.correct_answer_index]];
 
       const new_item = await Create_Item(question_item.question, answers, correct_answers, i);
-      new_items.requests.push(new_item);
+      update_request.requests.push(new_item);
    }
 
    await access_form_response.forms.batchUpdate({
       formId: create_form_response.data.formId,
-      requestBody: new_items,
+      requestBody: update_request,
    });
 }
 
