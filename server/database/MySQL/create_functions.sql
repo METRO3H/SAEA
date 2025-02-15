@@ -122,6 +122,7 @@ CREATE FUNCTION Get_Questions($quiz_uuid VARCHAR(36)) RETURNS JSON READS SQL DAT
             JSON_ARRAYAGG(
                 JSON_OBJECT(
                     'question', question,
+                    'question_position', question_position,
                     'answers', answers,
                     'correct_answer_index', correct_answer_index
                 )
@@ -193,6 +194,29 @@ CREATE FUNCTION Get_Quiz($quiz_uuid VARCHAR(36)) RETURNS JSON READS SQL DATA
 
 	END;
 
+
+DROP FUNCTION IF EXISTS Get_Quiz2Generate;
+
+CREATE FUNCTION Get_Quiz2Generate($quiz_uuid VARCHAR(36)) RETURNS JSON READS SQL DATA
+	BEGIN
+		DECLARE $quiz_data JSON;
+
+        DECLARE $quiz_metadata JSON;
+        DECLARE $quiz_title VARCHAR(255);
+        DECLARE $quiz_questions JSON;
+
+        SET $quiz_metadata = Get_Quiz_Metadata($quiz_uuid);
+        SET $quiz_title = JSON_UNQUOTE(JSON_EXTRACT($quiz_metadata, '$.title'));
+        SET $quiz_questions = Get_Questions($quiz_uuid);
+
+        SET $quiz_data = JSON_OBJECT(
+            'quiz_id', $quiz_uuid,
+            'quiz_title', $quiz_title,
+            'questions', $quiz_questions
+        );
+
+        RETURN $quiz_data;
+    END;
 
 
 

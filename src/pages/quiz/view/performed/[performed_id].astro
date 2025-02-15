@@ -13,6 +13,7 @@ const profile_data = await Get_Profile_Data(session_token);
 ---
 
 <Document title="Quiz realizado" description="Quiz realizado" profile_data={profile_data}>
+   <button id="test-btn" >Test</button>
    <Quiz_Layout>
       <Quiz_Title_Fixed slot="quiz-title" client:only="react" />
       <Specifications_Table_Fixed slot="specifications-table" client:only="react" />
@@ -31,6 +32,9 @@ const profile_data = await Get_Profile_Data(session_token);
    const performed_id = URL?.[1];
    const link_form_btn = document.querySelector("#link-form-btn") as HTMLAnchorElement;
    const main_container = document.querySelector("#main-container") as HTMLDivElement;
+   const test_btn = document.querySelector("#test-btn") as HTMLButtonElement;
+   test_btn.addEventListener("click", Get_Quiz_Results);
+
 
    fetch(`/request/get/quiz/performed/${performed_id}`)
       .then((response) => {
@@ -56,4 +60,24 @@ const profile_data = await Get_Profile_Data(session_token);
          }, 200);
          console.error("Error:", error);
       });
+
+   function Get_Quiz_Results() {
+      fetch(`/request/get/quiz/performed/results/${performed_id}`)
+         .then((response) => {
+            if (!response.ok) {
+               throw new Error("HTTP error " + response.status);
+            }
+            return response.json();
+         })
+         .then((response_json) => response_json.data)
+         .then((responses_map) => {
+            console.log(JSON.parse(responses_map));
+         })
+         .catch((error) => {
+            // setTimeout(() => {
+            //    window.location.replace("/quiz/view/all");
+            // }, 200);
+            console.error("Error:", error);
+         });
+   }
 </script>

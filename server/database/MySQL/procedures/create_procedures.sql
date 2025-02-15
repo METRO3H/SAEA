@@ -16,6 +16,7 @@ DROP PROCEDURE IF EXISTS $SAVE_QUIZ_QUESTION_ANSWER;
 DROP PROCEDURE IF EXISTS $PROCESS_ANSWERS;
 DROP PROCEDURE IF EXISTS $PROCESS_QUESTIONS;
 DROP PROCEDURE IF EXISTS $GET_QUIZZES;
+DROP PROCEDURE IF EXISTS $SAVE_PERFORMED_QUIZ;
 DROP VIEW IF EXISTS drafts;
 DROP VIEW IF EXISTS performed;
 
@@ -421,47 +422,47 @@ CREATE PROCEDURE $GET_QUIZZES(IN $teacher_id INT)
 
 	END;
 
-DROP PROCEDURE IF EXISTS $SAVE_PERFORMED_QUIZ;
+
 CREATE PROCEDURE $SAVE_PERFORMED_QUIZ(
     IN $quiz_uuid CHAR(36), 
     IN $google_form_id VARCHAR(255), 
     IN $google_form_url VARCHAR(255)
 )
-BEGIN
-    DECLARE $success BOOLEAN DEFAULT FALSE;
-    DECLARE $error_message VARCHAR(255) DEFAULT NULL;
+	BEGIN
+		DECLARE $success BOOLEAN DEFAULT FALSE;
+		DECLARE $error_message VARCHAR(255) DEFAULT NULL;
 
-    DECLARE EXIT HANDLER FOR SQLEXCEPTION, SQLWARNING
-    BEGIN
-        -- Manejo de errores
-        SET $success = FALSE;
-        SET $error_message = IFNULL($error_message, 'Error inesperado al ejecutar el procedimiento.');
-        ROLLBACK;
-        SELECT $success AS success, $error_message AS error_message;
-    END;
+		DECLARE EXIT HANDLER FOR SQLEXCEPTION, SQLWARNING
+		BEGIN
+			-- Manejo de errores
+			SET $success = FALSE;
+			SET $error_message = IFNULL($error_message, 'Error inesperado al ejecutar el procedimiento.');
+			ROLLBACK;
+			SELECT $success AS success, $error_message AS error_message;
+		END;
 
-    -- Iniciar transacción
-    START TRANSACTION;
-    
-    INSERT IGNORE INTO quiz_performed (quiz_id, google_form_id, google_form_url, creation_date)
-    VALUES ((SELECT id FROM quiz WHERE uuid = $quiz_uuid), $google_form_id, $google_form_url, NOW());
+		-- Iniciar transacción
+		START TRANSACTION;
+		
+		INSERT IGNORE INTO quiz_performed (quiz_id, google_form_id, google_form_url, creation_date)
+		VALUES ((SELECT id FROM quiz WHERE uuid = $quiz_uuid), $google_form_id, $google_form_url, NOW());
 
-    IF ROW_COUNT() = 0 THEN
-        SET $error_message = 'No se realizó la inserción debido a un conflicto de datos.';
-        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = $error_message;
-    END IF;
+		IF ROW_COUNT() = 0 THEN
+			SET $error_message = 'No se realizó la inserción debido a un conflicto de datos.';
+			SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = $error_message;
+		END IF;
 
-    -- Confirmar transacción
-    SET $success = TRUE;
-    SET $error_message = NULL;
+		-- Confirmar transacción
+		SET $success = TRUE;
+		SET $error_message = NULL;
 
-    COMMIT;
+		COMMIT;
 
-    SELECT $success AS success, $error_message AS error_message;
-END;
+		SELECT $success AS success, $error_message AS error_message;
+	END;
 
 
-DROP PROCEDURE IF EXISTS $SAVE_TEACHER;
+
 CREATE PROCEDURE $SAVE_TEACHER(
 	IN $google_id VARCHAR(255),
 	IN $email VARCHAR(255), 
@@ -470,7 +471,6 @@ CREATE PROCEDURE $SAVE_TEACHER(
 	IN $refresh_token TEXT
  )
 	BEGIN
-
 		DECLARE $success BOOLEAN DEFAULT FALSE;
     	DECLARE $teacher_id INT DEFAULT NULL;
 		DECLARE $error_message VARCHAR(255) DEFAULT NULL;
@@ -509,4 +509,96 @@ CREATE PROCEDURE $SAVE_TEACHER(
 
 		SELECT $success AS success, $teacher_id AS teacher_id, $error_message AS error_message;
 
+	END;
+
+
+DROP PROCEDURE IF EXISTS $SAVE_QUIZ_PERFORMED_RESULTS;
+CREATE PROCEDURE $SAVE_QUIZ_PERFORMED_RESULTS(IN $google_form_id VARCHAR(255), IN $student_emails JSON, IN $responses JSON)
+	BEGIN
+		DECLARE $success BOOLEAN DEFAULT FALSE;
+		DECLARE $error_message VARCHAR(255) DEFAULT NULL;
+
+		DECLARE $quiz_id INT DEFAULT NULL;
+		DECLARE $student_emails_length INT DEFAULT 0;
+		DECLARE $student_emails_index INT DEFAULT 0;
+		DECLARE $student_email VARCHAR(255);
+		DECLARE $response_item JSON;
+		DECLARE $response_date DATETIME;
+		DECLARE $results_map JSON;
+		DECLARE $results_map_length INT DEFAULT 0;
+		DECLARE $results_map_index INT DEFAULT 0;
+		DECLARE $quiz_performed_id INT DEFAULT NULL;
+		DECLARE $student_id INT DEFAULT NULL;
+		DECLARE $question_position INT;
+		DECLARE $answer_value VARCHAR(255);
+
+		-- Declarar un manejador para errores SQL
+		DECLARE EXIT HANDLER FOR SQLEXCEPTION
+		BEGIN
+			-- Capturar el mensaje de error
+			GET DIAGNOSTICS CONDITION 1 $error_message = MESSAGE_TEXT;
+
+			SELECT $success AS success, $error_message AS error_message;
+
+			ROLLBACK;
+		END;
+
+		START TRANSACTION;
+
+		SELECT quiz_id INTO $quiz_id FROM quiz_performed WHERE google_form_id = $google_form_id;
+
+		SET $student_emails_length = JSON_LENGTH($student_emails);
+
+		WHILE $student_emails_index < $student_emails_length DO
+
+			SET $student_email = JSON_UNQUOTE(JSON_EXTRACT($student_emails, CONCAT('$[', $student_emails_index, ']')));
+
+			INSERT IGNORE INTO student (email) VALUES ($student_email);
+
+			SET $response_item = JSON_UNQUOTE(JSON_EXTRACT($responses, CONCAT('$."', $student_email, '"')));
+			SET $response_date = JSON_UNQUOTE(JSON_EXTRACT($response_item, '$.response_date'));
+
+			SELECT id INTO $quiz_performed_id FROM quiz_performed WHERE google_form_id = $google_form_id;
+			SELECT id INTO $student_id FROM student WHERE email = $student_email;
+
+			INSERT IGNORE INTO quiz_performed_response (quiz_performed_id, student_id, submitted_date)
+				VALUES ($quiz_performed_id, $student_id, $response_date);
+
+			SET $results_map = JSON_EXTRACT($response_item, '$.results');
+
+			SET $results_map_length = JSON_LENGTH($results_map);
+			SET $results_map_index = 0;
+
+			WHILE $results_map_index < $results_map_length DO
+
+				SET $question_position = JSON_UNQUOTE(JSON_EXTRACT($results_map, CONCAT('$[', $results_map_index, '].question_position')));
+				SET $answer_value = JSON_UNQUOTE(JSON_EXTRACT($results_map, CONCAT('$[', $results_map_index, '].answer_value')));
+
+				INSERT IGNORE INTO quiz_performed_response_result (quiz_performed_response_id, quiz_question_answer_id)
+				VALUES(
+						(SELECT id FROM quiz_performed_response WHERE quiz_performed_id = $quiz_performed_id AND student_id = $student_id),
+
+						(
+							SELECT id FROM quiz_question_answer 
+							WHERE quiz_question_id = (SELECT id FROM quiz_question WHERE quiz_id = $quiz_id AND position = $question_position) 
+							AND answer_id = (SELECT id FROM answer WHERE statement = $answer_value)
+						)
+						);
+
+
+				SET $results_map_index = $results_map_index + 1;
+
+			END WHILE;
+
+			SET $student_emails_index = $student_emails_index + 1;
+
+		END WHILE;
+
+		-- Confirmar transacción
+		SET $success = TRUE;
+		SET $error_message = NULL;
+
+		COMMIT;
+
+		SELECT $success AS success, $error_message AS error_message;
 	END;

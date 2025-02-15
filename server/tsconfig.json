@@ -22,9 +22,9 @@
       "paths": {
          "@QuizTypes": ["../src/content/types.ts"],
          "@Database": ["./database/db.js"],
-
       }
-   }
-   // "include": ["**/*.ts"],
-   // "exclude": ["../node_modules"],
+   },
+
+   "include": ["**/*.ts"],
+   "exclude": ["../node_modules"],
 }

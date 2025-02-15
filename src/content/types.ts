@@ -1,4 +1,3 @@
-
 export interface Quiz {
    quiz_id: string;
    google_form_url: string;
@@ -9,21 +8,26 @@ export interface Quiz {
    questions: QuestionItem[];
 }
 
+export interface Quiz2Generate {
+   quiz_id: string;
+   quiz_title: string;
+   questions: QuestionItem2Generate[];
+}
+
 export interface SpecTable {
    total_questions: number;
    quiz_skills: string[];
    items: SpecTableItem[];
 }
 
-export interface SpecTableItem{
-    thematic_area: string;
-    content: string;
-    objective: string;
-    performed_classes: number;
-    row_skills: string [];
-    row_position: number;
+export interface SpecTableItem {
+   thematic_area: string;
+   content: string;
+   objective: string;
+   performed_classes: number;
+   row_skills: string[];
+   row_position: number;
 }
-
 
 export interface RowSpan {
    thematic_area: { [key: string]: number };
@@ -33,6 +37,10 @@ export interface QuestionItem {
    question: string;
    answers: string[];
    correct_answer_index: number;
+}
+
+export interface QuestionItem2Generate extends QuestionItem {
+   question_position: number;
 }
 
 export interface DraftListType {
@@ -50,7 +58,7 @@ export interface PerformedListType {
    creation_date: string;
 }
 
-export interface QuizzesList{
+export interface QuizzesList {
    draft: DraftListType[];
    performed: PerformedListType[];
 }
@@ -101,7 +109,7 @@ export interface QuestionContentItem {
    metadata: Metadata;
 }
 
-export interface Quizzes{
+export interface Quizzes {
    draft: {
       quiz_id: string;
       title: string;
@@ -111,9 +119,13 @@ export interface Quizzes{
    performed: object[];
 }
 
-
-export interface ProfileData{
+export interface ProfileData {
    name: string;
    last_name: string;
    email: string;
+}
+
+export interface AnswerResult {
+   question_position: number;
+   answer_value: string;
 }

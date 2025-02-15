@@ -1,18 +1,17 @@
-import type { Quiz } from "@QuizTypes";
+import type { Quiz, Quiz2Generate } from "@QuizTypes";
 import express from "express";
 import Report_Status from "../../util/report_status.js";
 import Generate_Google_Form from "../handlers/generate_google_form.js";
 import { Execute_Query } from "../database/db.js";
 import { Process_Request } from "./handle_request.js";
 import { Is_Drafted } from "../handlers/is_drafted.js";
-import { Get_Quiz } from "../handlers/get_quiz.js";
+import { Get_Quiz2Generate } from "../handlers/get_quiz.js";
 import { Verify_Session_Token } from "../handlers/verify_session_token.js";
 import { Get_Authorization } from "../handlers/oauth2_client.js";
 
-
 const router = express.Router();
 
-router.post("/save", Verify_Session_Token, async (request:any, response) => {
+router.post("/save", Verify_Session_Token, async (request: any, response) => {
    await Process_Request(response, async () => {
       const teacher_id = request.user_data.teacher_id;
       const quiz_data: Quiz = request.body;
@@ -32,7 +31,7 @@ router.post("/save", Verify_Session_Token, async (request:any, response) => {
    });
 });
 
-router.put("/update",Verify_Session_Token, async (request:any, response) => {
+router.put("/update", Verify_Session_Token, async (request: any, response) => {
    await Process_Request(response, async () => {
       const teacher_id = request.user_data.teacher_id;
       const quiz_data: Quiz = request.body;
@@ -46,13 +45,15 @@ router.put("/update",Verify_Session_Token, async (request:any, response) => {
       await Execute_Query(query, [teacher_id, quiz_uuid, creation_date, quiz_data_json]);
 
       const message = "Quiz '" + quiz_data.quiz_title + "' actualizado con exito";
-      Report_Status("success", message);
-
+      
       response.status(200).send({ message });
+
+      Report_Status("success", message);
+      Report_Status("divider");
    });
 });
 
-router.post("/generate",Verify_Session_Token, async (request:any, response) => {
+router.post("/generate", Verify_Session_Token, async (request: any, response) => {
    let message: string = "";
    await Process_Request(response, async () => {
       const teacher_id = request.user_data.teacher_id;
@@ -68,11 +69,16 @@ router.post("/generate",Verify_Session_Token, async (request:any, response) => {
          return;
       }
 
-      const quiz_data: Quiz = await Get_Quiz(quiz_uuid);
+      const quiz_data: Quiz2Generate = await Get_Quiz2Generate(quiz_uuid);
 
       const oauth2_client = await Get_Authorization(teacher_id);
 
-      const { google_form_url, google_form_id } = await Generate_Google_Form(oauth2_client, quiz_data);
+      const { google_form_url, google_form_id } = await Generate_Google_Form(
+         oauth2_client,
+         quiz_data.quiz_id,
+         quiz_data.quiz_title,
+         quiz_data.questions
+      );
 
       const query = /*sql*/ ` CALL $SAVE_PERFORMED_QUIZ(?, ?, ?)`;
 
@@ -82,7 +88,7 @@ router.post("/generate",Verify_Session_Token, async (request:any, response) => {
 
       if (!success) throw new Error(error_message);
 
-      message = "Google Form '"+ quiz_data.quiz_title + "' generado con exito";
+      message = "Google Quiz '" + quiz_data.quiz_title + "' generado con éxito!";
       Report_Status("success", message);
       Report_Status("divider");
 

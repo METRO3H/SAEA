@@ -1,20 +1,37 @@
+SET
+    time_zone = 'America/Santiago';
 
-SET time_zone = 'America/Santiago';
+DROP TABLE IF EXISTS quiz_performed_response_result;
+
+DROP TABLE IF EXISTS quiz_performed_response;
+
+DROP TABLE IF EXISTS student;
 
 DROP TABLE IF EXISTS specifications_table_skill;
+
 DROP TABLE IF EXISTS specifications_table;
+
 DROP TABLE IF EXISTS quiz_performed;
+
 DROP TABLE IF EXISTS quiz_question_answer;
+
 DROP TABLE IF EXISTS quiz_question;
+
 DROP TABLE IF EXISTS answer;
+
 DROP TABLE IF EXISTS spect_skill;
+
 DROP TABLE IF EXISTS spect_objective;
+
 DROP TABLE IF EXISTS spect_content;
+
 DROP TABLE IF EXISTS spect_thematic_area;
+
 DROP TABLE IF EXISTS question;
+
 DROP TABLE IF EXISTS quiz;
+
 DROP TABLE IF EXISTS spect_subject;
-DROP TABLE IF EXISTS teacher;
 
 
 CREATE TABLE
@@ -25,22 +42,15 @@ CREATE TABLE
         name VARCHAR(255) NOT NULL,
         last_name VARCHAR(255) DEFAULT NULL,
         refresh_token TEXT NOT NULL,
-        
         PRIMARY KEY (id)
     ) ENGINE = InnoDB;
-
-
--- INSERT INTO
---     teacher (name, last_name, email)
--- VALUES
---     ("Bob", "Smith", "bob@gmail.com");
 
 CREATE TABLE
     IF NOT EXISTS spect_subject (
         id INT NOT NULL AUTO_INCREMENT UNIQUE,
         statement VARCHAR(255) NOT NULL UNIQUE,
         teacher_id INT NOT NULL,
-        creation_date DATETIME(0) NOT NULL,
+        creation_date DATETIME (0) NOT NULL,
         FOREIGN KEY (teacher_id) REFERENCES teacher (id),
         PRIMARY KEY (id)
     ) ENGINE = InnoDB;
@@ -52,7 +62,7 @@ CREATE TABLE
         spect_subject_id INT NOT NULL,
         teacher_id INT NOT NULL,
         title VARCHAR(255) NOT NULL,
-        creation_date DATETIME(0) NOT NULL,
+        creation_date DATETIME (0) NOT NULL,
         UNIQUE (teacher_id, title, creation_date),
         FOREIGN KEY (spect_subject_id) REFERENCES spect_subject (id),
         FOREIGN KEY (teacher_id) REFERENCES teacher (id),
@@ -64,7 +74,7 @@ CREATE TABLE
         id INT NOT NULL AUTO_INCREMENT,
         statement VARCHAR(255) NOT NULL UNIQUE,
         teacher_id INT NOT NULL,
-        creation_date DATETIME(0) NOT NULL,
+        creation_date DATETIME (0) NOT NULL,
         FOREIGN KEY (teacher_id) REFERENCES teacher (id),
         PRIMARY KEY (id)
     ) ENGINE = InnoDB;
@@ -74,7 +84,7 @@ CREATE TABLE
         id INT NOT NULL AUTO_INCREMENT UNIQUE,
         statement VARCHAR(255) NOT NULL UNIQUE,
         teacher_id INT NOT NULL,
-        creation_date DATETIME(0) NOT NULL,
+        creation_date DATETIME (0) NOT NULL,
         FOREIGN KEY (teacher_id) REFERENCES teacher (id),
         PRIMARY KEY (id)
     ) ENGINE = InnoDB;
@@ -84,7 +94,7 @@ CREATE TABLE
         id INT NOT NULL AUTO_INCREMENT UNIQUE,
         statement VARCHAR(255) NOT NULL UNIQUE,
         teacher_id INT NOT NULL,
-        creation_date DATETIME(0) NOT NULL,
+        creation_date DATETIME (0) NOT NULL,
         FOREIGN KEY (teacher_id) REFERENCES teacher (id),
         PRIMARY KEY (id)
     ) ENGINE = InnoDB;
@@ -94,7 +104,7 @@ CREATE TABLE
         id INT NOT NULL AUTO_INCREMENT UNIQUE,
         statement VARCHAR(255) NOT NULL UNIQUE,
         teacher_id INT NOT NULL,
-        creation_date DATETIME(0) NOT NULL,
+        creation_date DATETIME (0) NOT NULL,
         FOREIGN KEY (teacher_id) REFERENCES teacher (id),
         PRIMARY KEY (id)
     ) ENGINE = InnoDB;
@@ -104,7 +114,7 @@ CREATE TABLE
         id INT NOT NULL AUTO_INCREMENT UNIQUE,
         statement VARCHAR(255) NOT NULL UNIQUE,
         teacher_id INT NOT NULL,
-        creation_date DATETIME(0) NOT NULL,
+        creation_date DATETIME (0) NOT NULL,
         FOREIGN KEY (teacher_id) REFERENCES teacher (id),
         PRIMARY KEY (id)
     ) ENGINE = InnoDB;
@@ -114,7 +124,7 @@ CREATE TABLE
         id INT NOT NULL AUTO_INCREMENT UNIQUE,
         statement VARCHAR(255) NOT NULL UNIQUE,
         teacher_id INT NOT NULL,
-        creation_date DATETIME(0) NOT NULL,
+        creation_date DATETIME (0) NOT NULL,
         FOREIGN KEY (teacher_id) REFERENCES teacher (id),
         PRIMARY KEY (id)
     ) ENGINE = InnoDB;
@@ -134,61 +144,27 @@ CREATE TABLE
 
 CREATE TABLE
     IF NOT EXISTS quiz_question_answer (
+        id INT NOT NULL AUTO_INCREMENT UNIQUE,
         quiz_question_id INT NOT NULL,
         answer_id INT NOT NULL,
         position INT NOT NULL,
-        UNIQUE (quiz_question_id, position),
+        UNIQUE (quiz_question_id, answer_id),
         FOREIGN KEY (quiz_question_id) REFERENCES quiz_question (id) ON DELETE CASCADE,
-        FOREIGN KEY (answer_id) REFERENCES answer (id)
+        FOREIGN KEY (answer_id) REFERENCES answer (id),
+        PRIMARY KEY (id)
     ) ENGINE = InnoDB;
 
--- CREATE TABLE IF NOT EXISTS grade (
---     id INT NOT NULL AUTO_INCREMENT UNIQUE,
---     level VARCHAR(255) NOT NULL UNIQUE,
---     PRIMARY KEY (id)
--- ) ENGINE=InnoDB;
--- CREATE TABLE IF NOT EXISTS generation (
---     id INT NOT NULL AUTO_INCREMENT UNIQUE,
---     grade_id INT NOT NULL,
---     year DATE NOT NULL,
---     FOREIGN KEY (grade_id) REFERENCES grade (id),
---     PRIMARY KEY (id)
--- ) ENGINE=InnoDB;
--- CREATE TABLE IF NOT EXISTS student (
---     id INT NOT NULL AUTO_INCREMENT UNIQUE,
---     name VARCHAR(255) NOT NULL,
---     PRIMARY KEY (id)
--- ) ENGINE=InnoDB;
--- CREATE TABLE IF NOT EXISTS generation_student (
---     id INT NOT NULL AUTO_INCREMENT UNIQUE,
---     generation_id INT NOT NULL,
---     student_id INT NOT NULL,
---     FOREIGN KEY (generation_id) REFERENCES generation (id),
---     FOREIGN KEY (student_id) REFERENCES student (id),
---     PRIMARY KEY (id)
--- ) ENGINE=InnoDB;
 CREATE TABLE
     IF NOT EXISTS quiz_performed (
         id INT NOT NULL AUTO_INCREMENT UNIQUE,
         quiz_id INT NOT NULL,
         google_form_id VARCHAR(255) NOT NULL UNIQUE,
         google_form_url VARCHAR(255) NOT NULL UNIQUE,
-        creation_date DATETIME(0) NOT NULL,
+        creation_date DATETIME (0) NOT NULL,
         FOREIGN KEY (quiz_id) REFERENCES quiz (id),
         PRIMARY KEY (id)
     ) ENGINE = InnoDB;
 
--- CREATE TABLE IF NOT EXISTS quiz_result (
---     id INT NOT NULL AUTO_INCREMENT UNIQUE,
---     quiz_performed_id INT NOT NULL,
---     student_id INT NOT NULL,
---     question_id INT NOT NULL,
---     answer VARCHAR(255) NOT NULL,
---     FOREIGN KEY (quiz_performed_id) REFERENCES quiz_performed (id),
---     FOREIGN KEY (student_id) REFERENCES student (id),
---     FOREIGN KEY (question_id) REFERENCES question (id),
---     PRIMARY KEY (id)
--- ) ENGINE=InnoDB;
 CREATE TABLE
     IF NOT EXISTS specifications_table (
         id INT NOT NULL AUTO_INCREMENT UNIQUE,
@@ -217,4 +193,36 @@ CREATE TABLE
         FOREIGN KEY (specifications_table_id) REFERENCES specifications_table (id),
         FOREIGN KEY (spect_skill_id) REFERENCES spect_skill (id),
         PRIMARY KEY (id)
+    ) ENGINE = InnoDB;
+
+CREATE TABLE
+    IF NOT EXISTS student (
+        id INT NOT NULL AUTO_INCREMENT UNIQUE,
+        email VARCHAR(255) NOT NULL UNIQUE
+    ) ENGINE = InnoDB;
+
+CREATE TABLE
+    IF NOT EXISTS quiz_performed_response (
+        id INT NOT NULL AUTO_INCREMENT UNIQUE,
+        quiz_performed_id INT NOT NULL,
+        student_id INT NOT NULL,
+        submitted_date DATETIME NOT NULL,
+
+        UNIQUE (quiz_performed_id, student_id),
+        FOREIGN KEY (quiz_performed_id) REFERENCES quiz_performed (id),
+        FOREIGN KEY (student_id) REFERENCES student (id),
+        PRIMARY KEY (id)
+    ) ENGINE = InnoDB;
+
+CREATE TABLE
+    IF NOT EXISTS quiz_performed_response_result (
+        quiz_performed_response_id INT NOT NULL,
+        quiz_question_answer_id INT NOT NULL,
+
+        FOREIGN KEY (quiz_performed_response_id) REFERENCES quiz_performed_response (id),
+        FOREIGN KEY (quiz_question_answer_id) REFERENCES quiz_question_answer (id),
+        PRIMARY KEY (
+            quiz_performed_response_id,
+            quiz_question_answer_id
+        )
     ) ENGINE = InnoDB;

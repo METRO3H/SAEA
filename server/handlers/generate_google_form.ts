@@ -1,19 +1,21 @@
 "use strict";
-import type { Quiz } from "@QuizTypes";
+import type { QuestionItem2Generate } from "@QuizTypes";
 import google from "@googleapis/forms";
-import Report_Status from "../../util/report_status.js";
 
-export default async function (oauth2Client: any, data: Quiz) {
-   if (!data.quiz_id.trim()) throw new Error("No se ha especificado el ID del Quiz");
+export default async function (
+   oauth2Client: any,
+   quiz_id: string,
+   quiz_title: string,
+   quiz_questions: QuestionItem2Generate[]
+): Promise<{ google_form_url: string; google_form_id: string }> {
+   
+   if (!quiz_id.trim()) throw new Error("No se ha especificado el ID del Quiz");
 
-   const access_form_response = await User_Authentication(oauth2Client);
-   const create_form_response = await Create_Form(access_form_response, data.quiz_title);
+   const google_access = await User_Authentication(oauth2Client);
+   const create_form_response = await Create_Form(google_access, quiz_title);
 
-   await Fill_Form(access_form_response, create_form_response, data);
-   // console.log(create_form_response.data);
+   await Fill_Form(google_access, create_form_response, quiz_questions);
    const quiz_url = create_form_response.data.responderUri;
-
-   Report_Status("success", "Quiz generado con éxito!");
 
    return {
       google_form_url: quiz_url,
@@ -22,18 +24,12 @@ export default async function (oauth2Client: any, data: Quiz) {
 }
 
 async function User_Authentication(oauth2Client: any) {
-   // const main_folder = process.cwd();
-   // const authClient = await authenticate({
-   //   keyfilePath: path.join(main_folder, "credentials.json"),
-   //   scopes: "https://www.googleapis.com/auth/drive",
-   // });
-
-   const forms = google.forms({
+   const access = google.forms({
       version: "v1",
       auth: oauth2Client,
    });
 
-   return forms;
+   return access;
 }
 async function Create_Form(form_access: any, form_title: string) {
    const newForm = {
@@ -49,9 +45,12 @@ async function Create_Form(form_access: any, form_title: string) {
    return create_form_response;
 }
 
-async function Fill_Form(access_form_response: google.forms_v1.Forms, create_form_response: any, quiz_data: Quiz) {
-   const questions = quiz_data.questions;
-   const update_request:any = {
+async function Fill_Form(
+   google_access: google.forms_v1.Forms,
+   create_form_response: any,
+   questions: QuestionItem2Generate[]
+) {
+   const update_request: any = {
       requests: [
          {
             updateFormInfo: {
@@ -80,11 +79,17 @@ async function Fill_Form(access_form_response: google.forms_v1.Forms, create_for
       const answers = question_item.answers.map((answer) => ({ value: answer }));
       const correct_answers = [answers[question_item.correct_answer_index]];
 
-      const new_item = await Create_Item(question_item.question, answers, correct_answers, i);
+      const new_item = await Create_Item(
+         question_item.question,
+         answers,
+         correct_answers,
+         question_item.question_position
+      );
+
       update_request.requests.push(new_item);
    }
 
-   await access_form_response.forms.batchUpdate({
+   await google_access.forms.batchUpdate({
       formId: create_form_response.data.formId,
       requestBody: update_request,
    });
@@ -97,14 +102,15 @@ async function Create_Item(question: string, answers_map: object[], correct_answ
             title: question,
             questionItem: {
                question: {
+                  questionId: position.toString(),
                   required: true,
                   grading: {
-                     pointValue: 2,
+                     pointValue: 1,
                      correctAnswers: {
                         answers: correct_answers_map,
                      },
-                     whenRight: { text: "You got it!" },
-                     whenWrong: { text: "Sorry, that's wrong" },
+                     whenRight: { text: "Bien hecho! 👍" },
+                     whenWrong: { text: "Lo siento, eso es incorrecto 😔" },
                   },
                   choiceQuestion: {
                      type: "RADIO",
@@ -115,7 +121,7 @@ async function Create_Item(question: string, answers_map: object[], correct_answ
          },
 
          location: {
-            index: position,
+            index: position - 1,
          },
       },
    };
