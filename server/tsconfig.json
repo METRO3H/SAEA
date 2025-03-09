@@ -7,8 +7,6 @@
       "esModuleInterop": true,
       "forceConsistentCasingInFileNames": true,
       "skipLibCheck": true,
-      "outDir": "./dist",
-      // "types": ["node"],
       // Treat files as modules even if it doesn't use import/export
       "moduleDetection": "force",
       // Ignore module structure
@@ -19,14 +17,16 @@
       // Disallow features that require cross-file awareness
       "isolatedModules": true,
       "noEmit": true,
+      "incremental": true,
       "allowImportingTsExtensions": true,
+      "baseUrl": ".",
       "paths": {
          "@QuizTypes": ["../src/content/types.ts"],
-         "@Database": ["./database/db.js"],
+         "@Database/*": ["./database/*"],
       },
 
    },
 
    "include": ["./**/*.ts"],
-   "exclude": ["../node_modules"],
+   "exclude": ["./database/*", "./test/*"],
 }

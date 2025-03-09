@@ -27,6 +27,7 @@ pnpm-debug.log*
 #ignore innecesary files
 *.txt
 *.pdf
+*.tsbuildinfo
 
 #ignore folders
 server/test/*
