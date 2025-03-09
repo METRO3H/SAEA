@@ -219,6 +219,38 @@ CREATE FUNCTION Get_Quiz2Generate($quiz_uuid VARCHAR(36)) RETURNS JSON READS SQL
     END;
 
 
+DROP FUNCTION IF EXISTS GET_QUIZ_RESULT_ONE;
+CREATE FUNCTION GET_QUIZ_RESULT_ONE($google_form_id CHAR(255), $student_email VARCHAR(255)) RETURNS JSON READS SQL DATA
+	BEGIN
+
+        DECLARE $student_result JSON;
+
+        SELECT 
+            JSON_OBJECT(
+                'email', $student_email,
+                'results', JSON_ARRAYAGG(
+                JSON_OBJECT(
+                    'question_position', quiz_question.position,
+                    'correct_answer_index', quiz_question.correct_answer_index,
+                    'response_answer_index', quiz_question_answer.position - 1
+                )
+            )
+        )
+        INTO $student_result
+        FROM quiz_performed
+        JOIN quiz_performed_response ON quiz_performed_response.quiz_performed_id = quiz_performed.id
+        JOIN student ON student.id = quiz_performed_response.student_id
+        JOIN quiz_performed_response_result ON quiz_performed_response_result.quiz_performed_response_id = quiz_performed_response.id
+        JOIN quiz_question_answer ON quiz_question_answer.id = quiz_performed_response_result.quiz_question_answer_id
+        JOIN quiz_question ON quiz_question.id = quiz_question_answer.quiz_question_id
+        WHERE quiz_performed.google_form_id = $google_form_id AND student.email = $student_email
+        ORDER BY quiz_question.position ASC;
+
+        RETURN $student_result;
+
+    END;
+
+
 
 
 

@@ -1,4 +1,4 @@
-import { type Question_Item } from "@content/quiz_data";
+import { type QuestionItem } from "@content/types";
 import Special_Input_Text from "@components/special_input_text.tsx";
 import { useEffect, useRef, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
@@ -12,7 +12,7 @@ function Question_Content_Item({
   data,
   metadata,
 }) {
-  const question_item_data: Question_Item = data || {
+  const question_item_data: QuestionItem = data || {
     question: "",
     answers: ["", ""],
     correct_answer_index: -1,

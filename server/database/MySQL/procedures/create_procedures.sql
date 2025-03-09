@@ -602,3 +602,48 @@ CREATE PROCEDURE $SAVE_QUIZ_PERFORMED_RESULTS(IN $google_form_id VARCHAR(255), I
 
 		SELECT $success AS success, $error_message AS error_message;
 	END;
+
+
+DROP PROCEDURE IF EXISTS $GET_QUIZ_RESULT_ALL;
+CREATE PROCEDURE $GET_QUIZ_RESULT_ALL(IN $google_form_id VARCHAR(255), IN $teacher_id INT)
+	BEGIN
+		DECLARE $quiz_uuid CHAR(36) DEFAULT NULL;
+		DECLARE $student_emails JSON DEFAULT NULL;
+		DECLARE $student_email VARCHAR(255) DEFAULT NULL;
+		DECLARE $student_results JSON DEFAULT JSON_ARRAY();
+		DECLARE $student_emails_length INT DEFAULT 0;
+		DECLARE $student_emails_index INT DEFAULT 0;
+		DECLARE $response_json JSON DEFAULT NULL;
+
+		SELECT
+			JSON_ARRAYAGG(
+				student.email
+			)
+		INTO $student_emails
+		FROM
+		quiz_performed_response
+		JOIN student ON quiz_performed_response.student_id = student.id
+		JOIN quiz_performed ON quiz_performed_response.quiz_performed_id = quiz_performed.id
+		WHERE quiz_performed.google_form_id = $google_form_id;
+
+		SET $student_emails_length = JSON_LENGTH($student_emails);
+		
+
+		WHILE $student_emails_index < $student_emails_length DO
+
+			SET $student_email = JSON_UNQUOTE(JSON_EXTRACT($student_emails, CONCAT('$[', $student_emails_index, ']')));
+
+			SET $student_results = JSON_ARRAY_APPEND($student_results, '$', GET_QUIZ_RESULT_ONE($google_form_id, $student_email));
+
+			SET $student_emails_index = $student_emails_index + 1;
+
+		END WHILE;
+
+		SELECT uuid INTO $quiz_uuid FROM quiz JOIN quiz_performed ON quiz_performed.quiz_id = quiz.id WHERE quiz_performed.google_form_id = $google_form_id;
+
+
+		SELECT $student_results AS student_results, Get_Quiz($quiz_uuid) AS quiz_data;
+      
+	END;
+
+	

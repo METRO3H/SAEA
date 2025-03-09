@@ -15,6 +15,7 @@
       "resolveJsonModule": true,
       // Allow JS files to be imported from TS and vice versa
       "allowJs": true,
+      "checkJs": false,
       // Disallow features that require cross-file awareness
       "isolatedModules": true,
       "noEmit": true,
@@ -22,9 +23,10 @@
       "paths": {
          "@QuizTypes": ["../src/content/types.ts"],
          "@Database": ["./database/db.js"],
-      }
+      },
+
    },
 
-   "include": ["**/*.ts"],
+   "include": ["./**/*.ts"],
    "exclude": ["../node_modules"],
 }

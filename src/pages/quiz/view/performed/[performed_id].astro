@@ -45,7 +45,6 @@ const profile_data = await Get_Profile_Data(session_token);
       })
       .then((response_json) => response_json.data)
       .then((quiz_data: Quiz) => {
-         console.log(quiz_data);
          $quiz_store.set(quiz_data);
       })
       .then(() => {
@@ -71,7 +70,7 @@ const profile_data = await Get_Profile_Data(session_token);
          })
          .then((response_json) => response_json.data)
          .then((responses_map) => {
-            console.log(JSON.parse(responses_map));
+            console.log(responses_map);
          })
          .catch((error) => {
             // setTimeout(() => {

@@ -4,7 +4,6 @@ import { useStore } from "@nanostores/react";
 
 export default function Quiz_Title({}) {
   const $quiz_title_store: string = useStore($quiz_title);
-  console.log($quiz_title_store);
   return (
     <>
       <Special_Input_Text
