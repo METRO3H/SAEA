@@ -1,64 +1,53 @@
 ---
-import Document from "@layouts/document.astro";
-import Quiz_Layout from "@layouts/quiz_layout.astro";
-import Quiz_Title_Fixed from "@components/quiz_title/quiz_title_fixed";
-import Specifications_Table_Fixed from "@components/Specifications_Table/specifications_table_fixed";
-import Questions_Data_Fixed from "@components/question/fixed/questions_data_fixed";
-import GoogleForm_btn from "@components/buttons/google_form_btn.astro";
+import Card from "@components/card.astro";
 import { Get_Profile_Data } from "@handlers/get_profile_data";
+import Document from "@layouts/document.astro";
 
 if (!Astro.cookies.has("session_token")) return Astro.redirect("/login");
-const session_token =  Astro.cookies.get("session_token")?.value as string;
+const session_token = Astro.cookies.get("session_token")?.value as string;
 const profile_data = await Get_Profile_Data(session_token);
+const quiz_structure_url = Astro.url.origin + "/quiz/create/performed/" + Astro.params.performed_id;
 ---
 
 <Document title="Quiz realizado" description="Quiz realizado" profile_data={profile_data}>
-   <button id="test-btn" >Test</button>
-   <Quiz_Layout>
-      <Quiz_Title_Fixed slot="quiz-title" client:only="react" />
-      <Specifications_Table_Fixed slot="specifications-table" client:only="react" />
-      <Questions_Data_Fixed slot="questions-data" client:only="react" />
-      <a slot="google-form-button" id="link-form-btn" href="#" target="_blank">
-         <GoogleForm_btn button_text="LINK DEL FORMULARIO" is_generator={false} />
-      </a>
-   </Quiz_Layout>
+   <!-- bento card style -->
+   <div id="quiz-display-container">
+      <Card>
+         <h5 class="card-title">Estructura del quiz</h5>
+         <p class="card-text"></p>
+         <a href={quiz_structure_url} class="btn btn-primary">Estructura</a>
+      </Card>
+
+      <Card>
+        <h5 class="card-title">Resultados del quiz</h5>
+         <button id="btn-results" class="btn btn-primary">Resultados</button>
+      </Card>
+   </div>
 </Document>
 
-<script>
-   import type { Quiz } from "@content/types";
-   import { $quiz_store } from "@content/shared/quiz_data.ts";
+<style>
+   #quiz-display-container {
+      display: flex;
+      justify-content: start;
+      align-items: start;
+      height: 100%;
+   }
 
+   .card-title {
+      font-size: 1.5rem;
+      font-weight: bold;
+   }
+   .card-text {
+      font-size: 1.2rem;
+      color: var(--main-color-blue);
+   }
+</style>
+
+<script>
    const URL = window?.location?.href?.match(/performed\/([\w-]+)/);
    const performed_id = URL?.[1];
-   const link_form_btn = document.querySelector("#link-form-btn") as HTMLAnchorElement;
-   const main_container = document.querySelector("#main-container") as HTMLDivElement;
-   const test_btn = document.querySelector("#test-btn") as HTMLButtonElement;
-   test_btn.addEventListener("click", Get_Quiz_Results);
-
-
-   fetch(`/request/get/quiz/performed/${performed_id}`)
-      .then((response) => {
-         if (!response.ok) {
-            throw new Error("HTTP error " + response.status);
-         }
-         return response.json();
-      })
-      .then((response_json) => response_json.data)
-      .then((quiz_data: Quiz) => {
-         $quiz_store.set(quiz_data);
-      })
-      .then(() => {
-         console.log($quiz_store.get());
-         document.title = $quiz_store.get().quiz_title;
-         link_form_btn.href = $quiz_store.get().google_form_url;
-      })
-      .then(() => (main_container.style.display = "block"))
-      .catch((error) => {
-         setTimeout(() => {
-            window.location.replace("/quiz/view/all");
-         }, 200);
-         console.error("Error:", error);
-      });
+   const btn_results = document.querySelector("#btn-results") as HTMLButtonElement;
+   btn_results.addEventListener("click", Get_Quiz_Results);
 
    function Get_Quiz_Results() {
       fetch(`/request/get/quiz/performed/results/${performed_id}`)

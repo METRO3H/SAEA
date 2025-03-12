@@ -154,7 +154,7 @@ const profile_data = await Get_Profile_Data(session_token);
 
       const btn_link_form = document.querySelector(".btn-link-form") as HTMLLinkElement;
 
-      const performed_quiz_url = window.location.origin + "/quiz/view/performed/" + response.data.google_form_id;
+      const performed_quiz_url = window.location.origin + "/quiz/create/performed/" + response.data.google_form_id;
       const google_form_url = response.data.google_form_url;
 
       modal_close_btn.href = performed_quiz_url;

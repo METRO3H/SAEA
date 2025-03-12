@@ -1,0 +1,21 @@
+<div class="card mb-3">
+   <div class="card-body">
+      <slot />
+   </div>
+</div>
+
+<style>
+   .card {
+      border: none;
+      box-shadow: 0 2px 8px rgba(var(--black), 21%);
+      border-radius: 11px;
+   }
+   .card-body {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+
+      padding: 1.5rem;
+   }
+</style>
