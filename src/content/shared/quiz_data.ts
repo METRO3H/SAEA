@@ -58,4 +58,3 @@ export const $quiz_creation_date = computed($quiz_store, ($quiz_store) => $quiz_
 export const $specifications_table = computed($quiz_store, ($quiz_store) => $quiz_store.specifications_table);
 export const $questions = computed($quiz_store, ($quiz_store) => $quiz_store.questions);
 
-

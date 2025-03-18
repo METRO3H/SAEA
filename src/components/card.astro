@@ -1,5 +1,9 @@
+---
+const { width = "auto" } = Astro.props;
+---
+
 <div class="card mb-3">
-   <div class="card-body">
+   <div class="card-body" style={`width: ${width};`}>
       <slot />
    </div>
 </div>

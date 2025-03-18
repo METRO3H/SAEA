@@ -13,18 +13,17 @@ router.get("/:performed_id", Verify_Session_Token, async function (request: any,
    await Process_Request(response, async () => {
       const teacher_id = request.user_data.teacher_id;
       const performed_id = request.params.performed_id;
-      const student_results = await Retrieve_Quiz_Results_From_DB(performed_id); 
+      const { student_results, quiz_data } = await Retrieve_Quiz_Results_From_DB(performed_id);
 
       if (student_results.length === 0) {
          const oauth2_client = await Get_Authorization(teacher_id);
          const update_result = await Update_Quiz_Results(oauth2_client, performed_id);
-         if (update_result)  Report_Status("success", "Quiz performed results updated!");
-      } 
-
+         if (update_result) Report_Status("success", "Quiz performed results updated!");
+      }
 
       message = "Quiz performed results retrieved!";
 
-      response.status(200).send({ message, data: student_results });
+      response.status(200).send({ message, student_results, quiz_data });
 
       Report_Status("success", message);
       Report_Status("divider");
@@ -35,10 +34,8 @@ async function Retrieve_Quiz_Results_From_DB(performed_id: string) {
    const query = /*sql*/ ` CALL $GET_QUIZ_RESULT_ALL(?)`;
 
    const [[db_result]]: any = await Execute_Query(query, [performed_id]);
-   
-   const {student_results, quiz_data } = db_result;
 
-   return student_results;
+   return db_result;
 }
 
 export default router;

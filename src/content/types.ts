@@ -129,3 +129,12 @@ export interface AnswerResult {
    question_position: number;
    answer_value: string;
 }
+
+export interface QuizResult {
+   email: string;
+   results: {
+      question_position: number;
+      correct_answer_index: number;
+      response_answer_index: number;
+   }[];
+}
