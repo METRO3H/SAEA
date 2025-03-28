@@ -133,7 +133,10 @@ CREATE FUNCTION Get_Questions($quiz_uuid VARCHAR(36)) RETURNS JSON READS SQL DAT
                 SELECT 
                     quiz_question.position AS question_position, 
                     question.statement AS question,
-                    JSON_ARRAYAGG(answer.statement) AS answers,
+                    JSON_OBJECTAGG(
+                        quiz_question_answer.position, 
+                        answer.statement
+                    ) AS answers,
                     quiz_question.correct_answer_index
                 FROM quiz
                 JOIN quiz_question ON quiz_question.quiz_id = quiz.id
@@ -232,7 +235,8 @@ CREATE FUNCTION GET_QUIZ_RESULT_ONE($google_form_id CHAR(255), $student_email VA
                 JSON_OBJECT(
                     'question_position', quiz_question.position,
                     'correct_answer_index', quiz_question.correct_answer_index,
-                    'response_answer_index', quiz_question_answer.position - 1
+                    'response_answer_index', quiz_question_answer.position - 1,
+                    'is_correct', quiz_question.correct_answer_index = quiz_question_answer.position - 1
                 )
             )
         )
@@ -249,6 +253,9 @@ CREATE FUNCTION GET_QUIZ_RESULT_ONE($google_form_id CHAR(255), $student_email VA
         RETURN $student_result;
 
     END;
+
+
+
 
 
 

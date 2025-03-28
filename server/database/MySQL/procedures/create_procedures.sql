@@ -263,7 +263,7 @@ CREATE PROCEDURE $PROCESS_ANSWERS( IN $quiz_id INT, IN $teacher_id INT, IN $crea
 		WHILE $answers_index < $answers_length DO
 
 			SET $answer_statement = JSON_UNQUOTE(JSON_EXTRACT($answers, CONCAT('$[', $answers_index, ']')));
-
+			
 			CALL $SAVE_ANSWER($answer_statement, $teacher_id, $creation_date);
 
 			CALL $SAVE_QUIZ_QUESTION_ANSWER($quiz_question_id, $answer_statement, $answers_index + 1);
@@ -290,7 +290,6 @@ CREATE PROCEDURE $PROCESS_QUESTIONS( IN $quiz_id INT, IN $teacher_id INT, IN $cr
 		SET $questions_index = 0;
 
 		CALL $BALANCE_QUESTIONS($quiz_id, $questions_length);
-
 		WHILE $questions_index < $questions_length DO
 
 			SET $question_item = JSON_EXTRACT($questions, CONCAT('$[', $questions_index, ']'));

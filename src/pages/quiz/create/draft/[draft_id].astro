@@ -50,7 +50,7 @@ const profile_data = await Get_Profile_Data(session_token);
          }
          return response.json();
       })
-      .then((response_json) => response_json.data)
+      .then((response_json) => JSON.parse(response_json.data))
       .then((quiz_data: Quiz) => {
          console.log(quiz_data);
          $quiz_store.set(quiz_data);

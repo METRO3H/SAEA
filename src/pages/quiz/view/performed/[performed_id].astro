@@ -2,6 +2,7 @@
 import { Get_Profile_Data } from "@handlers/get_profile_data";
 import Document from "@layouts/document.astro";
 import Card from "@components/card.astro";
+import GoogleForm_btn from "@components/buttons/google_form_btn.astro";
 
 if (!Astro.cookies.has("session_token")) return Astro.redirect("/login");
 const session_token = Astro.cookies.get("session_token")?.value as string;
@@ -12,29 +13,51 @@ const quiz_structure_url = Astro.url.origin + "/quiz/create/performed/" + Astro.
 <Document title="Quiz realizado" description="Quiz realizado" profile_data={profile_data}>
    <!-- bento card style -->
    <div id="quiz-display-container">
-      <Card>
-         <h5 class="card-title">Estructura del quiz</h5>
-         <p class="card-text"></p>
-         <a href={quiz_structure_url} class="btn btn-primary">Estructura</a>
-      </Card>
+      <div class="cards-container">
+         <Card>
+            <h5 class="card-title">Estructura del quiz</h5>
+            <a href={quiz_structure_url} class="btn btn-primary">Estructura</a>
+         </Card>
+         <Card>
+            <h5 class="card-title">Actualizar resultados del quiz</h5>
+            <button id="update-results-btn" class="btn btn-primary">Actualizar</button>
+         </Card>
 
-      <Card width="600px">
-         <h5 class="card-title">Resultados del quiz</h5>
+         <Card>
+            <h5 class="card-title">Link del formulario</h5>
+            <a id="link-form-btn" href="#" target="_blank">
+               <GoogleForm_btn button_text="LINK DEL FORMULARIO" is_generator={false} />
+            </a>
+         </Card>
+      </div>
+
+      <Card width="700px">
          <canvas id="line-chart"></canvas>
       </Card>
    </div>
 </Document>
 
 <style>
+   .cards-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem;
+      width: 100%;
+   }
    #quiz-display-container {
       display: flex;
+      flex-direction: column;
       justify-content: start;
-      align-items: start;
+      align-items: center;
       height: 100%;
+      gap: 1rem;
+      flex-wrap: wrap;
+      padding: 1rem;
    }
 
    .card-title {
-      font-size: 1.5rem;
       font-weight: bold;
    }
    .card-text {
@@ -49,23 +72,73 @@ const quiz_structure_url = Astro.url.origin + "/quiz/create/performed/" + Astro.
    const URL = window?.location?.href?.match(/performed\/([\w-]+)/);
    const performed_id = URL?.[1];
 
+   const update_results_btn = document.querySelector("#update-results-btn") as HTMLButtonElement;
+   const link_form_btn = document.querySelector("#link-form-btn") as HTMLAnchorElement;
+
+   update_results_btn?.addEventListener("click", () =>
+      Update_Quiz_Results(performed_id).then(() => document.location.reload())
+   );
+
    Show_Graphs();
 
    async function Show_Graphs() {
       const line_chart_element = document.getElementById("line-chart") as HTMLCanvasElement;
 
-      const quiz_results = await Get_Quiz_Results(performed_id);
-
-      if (quiz_results === null) {
+      const quiz_results_response = await Get_Quiz_Results(performed_id);
+      if (quiz_results_response === null) {
          console.log("No se pudo obtener los resultados del quiz");
          return;
       }
 
-      const { student_results, quiz_data } = quiz_results;
+      const { student_results, quiz_data } = quiz_results_response;
 
-      console.log(student_results);
-      console.log(quiz_data);
+      console.log(student_results, quiz_data);
 
+      link_form_btn.href = quiz_data.google_form_url;
+
+      Grade_Distribution_Graph(line_chart_element, quiz_data, student_results);
+   }
+
+   async function Get_Quiz_Results(performed_id): Promise<{ student_results: QuizResult[]; quiz_data: Quiz } | null> {
+      try {
+         const response = await fetch(`/request/quiz/results/get/${performed_id}`);
+
+         if (!response.ok) {
+            throw new Error("HTTP error " + response.status);
+         }
+
+         const response_json = await response.json();
+
+         return response_json;
+      } catch (error) {
+         console.error("Error:", error);
+         return null;
+      }
+   }
+
+   async function Update_Quiz_Results(performed_id) {
+      try {
+         const response = await fetch(`/request/quiz/results/update/${performed_id}`, {
+            method: "POST",
+            headers: {
+               "Content-Type": "application/json",
+            },
+         });
+
+         if (!response.ok) {
+            throw new Error("HTTP error " + response.status);
+         }
+
+         const response_json = await response.json();
+
+         return response_json;
+      } catch (error) {
+         console.error("Error:", error);
+         return null;
+      }
+   }
+
+   function Grade_Distribution_Graph(element, quiz_data, student_results) {
       const grade_distribution = student_results.map((result) =>
          result.results.reduce(
             (acc, curr) => (curr.response_answer_index === curr.correct_answer_index ? acc + 1 : acc),
@@ -79,63 +152,66 @@ const quiz_structure_url = Astro.url.origin + "/quiz/create/performed/" + Astro.
          return acc;
       }, {});
 
-
       const grade_distribution_data = grade_distribution_labels.map((label) => grade_distribution_frequency[label] ?? 0);
       const graph_data = {
          labels: grade_distribution_labels,
          datasets: [
             {
-               label: "Dataset",
+               label: "Estudiantes",
                data: grade_distribution_data,
-               borderColor: "rgb(255, 99, 132)",
-               backgroundColor: "rgb(255, 99, 132, 0.5)",
-               pointStyle: "circle",
-               pointRadius: 10,
-               pointHoverRadius: 15,
+
+               borderColor: "rgb(98, 0, 238)",
+               backgroundColor: "rgb(98, 0, 238)",
+               borderWidth: 1,
             },
          ],
       };
-
       const config: any = {
-         type: "line",
+         type: "bar",
          data: graph_data,
          options: {
             responsive: true,
             plugins: {
+               legend: {
+                  display: false,
+               },
                title: {
                   display: true,
-                  text: (ctx) => "Point Style: " + ctx.chart.data.datasets[0].pointStyle,
+                  text: "Resultados del quiz",
+                  font: {
+                     size: 20,
+                  },
+                  padding: {
+                     top: 20,
+                     bottom: 20,
+                  },
                },
             },
-            scales:{
-                  y:{
-                     min: 0,
-                     max: Math.max(...Object.values(grade_distribution_frequency) as number[]) + 1,
-                     ticks: {
-                        stepSize: 1,
-                     },
-                  }
-            }
+            scales: {
+               x: {
+                  title: {
+                     display: true,
+                     text: "Puntaje",
+                  },
+                  grid: {
+                     display: false,
+                  },
+               },
+               y: {
+                  title: {
+                     display: true,
+                     text: "Estudiantes",
+                  },
+                  min: 0,
+                  max: Math.max(1, ...(Object.values(grade_distribution_frequency) as number[])) + 1,
+                  ticks: {
+                     stepSize: 1,
+                  },
+               },
+            },
          },
       };
 
-      const line_chart = new Chart(line_chart_element, config);
-   }
-
-   async function Get_Quiz_Results(performed_id): Promise<{ student_results: QuizResult[]; quiz_data: Quiz } | null> {
-      try {
-         const response = await fetch(`/request/get/quiz/performed/results/${performed_id}`);
-
-         if (!response.ok) {
-            throw new Error("HTTP error " + response.status);
-         }
-
-         const response_json = await response.json();
-
-         return response_json;
-      } catch (error) {
-         console.error("Error:", error);
-         return null;
-      }
+      return new Chart(element, config);
    }
 </script>

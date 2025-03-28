@@ -57,7 +57,7 @@ export default function quiz_table_list() {
                         key={item.uuid}
                         title={item.title}
                         subject={item.subject}
-                        quiz_url={"draft/" + item.uuid}
+                        quiz_url={"../create/draft/" + item.uuid}
                         date={item.creation_date}
                         quiz_type={$quiz_type}
                      />

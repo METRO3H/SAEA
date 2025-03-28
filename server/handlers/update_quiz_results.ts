@@ -6,7 +6,7 @@ import { Execute_Query } from "../database/db.js";
 
 export async function Update_Quiz_Results(authorization: OAuth2Client, formId: string) {
    const retrieved_results = await Retrieve_Quiz_Results(authorization, formId);
-   console.dir(retrieved_results, { depth: null });
+   // console.dir(retrieved_results, { depth: null });
    const db_response = await Save_Quiz_Results(formId, retrieved_results);
 
    const { success, error_message } = db_response;
@@ -22,6 +22,7 @@ async function Retrieve_Quiz_Results(authorization: OAuth2Client, formId: string
    });
 
    const quiz_responses = await google_quiz_access.forms.responses.list({ formId });
+
 
    const responses_map = Get_Responses_Map(quiz_responses.data);
 

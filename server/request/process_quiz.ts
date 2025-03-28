@@ -8,6 +8,7 @@ import { Is_Drafted } from "../handlers/is_drafted.js";
 import { Get_Quiz2Generate } from "../handlers/get_quiz.js";
 import { Verify_Session_Token } from "../handlers/verify_session_token.js";
 import { Get_Authorization } from "../handlers/oauth2_client.js";
+import Fix_Answers_Format from "../handlers/fix_answers_format.js";
 
 const router = express.Router();
 
@@ -70,6 +71,8 @@ router.post("/generate", Verify_Session_Token, async (request: any, response) =>
       }
 
       const quiz_data: Quiz2Generate = await Get_Quiz2Generate(quiz_uuid);
+
+      quiz_data.questions = Fix_Answers_Format(quiz_data.questions);
 
       const oauth2_client = await Get_Authorization(teacher_id);
 

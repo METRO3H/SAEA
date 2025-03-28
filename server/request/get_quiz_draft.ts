@@ -29,7 +29,7 @@ router.get("/:quiz_uuid", Verify_Session_Token,async function (request:any, resp
       message = "Quiz draft found!";
       const server_response = {
          message: message,
-         data: quiz_data,
+         data: JSON.stringify(quiz_data),
       };
 
       response.status(200).send(server_response);

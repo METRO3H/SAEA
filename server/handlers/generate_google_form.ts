@@ -76,6 +76,7 @@ async function Fill_Form(
 
    for (let i = 0; i < questions.length; i++) {
       const question_item = questions[i];
+      console.log(question_item);
       const answers = question_item.answers.map((answer) => ({ value: answer }));
       const correct_answers = [answers[question_item.correct_answer_index]];
 

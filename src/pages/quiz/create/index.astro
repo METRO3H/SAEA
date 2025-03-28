@@ -57,7 +57,7 @@ const profile_data = await Get_Profile_Data(session_token);
          })
          .then((response_json) => {
             Save_quiz_data_btn.setAttribute("disabled", "");
-            const URL = "/quiz/view/draft/" + response_json.data;
+            const URL = "/quiz/create/draft/" + response_json.data;
             setTimeout(() => {
                window.location.replace(URL);
             }, 221);

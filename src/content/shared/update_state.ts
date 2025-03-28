@@ -1,4 +1,4 @@
-import type { Quiz, SpecTable, QuestionItem } from "@content/types";
+import type { SpecTable, QuestionItem } from "@content/types";
 import { $quiz_store } from "@content/shared/quiz_data";
 
 export function Update_Quiz_ID(quiz_id: string) {
