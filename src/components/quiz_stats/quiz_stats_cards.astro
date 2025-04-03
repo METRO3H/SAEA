@@ -1,0 +1,328 @@
+
+<!-- Statistical Dashboard Cards -->
+ 
+    <!-- Average Card -->
+    <div class="stats-card">
+      <div class="stats-card-header">
+        <h2 class="stats-card-title">Average Grade</h2>
+        <div class="stats-card-icon">
+          <i class="icon-calculator" aria-hidden="true"></i>
+        </div>
+      </div>
+      <div class="stats-card-body">
+        <div class="stats-value">78.5</div>
+        <div class="stats-label">out of 100</div>
+      </div>
+      <div class="stats-card-footer">
+        <div class="stats-trend stats-trend-positive">
+          <i class="icon-arrow-up" aria-hidden="true"></i>
+          <span class="stats-trend-value">2.3%</span>
+          <span class="stats-trend-label">from last evaluation</span>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Median Card -->
+    <div class="stats-card">
+      <div class="stats-card-header">
+        <h2 class="stats-card-title">Median Grade</h2>
+        <div class="stats-card-icon">
+          <i class="icon-ruler" aria-hidden="true"></i>
+        </div>
+      </div>
+      <div class="stats-card-body">
+        <div class="stats-value">82</div>
+        <div class="stats-label">out of 100</div>
+      </div>
+      <div class="stats-card-footer">
+        <div class="stats-trend stats-trend-positive">
+          <i class="icon-arrow-up" aria-hidden="true"></i>
+          <span class="stats-trend-value">1.5%</span>
+          <span class="stats-trend-label">from last evaluation</span>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Mode Card -->
+    <div class="stats-card">
+      <div class="stats-card-header">
+        <h2 class="stats-card-title">Mode Grade</h2>
+        <div class="stats-card-icon">
+          <i class="icon-bar-chart" aria-hidden="true"></i>
+        </div>
+      </div>
+      <div class="stats-card-body">
+        <div class="stats-value">85</div>
+        <div class="stats-label">out of 100</div>
+      </div>
+      <div class="stats-card-footer">
+        <div class="stats-trend stats-trend-negative">
+          <i class="icon-arrow-down" aria-hidden="true"></i>
+          <span class="stats-trend-value">0.8%</span>
+          <span class="stats-trend-label">from last evaluation</span>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Pass Rate Card -->
+    <div class="stats-card">
+      <div class="stats-card-header">
+        <h2 class="stats-card-title">Pass Rate</h2>
+        <div class="stats-card-icon">
+          <i class="icon-check-circle" aria-hidden="true"></i>
+        </div>
+      </div>
+      <div class="stats-card-body">
+        <div class="stats-value">87.5%</div>
+        <div class="stats-label">passing grade (60+)</div>
+      </div>
+      <div class="stats-card-footer">
+        <div class="stats-trend stats-trend-positive">
+          <i class="icon-arrow-up" aria-hidden="true"></i>
+          <span class="stats-trend-value">3.2%</span>
+          <span class="stats-trend-label">from last evaluation</span>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Fail Rate Card -->
+    <div class="stats-card">
+      <div class="stats-card-header">
+        <h2 class="stats-card-title">Fail Rate</h2>
+        <div class="stats-card-icon">
+          <i class="icon-x-circle" aria-hidden="true"></i>
+        </div>
+      </div>
+      <div class="stats-card-body">
+        <div class="stats-value">12.5%</div>
+        <div class="stats-label">failing grade (below 60)</div>
+      </div>
+      <div class="stats-card-footer">
+        <div class="stats-trend stats-trend-negative">
+          <i class="icon-arrow-down" aria-hidden="true"></i>
+          <span class="stats-trend-value">3.2%</span>
+          <span class="stats-trend-label">from last evaluation</span>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Distribution Card (Wide) -->
+    <div class="stats-card stats-card-wide">
+      <slot/>
+    </div>
+  
+    <!-- Highest Grade Card -->
+    <div class="stats-card">
+      <div class="stats-card-header">
+        <h2 class="stats-card-title">Highest Grade</h2>
+        <div class="stats-card-icon">
+          <i class="icon-trophy" aria-hidden="true"></i>
+        </div>
+      </div>
+      <div class="stats-card-body">
+        <div class="stats-value">98</div>
+        <div class="stats-label">out of 100</div>
+      </div>
+      <div class="stats-card-footer">
+        <p><span class="stats-highlight">3</span> students achieved this score</p>
+      </div>
+    </div>
+  
+    <!-- Lowest Grade Card -->
+    <div class="stats-card">
+      <div class="stats-card-header">
+        <h2 class="stats-card-title">Lowest Grade</h2>
+        <div class="stats-card-icon">
+          <i class="icon-trending-down" aria-hidden="true"></i>
+        </div>
+      </div>
+      <div class="stats-card-body">
+        <div class="stats-value">42</div>
+        <div class="stats-label">out of 100</div>
+      </div>
+      <div class="stats-card-footer">
+        <p><span class="stats-highlight">1</span> student received this score</p>
+      </div>
+    </div>
+
+
+  <style>
+
+/* Card Base Styles */
+.stats-card {
+  background-color: #ffffff;
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.stats-card:hover {
+  transform: scale(1.001);
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.stats-card-wide {
+  grid-column: span 2;
+}
+
+/* Card Header */
+.stats-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.stats-card-title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #343a40;
+}
+
+.stats-card-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  color: #6c757d;
+}
+
+/* Card Body */
+.stats-card-body {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex-grow: 1;
+}
+
+.stats-value {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--main-color-google-form );
+  margin-bottom: 0.5rem;
+  line-height: 1;
+}
+
+.stats-label {
+  font-size: 0.875rem;
+  color: #6c757d;
+  text-align: center;
+}
+
+/* Card Footer */
+.stats-card-footer {
+  padding: 1rem;
+  background-color: #f8f9fa;
+  border-top: 1px solid #e9ecef;
+  font-size: 0.875rem;
+  color: #6c757d;
+}
+
+/* Trend Indicators */
+.stats-trend {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.stats-trend-positive {
+  color: #2ecc71;
+}
+
+.stats-trend-negative {
+  color: #e74c3c;
+}
+
+.stats-trend-value {
+  font-weight: 600;
+}
+
+.stats-trend-label {
+  color: #6c757d;
+}
+
+/* Highlight Text */
+.stats-highlight {
+  font-weight: 600;
+  color: #4361ee;
+}
+
+/* Chart Placeholder */
+.stats-chart {
+  width: 100%;
+  height: 200px;
+}
+
+.stats-chart-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f1f3f5;
+  border-radius: 0.5rem;
+  color: #adb5bd;
+  font-size: 0.875rem;
+}
+
+/* Icon Placeholders - Replace with your icon system */
+[class^="icon-"] {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .stats-card-wide {
+    grid-column: span 1;
+  }
+  
+  .stats-dashboard {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1rem;
+    padding: 0.75rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .stats-dashboard {
+    grid-template-columns: 1fr;
+  }
+  
+  .stats-value {
+    font-size: 2rem;
+  }
+  
+  .stats-card-header, 
+  .stats-card-body, 
+  .stats-card-footer {
+    padding: 0.75rem;
+  }
+}
+
+/* Animation for data refresh */
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.5; }
+  100% { opacity: 1; }
+}
+
+.stats-refreshing {
+  animation: pulse 1.5s infinite;
+}
+
+/* Accessibility Focus Styles */
+.stats-card:focus-within {
+  outline: 2px solid #4361ee;
+  outline-offset: 2px;
+}
+  </style>
