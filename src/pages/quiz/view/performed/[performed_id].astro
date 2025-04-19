@@ -1,28 +1,71 @@
 ---
 import { Get_Profile_Data } from "@handlers/get_profile_data";
 import Document from "@layouts/document.astro";
-import Card from "@components/card.astro";
 import QuizStatsActions from "@components/quiz_stats/quiz_stats_actions.astro";
-import GoogleForm_btn from "@components/buttons/google_form_btn.astro";
+import { Image } from "astro:assets";
+import GoogleFormIcon from "@assets/svg/google-form-icon-48px.svg";
+import GraphMenu from "@components/graph_menu.astro";
+import StatsCard from "@components/quiz_stats/stats_card.astro";
+import ModeIcon from "@assets/svg/mode_icon.svg";
+import HighestGradeIcon from "@assets/svg/highest_grade_icon.svg";
+import LowestGradeIcon from "@assets/svg/lowest_grade_icon.svg";
 
 if (!Astro.cookies.has("session_token")) return Astro.redirect("/login");
 const session_token = Astro.cookies.get("session_token")?.value as string;
 const profile_data = await Get_Profile_Data(session_token);
 const quiz_structure_url = Astro.url.origin + "/quiz/create/performed/" + Astro.params.performed_id;
-import QuizStatsCards from "@components/quiz_stats/quiz_stats_cards.astro";
 ---
 
 <Document title="Quiz realizado" description="Quiz realizado" profile_data={profile_data}>
    <!-- bento card style -->
    <div id="stats-dashboard">
-      <div class="stats-dashboard-header">
-         <!-- Botones de acción aquí -->
-         <QuizStatsActions structure_url={quiz_structure_url} />
+      <h4 id="quiz-title">
+         <Image src={GoogleFormIcon} alt="Google Form Icon" width="48" height="48" />
+         BOB EL CONSTRUCTOR
+      </h4>
+
+      <div id="quiz-success-distribution">XD</div>
+
+      <!-- Botones de acción aquí -->
+      <QuizStatsActions structure_url={quiz_structure_url} />
+
+      <ul id="graph-menu-container">
+         <GraphMenu />
+      </ul>
+      <div id="stats-cards-container">
+         <!-- <QuizStatsCards /> -->
+         <StatsCard head_label="Promedio" foot_label="Promedio general" element_id="average-grade" />
+         <StatsCard
+            head_label="Moda"
+            foot_label="Calificación más frecuente"
+            element_id="mode-grade"
+            stat_icon={ModeIcon}
+         />
+         <StatsCard
+            head_label="Maxima"
+            foot_label="Calificación más alta"
+            element_id="highest-grade"
+            stat_icon={HighestGradeIcon}
+         />
+         <StatsCard head_label="Minima" foot_label="Calificación más baja" element_id="lowest-grade" stat_icon={LowestGradeIcon} />
       </div>
 
-      <QuizStatsCards>
-         <canvas id="line-chart"></canvas>
-      </QuizStatsCards>
+      <div id="graph-container" slot="overview">
+         <!-- Contenido de las Tabs (opcional) -->
+         <div class="tab-content" id="overview">
+            <canvas id="line-chart"></canvas>
+         </div>
+
+         <div class="tab-content" id="students" style="display: none;">
+            <h3>Students Content</h3>
+            <p>Aquí va el contenido de students.</p>
+         </div>
+
+         <div class="tab-content" id="questions" style="display: none;">
+            <h3>Questions Content</h3>
+            <p>Aquí va el contenido de questions.</p>
+         </div>
+      </div>
    </div>
 </Document>
 
@@ -37,23 +80,75 @@ import QuizStatsCards from "@components/quiz_stats/quiz_stats_cards.astro";
    }
    #stats-dashboard {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      grid-template-areas:
+         "quiz-title quiz-sucess-distribution"
+         "quiz-actions quiz-actions"
+         "graph-menu quiz-stats-container"
+         "graph-container graph-container";
+
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: auto auto auto 1fr;
       gap: 1rem 1.5rem;
       width: 100%;
       max-width: 1400px;
       margin: 0 auto;
       padding: 1rem;
-   }
-   .stats-dashboard-header {
-      grid-column: 1 / -1;
+      flex: 1;
+      overflow: auto;
    }
 
-   .card-title {
+   #quiz-title {
+      font-size: 2rem;
       font-weight: bold;
+      margin: 0;
+      align-content: center;
+      grid-area: quiz-title;
    }
-   .card-text {
-      font-size: 1.2rem;
-      color: var(--main-color-blue);
+   #quiz-success-distribution {
+      grid-area: quiz-sucess-distribution;
+   }
+   #quiz-actions {
+      grid-area: quiz-actions;
+   }
+   #stats-cards-container {
+      grid-area: quiz-stats-container;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 1rem;
+      width: 100%;
+      margin: 0;
+      padding: 0;
+   }
+
+   #graph-menu-container {
+      grid-area: graph-menu;
+      display: flex;
+      justify-content: flex-start;
+      align-items: flex-end;
+      gap: 0.5rem;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+   }
+
+   #graph-container {
+      grid-area: graph-container;
+      display: flex;
+   }
+
+   /* Estilos para el contenido de las tabs */
+   .tab-content {
+      padding: 20px;
+      background-color: var(--background);
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      flex: 1;
+   }
+
+   .tab-content h3 {
+      margin-bottom: 10px;
+      color: var(--primary);
    }
 </style>
 
@@ -210,10 +305,10 @@ import QuizStatsCards from "@components/quiz_stats/quiz_stats_cards.astro";
 
    function Stat_Cards(grade_distribution) {
       const average_grade_element = document.getElementById("average-grade") as HTMLDivElement;
-      const median_grade_element = document.getElementById("median-grade") as HTMLDivElement;
+      // const median_grade_element = document.getElementById("median-grade") as HTMLDivElement;
       const mode_grade_element = document.getElementById("mode-grade") as HTMLDivElement;
-      const pass_rate_element = document.getElementById("pass-rate") as HTMLDivElement;
-      const fail_rate_element = document.getElementById("fail-rate") as HTMLDivElement;
+      // const pass_rate_element = document.getElementById("pass-rate") as HTMLDivElement;
+      // const fail_rate_element = document.getElementById("fail-rate") as HTMLDivElement;
       const highest_grade_element = document.getElementById("highest-grade") as HTMLDivElement;
       const lowest_grade_element = document.getElementById("lowest-grade") as HTMLDivElement;
 
@@ -223,14 +318,14 @@ import QuizStatsCards from "@components/quiz_stats/quiz_stats_cards.astro";
       const pass_rate = Pass_Rate(grade_distribution, 9);
       const fail_rate = Fail_Rate(grade_distribution, 9);
 
-      average_grade_element.textContent = average_grade.toFixed(2);
-      median_grade_element.textContent = median_grade.toFixed(2);
-      // mode_grade_element.textContent = mode_grade.toFixed(2);
-      pass_rate_element.textContent = (pass_rate * 100).toFixed(1) + "%";
-      fail_rate_element.textContent = (fail_rate * 100).toFixed(1) + "%";
+      average_grade_element.textContent = average_grade.toFixed(2) + " pts";
+      // median_grade_element.textContent = median_grade.toFixed(2);
+      mode_grade_element.textContent = mode_grade.join(", ") + " pts";
+      // pass_rate_element.textContent = (pass_rate * 100).toFixed(1) + "%";
+      // fail_rate_element.textContent = (fail_rate * 100).toFixed(1) + "%";
 
-      highest_grade_element.textContent = grade_distribution[grade_distribution.length - 1].toFixed(2);
-      lowest_grade_element.textContent = grade_distribution[0].toFixed(2);
+      highest_grade_element.textContent = grade_distribution[grade_distribution.length - 1] + " pts";
+      lowest_grade_element.textContent = grade_distribution[0] + " pts";
 
       console.log("Average grade:", average_grade);
       console.log("Median grade:", median_grade);

@@ -1,0 +1,176 @@
+<!-- Mini Menú de Tabs -->
+<div class="tabs-container">
+   <div class="tabs-list">
+      <button class="tab-button active" data-tab="overview">
+         <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="lucide lucide-chart-line-icon lucide-chart-line"
+            ><path d="M3 3v16a2 2 0 0 0 2 2h16"></path><path d="m19 9-5 5-4-4-3 3"></path></svg
+         >
+            Overview
+      </button>
+      <button class="tab-button" data-tab="students">
+         <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="lucide lucide-users-icon lucide-users"
+            ><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path
+               d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg
+         >
+         Students
+      </button>
+      <button class="tab-button" data-tab="questions">
+         <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="lucide lucide-circle-help-icon lucide-circle-help"
+            ><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><path
+               d="M12 17h.01"></path></svg
+         >
+         Questions
+      </button>
+   </div>
+</div>
+
+<style>
+   /* Variables de color */
+   :root {
+      --primary: rgb(98, 0, 238);
+      --primary-light: rgba(98, 0, 238, 0.1);
+      --primary-foreground: white;
+      --background: white;
+      --border: rgba(0, 0, 0, 0.1);
+      --text: #333;
+      --text-muted: #666;
+   }
+
+   h2 {
+      margin-bottom: 20px;
+      color: var(--primary);
+   }
+
+   /* Estilos del mini menú de tabs */
+   .tabs-container {
+      /* margin-bottom: 20px; */
+   }
+
+   .tabs-list {
+      display: inline-flex;
+      background-color: rgba(0, 0, 0, 0.03);
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 4px;
+      height: 44px;
+   }
+
+   .tab-button {
+      display: flex;
+      align-items: center;
+      padding: 0 12px;
+      gap: 0.25rem;
+      height: 100%;
+      border: none;
+      background: transparent;
+      border-radius: 6px;
+      color: var(--text);
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+   }
+
+   .tab-button i {
+      margin-right: 8px;
+      width: 16px;
+      height: 16px;
+   }
+
+   .tab-button:hover {
+      background-color: var(--primary-light);
+   }
+
+   .tab-button.active {
+      background-color: var(--primary);
+      color: var(--primary-foreground);
+   }
+
+   /* Responsive */
+   @media (max-width: 600px) {
+      .tabs-list {
+         width: 100%;
+      }
+
+      .tab-button {
+         flex: 1;
+         justify-content: center;
+         padding: 0 8px;
+      }
+   }
+</style>
+
+<script>
+   // Inicializar los iconos de Lucide (si estás usando Lucide)
+   document.addEventListener("DOMContentLoaded", function () {
+      // Funcionalidad para cambiar entre tabs
+      document.querySelectorAll(".tab-button").forEach((button) => {
+         button.addEventListener("click", () => {
+            // Remover clase active de todos los botones
+            document.querySelectorAll(".tab-button").forEach((btn) => {
+               btn.classList.remove("active");
+            });
+
+            // Añadir clase active al botón clickeado
+            button.classList.add("active");
+
+            // Ocultar todos los contenidos
+            const tab_contents = document.querySelectorAll(".tab-content") as NodeListOf<HTMLDivElement>;
+
+            tab_contents.forEach((content) => (content.style.display = "none"));
+
+            // Mostrar el contenido correspondiente
+            const tabId = button.getAttribute("data-tab") as string;
+            const tabContent = document.getElementById(tabId);
+            if (tabContent) {
+               tabContent.style.display = "block";
+            }
+         });
+      });
+
+      // Activar el primer tab por defecto (opcional)
+      const defaultTab = document.querySelector(".tab-button") as HTMLButtonElement;
+      if (defaultTab) {
+         defaultTab.click();
+      }
+   });
+
+   // Función auxiliar para cambiar tabs programáticamente (opcional)
+   function changeTab(tabId) {
+      const tabButton = document.querySelector(`.tab-button[data-tab="${tabId}"]`) as HTMLButtonElement;
+      if (tabButton) {
+         tabButton.click();
+      }
+   }
+</script>
