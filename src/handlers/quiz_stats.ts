@@ -28,9 +28,11 @@ export function Mode_Grade(grade_distribution: number[]): number[] {
 }
 
 // Calculate the pass rate
-export function Pass_Rate(grade_distribution: number[], pass_threshold = 4.0): number {
+export function Pass_Rate(grade_distribution: number[], max_grade: number): number {
    if (grade_distribution.length === 0) return 0;
 
+   // Define the pass threshold as 60% of the maximum grade, rounded down to the nearest integer
+   const pass_threshold = Math.floor(max_grade * 0.6);
    const passing_count = grade_distribution.filter((grade) => grade >= pass_threshold).length;
    return passing_count / grade_distribution.length;
 }

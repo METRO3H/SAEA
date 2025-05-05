@@ -3,13 +3,13 @@ import { Get_Profile_Data } from "@handlers/get_profile_data";
 import Document from "@layouts/document.astro";
 import QuizStatsActions from "@components/quiz_stats/quiz_stats_actions.astro";
 import { Image } from "astro:assets";
-import GoogleFormIcon from "@assets/svg/google-form-icon-48px.svg";
+import GoogleFormIcon from "@assets/svg/google-form-icon-240px.svg";
 import GraphMenu from "@components/graph_menu.astro";
 import StatsCard from "@components/quiz_stats/stats_card.astro";
 import ModeIcon from "@assets/svg/mode_icon.svg";
 import HighestGradeIcon from "@assets/svg/highest_grade_icon.svg";
 import LowestGradeIcon from "@assets/svg/lowest_grade_icon.svg";
-
+import "@styles/question_content_item.css";
 if (!Astro.cookies.has("session_token")) return Astro.redirect("/login");
 const session_token = Astro.cookies.get("session_token")?.value as string;
 const profile_data = await Get_Profile_Data(session_token);
@@ -19,12 +19,32 @@ const quiz_structure_url = Astro.url.origin + "/quiz/create/performed/" + Astro.
 <Document title="Quiz realizado" description="Quiz realizado" profile_data={profile_data}>
    <!-- bento card style -->
    <div id="stats-dashboard">
-      <h4 id="quiz-title">
-         <Image src={GoogleFormIcon} alt="Google Form Icon" width="48" height="48" />
-         BOB EL CONSTRUCTOR
-      </h4>
-
-      <div id="quiz-success-distribution">XD</div>
+      <div id="quiz-title-distribution">
+         <div id="image-container">
+            <img src={GoogleFormIcon.src} alt="Google Form Icon" />
+         </div>
+         <div id="quiz-title-info">
+            <ul class="badge-container">
+               <li id="badge-thematicArea" class="hint--bottom hint--rounded" aria-label="">
+                  <span class="badge rounded-pill badge-primary">-</span>
+               </li>
+               <li id="badge-content" class="hint--bottom hint--rounded" aria-label="">
+                  <span class="badge rounded-pill badge-warning">-</span>
+               </li>
+               <li id="badge-objective" class="hint--bottom hint--rounded" aria-label="">
+                  <span class="badge rounded-pill badge-danger">-</span>
+               </li>
+               <li id="badge-skill" class="hint--bottom hint--rounded" aria-label="">
+                  <span class="badge rounded-pill badge-success">-</span>
+               </li>
+            </ul>
+            <h2 id="quiz-title">BOB EL CONSTRUCTOR</h2>
+            <p id="quiz-subject">Matematicas</p>
+         </div>
+         <div id="doughnut-chart-container">
+            <canvas id="doughnut-chart"></canvas>
+         </div>
+      </div>
 
       <!-- Botones de acción aquí -->
       <QuizStatsActions structure_url={quiz_structure_url} />
@@ -47,13 +67,18 @@ const quiz_structure_url = Astro.url.origin + "/quiz/create/performed/" + Astro.
             element_id="highest-grade"
             stat_icon={HighestGradeIcon}
          />
-         <StatsCard head_label="Minima" foot_label="Calificación más baja" element_id="lowest-grade" stat_icon={LowestGradeIcon} />
+         <StatsCard
+            head_label="Minima"
+            foot_label="Calificación más baja"
+            element_id="lowest-grade"
+            stat_icon={LowestGradeIcon}
+         />
       </div>
 
       <div id="graph-container" slot="overview">
          <!-- Contenido de las Tabs (opcional) -->
          <div class="tab-content" id="overview">
-            <canvas id="line-chart"></canvas>
+            <canvas id="bar-chart"></canvas>
          </div>
 
          <div class="tab-content" id="students" style="display: none;">
@@ -81,7 +106,7 @@ const quiz_structure_url = Astro.url.origin + "/quiz/create/performed/" + Astro.
    #stats-dashboard {
       display: grid;
       grid-template-areas:
-         "quiz-title quiz-sucess-distribution"
+         "quiz-title-distribution quiz-title-distribution"
          "quiz-actions quiz-actions"
          "graph-menu quiz-stats-container"
          "graph-container graph-container";
@@ -93,19 +118,57 @@ const quiz_structure_url = Astro.url.origin + "/quiz/create/performed/" + Astro.
       max-width: 1400px;
       margin: 0 auto;
       padding: 1rem;
-      flex: 1;
+      flex-grow: 1;
       overflow: auto;
    }
+   #quiz-title-distribution {
+      grid-area: quiz-title-distribution;
+      display: flex;
 
+      width: 100%;
+      max-height: 250px;
+      justify-content: space-around;
+      /* gap: 2rem; */
+   }
+   #image-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-grow: 1;
+      max-width: 240px;
+   }
+   #image-container img {
+      /* width: 100%; */
+   }
+   #quiz-title-info {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      flex-grow: 6;
+   }
+   .badge-container {
+      width: 100%;
+      padding-right: 4rem;
+   }
+   
    #quiz-title {
-      font-size: 2rem;
+      /* font-size: 2rem; */
       font-weight: bold;
       margin: 0;
       align-content: center;
-      grid-area: quiz-title;
    }
+   #quiz-subject {
+      margin-inline: 0.25rem;
+      color: var(--text-secondary);
+      font-size: 1.2rem;
+   }
+   #doughnut-chart-container {
+      flex-grow: 3;
+   }
+
    #quiz-success-distribution {
-      grid-area: quiz-sucess-distribution;
+      max-height: 250px;
    }
    #quiz-actions {
       grid-area: quiz-actions;
@@ -156,7 +219,6 @@ const quiz_structure_url = Astro.url.origin + "/quiz/create/performed/" + Astro.
    import type { QuizResult, Quiz } from "@content/types";
    import {
       Average_Grade,
-      Fail_Rate,
       Get_Grade_Distribution,
       Get_Grade_Frequency_Map,
       Median_Grade,
@@ -164,21 +226,27 @@ const quiz_structure_url = Astro.url.origin + "/quiz/create/performed/" + Astro.
       Pass_Rate,
    } from "@handlers/quiz_stats";
    import { Chart } from "chart.js/auto";
+   import ChartDataLabels from "chartjs-plugin-datalabels";
+   import annotationPlugin from "chartjs-plugin-annotation";
+
+   Chart.register(annotationPlugin);
 
    const URL = window?.location?.href?.match(/performed\/([\w-]+)/);
    const performed_id = URL?.[1];
 
    const update_results_btn = document.querySelector("#update-results-btn") as HTMLButtonElement;
    const link_form_btn = document.querySelector("#link-form-btn") as HTMLAnchorElement;
+   const quiz_title = document.querySelector("#quiz-title") as HTMLHeadingElement;
+   const quiz_subject = document.querySelector("#quiz-subject") as HTMLParagraphElement;
+   const badges = document.querySelectorAll(".badge-container .badge") as NodeListOf<HTMLSpanElement>;
 
    update_results_btn?.addEventListener("click", () => {
       update_results_btn.classList.add("loading");
       Update_Quiz_Results(performed_id).then(() => document.location.reload());
    });
 
-   Show_Graphs();
-
-   async function Show_Graphs() {
+   Run_Process();
+   async function Run_Process() {
       const quiz_results_response = await Get_Quiz_Results(performed_id);
       if (quiz_results_response === null) {
          console.log("No se pudo obtener los resultados del quiz");
@@ -187,11 +255,23 @@ const quiz_structure_url = Astro.url.origin + "/quiz/create/performed/" + Astro.
       const { student_results, quiz_data } = quiz_results_response;
 
       link_form_btn.href = quiz_data.google_form_url;
+      quiz_title.textContent = quiz_data.quiz_title;
+      quiz_subject.textContent = quiz_data.quiz_subject;
 
+      badges.forEach(badge => {
+         
+      }), 
+
+      Show_Graphs(student_results, quiz_data);
+   }
+   async function Show_Graphs(student_results, quiz_data) {
       const grade_distribution = Get_Grade_Distribution(student_results);
 
       console.log(grade_distribution);
-      Stat_Cards(grade_distribution);
+
+      const max_grade_possible = quiz_data.questions.length;
+      Doughnut_Graph(grade_distribution, max_grade_possible);
+      Stat_Cards(grade_distribution, max_grade_possible);
       Grade_Distribution_Graph(grade_distribution, quiz_data);
    }
 
@@ -299,11 +379,11 @@ const quiz_structure_url = Astro.url.origin + "/quiz/create/performed/" + Astro.
          },
       };
 
-      const line_chart_element = document.getElementById("line-chart") as HTMLCanvasElement;
+      const line_chart_element = document.getElementById("bar-chart") as HTMLCanvasElement;
       return new Chart(line_chart_element, config);
    }
 
-   function Stat_Cards(grade_distribution) {
+   function Stat_Cards(grade_distribution, max_grade_possible) {
       const average_grade_element = document.getElementById("average-grade") as HTMLDivElement;
       // const median_grade_element = document.getElementById("median-grade") as HTMLDivElement;
       const mode_grade_element = document.getElementById("mode-grade") as HTMLDivElement;
@@ -315,8 +395,8 @@ const quiz_structure_url = Astro.url.origin + "/quiz/create/performed/" + Astro.
       const average_grade = Average_Grade(grade_distribution);
       const median_grade = Median_Grade(grade_distribution);
       const mode_grade = Mode_Grade(grade_distribution);
-      const pass_rate = Pass_Rate(grade_distribution, 9);
-      const fail_rate = Fail_Rate(grade_distribution, 9);
+      const pass_rate = Pass_Rate(grade_distribution, max_grade_possible);
+      const fail_rate = 1 - pass_rate;
 
       average_grade_element.textContent = average_grade.toFixed(2) + " pts";
       // median_grade_element.textContent = median_grade.toFixed(2);
@@ -332,5 +412,79 @@ const quiz_structure_url = Astro.url.origin + "/quiz/create/performed/" + Astro.
       console.log("Mode grade:", mode_grade);
       console.log("Pass rate:", pass_rate);
       console.log("Fail rate:", fail_rate);
+   }
+
+   function Doughnut_Graph(grade_distribution, max_grade_possible) {
+      const exigency_grade = Math.floor(max_grade_possible * 0.6);
+      const pass_grade_distribution = grade_distribution.filter((grade) => grade >= exigency_grade);
+      const fail_grade_distribution = grade_distribution.filter((grade) => grade < exigency_grade);
+
+      const MAIN_COLOR = "rgb(101, 0, 255)";
+
+      const graph_data = {
+         labels: ["Aprobados", "Reprobados"],
+         datasets: [
+            {
+               label: "Estudiantes",
+               data: [pass_grade_distribution.length, fail_grade_distribution.length],
+               backgroundColor: [MAIN_COLOR, "rgb(255, 64, 105)"],
+               borderColor: "white",
+               borderWidth: 3,
+
+               // offset: 3,
+            },
+         ],
+      };
+
+      const config: any = {
+         type: "doughnut",
+         data: graph_data,
+         options: {
+            responsive: true,
+            cutout: "50%",
+            plugins: {
+               annotation: {
+                  annotations: {
+                     dLabel: {
+                        type: "doughnutLabel",
+                        content: ({ chart }) => ["Total", grade_distribution.length, "Estudiantes"],
+                        font: [{ size: 22 }, { size: 28 }, { size: 16 }],
+                        color: [MAIN_COLOR, MAIN_COLOR, "grey"],
+                        borderColor: MAIN_COLOR,
+                        borderWidth: 1,
+                        textStrokeColor: MAIN_COLOR,
+                        textStrokeWidth: 0.5,
+                     },
+                  },
+               },
+               legend: {
+                  display: false,
+                  position: "top",
+               },
+               datalabels: {
+                  formatter: (value: number, context: any) => {
+                     const data = context.chart.data.datasets[0].data;
+                     const total = data.reduce((sum: number, val: number) => sum + val, 0);
+                     const percentage = ((value / total) * 100).toFixed(1) + "%";
+                     return percentage;
+                  },
+                  color: "#fff",
+                  font: {
+                     // weight: "bold",
+                     size: 14,
+                     lineHeight: 1.2,
+                     family: "Atkinson",
+                  },
+                  // anchor: "center",
+                  align: "center",
+                  // offset: 5,
+               },
+            },
+         },
+         plugins: [ChartDataLabels], // <- importante
+      };
+
+      const doughnut_chart_element = document.querySelector("#doughnut-chart") as HTMLCanvasElement;
+      return new Chart(doughnut_chart_element, config);
    }
 </script>
