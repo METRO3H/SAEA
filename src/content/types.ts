@@ -138,3 +138,11 @@ export interface QuizResult {
       response_answer_index: number;
    }[];
 }
+
+
+export interface BadgeMap {
+   thematic_area: string[];
+   content: string[];
+   objective: string[];
+   skill: string[];
+}

@@ -2,14 +2,14 @@
 import { Get_Profile_Data } from "@handlers/get_profile_data";
 import Document from "@layouts/document.astro";
 import QuizStatsActions from "@components/quiz_stats/quiz_stats_actions.astro";
-import { Image } from "astro:assets";
-import GoogleFormIcon from "@assets/svg/google-form-icon-240px.svg";
+import GoogleFormIcon from "@assets/svg/google-form-icon-240px-cropped.svg";
 import GraphMenu from "@components/graph_menu.astro";
 import StatsCard from "@components/quiz_stats/stats_card.astro";
 import ModeIcon from "@assets/svg/mode_icon.svg";
 import HighestGradeIcon from "@assets/svg/highest_grade_icon.svg";
 import LowestGradeIcon from "@assets/svg/lowest_grade_icon.svg";
-import "@styles/question_content_item.css";
+import Badge_Container from "@components/badge_container";
+
 if (!Astro.cookies.has("session_token")) return Astro.redirect("/login");
 const session_token = Astro.cookies.get("session_token")?.value as string;
 const profile_data = await Get_Profile_Data(session_token);
@@ -24,22 +24,11 @@ const quiz_structure_url = Astro.url.origin + "/quiz/create/performed/" + Astro.
             <img src={GoogleFormIcon.src} alt="Google Form Icon" />
          </div>
          <div id="quiz-title-info">
-            <ul class="badge-container">
-               <li id="badge-thematicArea" class="hint--bottom hint--rounded" aria-label="">
-                  <span class="badge rounded-pill badge-primary">-</span>
-               </li>
-               <li id="badge-content" class="hint--bottom hint--rounded" aria-label="">
-                  <span class="badge rounded-pill badge-warning">-</span>
-               </li>
-               <li id="badge-objective" class="hint--bottom hint--rounded" aria-label="">
-                  <span class="badge rounded-pill badge-danger">-</span>
-               </li>
-               <li id="badge-skill" class="hint--bottom hint--rounded" aria-label="">
-                  <span class="badge rounded-pill badge-success">-</span>
-               </li>
-            </ul>
             <h2 id="quiz-title">BOB EL CONSTRUCTOR</h2>
             <p id="quiz-subject">Matematicas</p>
+            <ul class="quiz-badge-container">
+               <Badge_Container client:load />
+            </ul>
          </div>
          <div id="doughnut-chart-container">
             <canvas id="doughnut-chart"></canvas>
@@ -125,39 +114,46 @@ const quiz_structure_url = Astro.url.origin + "/quiz/create/performed/" + Astro.
       grid-area: quiz-title-distribution;
       display: flex;
 
-      width: 100%;
+      width: 85%;
       max-height: 250px;
-      justify-content: space-around;
-      /* gap: 2rem; */
+      gap: 2rem;
    }
-   #image-container {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-grow: 1;
-      max-width: 240px;
-   }
+
    #image-container img {
       /* width: 100%; */
+      max-width: 300px;
+      height: 100%;
    }
    #quiz-title-info {
       display: flex;
       flex-direction: column;
-      justify-content: center;
       align-items: flex-start;
       flex-grow: 6;
+      overflow: hidden;
+      max-width: 100%;
+      padding-top: 1rem;
    }
-   .badge-container {
-      width: 100%;
-      padding-right: 4rem;
-   }
-   
+
    #quiz-title {
       /* font-size: 2rem; */
       font-weight: bold;
       margin: 0;
       align-content: center;
    }
+   .quiz-badge-container {
+      /* position: relative; */
+      display: flex;
+      justify-content: flex-start;
+      align-content: flex-start;
+      gap: 0.5rem;
+      margin: 0rem;
+      width: 100%;
+      flex-wrap: wrap;
+      padding: 0;
+      flex-grow: 1;
+      
+   }
+
    #quiz-subject {
       margin-inline: 0.25rem;
       color: var(--text-secondary);
@@ -216,7 +212,8 @@ const quiz_structure_url = Astro.url.origin + "/quiz/create/performed/" + Astro.
 </style>
 
 <script>
-   import type { QuizResult, Quiz } from "@content/types";
+   import type { QuizResult, Quiz, BadgeMap } from "@content/types";
+   import { $specifications_table } from "@content/shared/badge_data";
    import {
       Average_Grade,
       Get_Grade_Distribution,
@@ -238,7 +235,6 @@ const quiz_structure_url = Astro.url.origin + "/quiz/create/performed/" + Astro.
    const link_form_btn = document.querySelector("#link-form-btn") as HTMLAnchorElement;
    const quiz_title = document.querySelector("#quiz-title") as HTMLHeadingElement;
    const quiz_subject = document.querySelector("#quiz-subject") as HTMLParagraphElement;
-   const badges = document.querySelectorAll(".badge-container .badge") as NodeListOf<HTMLSpanElement>;
 
    update_results_btn?.addEventListener("click", () => {
       update_results_btn.classList.add("loading");
@@ -258,16 +254,16 @@ const quiz_structure_url = Astro.url.origin + "/quiz/create/performed/" + Astro.
       quiz_title.textContent = quiz_data.quiz_title;
       quiz_subject.textContent = quiz_data.quiz_subject;
 
-      badges.forEach(badge => {
-         
-      }), 
+      console.log(quiz_data);
+
+      $specifications_table.set(quiz_data.specifications_table);
 
       Show_Graphs(student_results, quiz_data);
    }
    async function Show_Graphs(student_results, quiz_data) {
       const grade_distribution = Get_Grade_Distribution(student_results);
 
-      console.log(grade_distribution);
+      // console.log(grade_distribution);
 
       const max_grade_possible = quiz_data.questions.length;
       Doughnut_Graph(grade_distribution, max_grade_possible);
@@ -407,11 +403,11 @@ const quiz_structure_url = Astro.url.origin + "/quiz/create/performed/" + Astro.
       highest_grade_element.textContent = grade_distribution[grade_distribution.length - 1] + " pts";
       lowest_grade_element.textContent = grade_distribution[0] + " pts";
 
-      console.log("Average grade:", average_grade);
-      console.log("Median grade:", median_grade);
-      console.log("Mode grade:", mode_grade);
-      console.log("Pass rate:", pass_rate);
-      console.log("Fail rate:", fail_rate);
+      // console.log("Average grade:", average_grade);
+      // console.log("Median grade:", median_grade);
+      // console.log("Mode grade:", mode_grade);
+      // console.log("Pass rate:", pass_rate);
+      // console.log("Fail rate:", fail_rate);
    }
 
    function Doughnut_Graph(grade_distribution, max_grade_possible) {
@@ -458,8 +454,8 @@ const quiz_structure_url = Astro.url.origin + "/quiz/create/performed/" + Astro.
                   },
                },
                legend: {
-                  display: false,
-                  position: "top",
+                  display: true,
+                  position: "bottom",
                },
                datalabels: {
                   formatter: (value: number, context: any) => {
