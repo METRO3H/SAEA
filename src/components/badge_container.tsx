@@ -45,7 +45,7 @@ function More_Badge({ labels_left = 0, onClick }: { labels_left: number; onClick
             tabIndex={0}
             onClick={onClick}
             onKeyPress={(e) => e.key === "Enter" && onClick()}
-            aria-label={`Mostrar ${labels_left} más etiquetas`}
+            aria-label={`Mostrar ${labels_left} etiquetas más`}
          >
             <span className="badge rounded-pill badge-primary quiz-badge quiz-badge-more">...</span>
             <span className="badge rounded-pill badge-notification">+ {labels_left}</span>
