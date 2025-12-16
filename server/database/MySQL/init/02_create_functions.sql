@@ -1,10 +1,11 @@
---  Con privilegios de root
+DELIMITER $$
 
 DROP FUNCTION IF EXISTS Get_Quiz_ID;
 DROP FUNCTION IF EXISTS Get_Quiz_Question_ID;
 DROP FUNCTION IF EXISTS Get_Quiz_All_Draft;
 DROP FUNCTION IF EXISTS Get_Quiz_All_Performed;
 DROP FUNCTION IF EXISTS Get_Quiz_All;
+
 
 CREATE FUNCTION Get_Quiz_ID($quiz_title VARCHAR(255), $teacher_id INT, $creation_date DATETIME) RETURNS INT READS SQL DATA
 BEGIN
@@ -14,7 +15,7 @@ BEGIN
     SELECT id INTO $quiz_id FROM quiz WHERE title = $quiz_title AND teacher_id = $teacher_id AND creation_date = $creation_date;
     
     RETURN $quiz_id;
-END;
+END $$
 
 CREATE FUNCTION Get_Quiz_Question_ID($quiz_id INT, $position INT) RETURNS INT READS SQL DATA
 BEGIN
@@ -24,7 +25,7 @@ BEGIN
     SELECT id INTO $quiz_question_id FROM quiz_question WHERE quiz_id = $quiz_id AND position = $position;
     
     RETURN $quiz_question_id;
-END;
+END $$
 
 
 DROP FUNCTION IF EXISTS Get_Quiz_Metadata;
@@ -47,7 +48,7 @@ CREATE FUNCTION Get_Quiz_Metadata($quiz_uuid VARCHAR(36)) RETURNS JSON READS SQL
             LIMIT 1;
 
             RETURN $quiz_metadata;
-	END;
+	END $$
 
 DROP FUNCTION IF EXISTS Get_Quiz_Skills;
 CREATE FUNCTION Get_Quiz_Skills($quiz_uuid VARCHAR(36)) RETURNS JSON READS SQL DATA
@@ -69,7 +70,7 @@ CREATE FUNCTION Get_Quiz_Skills($quiz_uuid VARCHAR(36)) RETURNS JSON READS SQL D
             ) AS quiz_skills;
 
         RETURN $quiz_skills;
-    END;
+    END $$
 
 
 DROP FUNCTION IF EXISTS Get_Spect_Items;
@@ -109,7 +110,7 @@ CREATE FUNCTION Get_Spect_Items($quiz_uuid VARCHAR(36)) RETURNS JSON READS SQL D
             
 
         RETURN $quiz_items;
-    END;
+    END $$
 
 
 
@@ -149,7 +150,7 @@ CREATE FUNCTION Get_Questions($quiz_uuid VARCHAR(36)) RETURNS JSON READS SQL DAT
             ) AS quiz_question_answers;      
 
         RETURN $quiz_questions;
-    END; 
+    END $$
 
 
 -- GET QUIZ
@@ -195,7 +196,7 @@ CREATE FUNCTION Get_Quiz($quiz_uuid VARCHAR(36)) RETURNS JSON READS SQL DATA
 
 		RETURN $quiz_data;
 
-	END;
+	END $$
 
 
 DROP FUNCTION IF EXISTS Get_Quiz2Generate;
@@ -219,10 +220,11 @@ CREATE FUNCTION Get_Quiz2Generate($quiz_uuid VARCHAR(36)) RETURNS JSON READS SQL
         );
 
         RETURN $quiz_data;
-    END;
+    END $$
 
 
 DROP FUNCTION IF EXISTS GET_QUIZ_RESULT_ONE;
+
 CREATE FUNCTION GET_QUIZ_RESULT_ONE($google_form_id CHAR(255), $student_email VARCHAR(255)) RETURNS JSON READS SQL DATA
 	BEGIN
 
@@ -252,9 +254,7 @@ CREATE FUNCTION GET_QUIZ_RESULT_ONE($google_form_id CHAR(255), $student_email VA
 
         RETURN $student_result;
 
-    END;
-
-
+    END $$
 
 
 

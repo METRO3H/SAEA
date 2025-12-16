@@ -11,9 +11,12 @@ services:
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_LOG_CONSOLE: "true"  
+      MYSQL_GENERAL_LOG: "1"
     volumes:
-      - mysql-data:/var/lib/mysql  # Usando volumen gestionado por Docker
+      - mysql-data:/var/lib/mysql
+      - ./server/database/MySQL/init:/docker-entrypoint-initdb.d
     restart: unless-stopped
 
 volumes:
-  mysql-data:  # Declaración del volumen gestionado por Docker
+  mysql-data:

@@ -1,3 +1,5 @@
+DELIMITER $$
+
 DROP PROCEDURE IF EXISTS $SAVE_TEACHER;
 DROP PROCEDURE IF EXISTS $SAVE_SPECT_SUBJECT;
 DROP PROCEDURE IF EXISTS $SAVE_QUIZ_METADATA;
@@ -30,7 +32,7 @@ CREATE PROCEDURE
 		VALUES
 		($statement, $teacher_id, $creation_date);
 		
-	END;
+	END $$
 
 
 
@@ -43,7 +45,7 @@ CREATE PROCEDURE $SAVE_QUIZ_METADATA(IN $uuid CHAR(36), IN $statement VARCHAR(25
 		ON DUPLICATE KEY UPDATE 
 			title = VALUES(title),
 			spect_subject_id = VALUES(spect_subject_id);
-	END;
+	END $$
 
 
 CREATE PROCEDURE $SAVE_SPECT_SKILL(IN $skill VARCHAR(255), IN $teacher_id INT, IN $creation_date DATETIME) 
@@ -53,7 +55,7 @@ CREATE PROCEDURE $SAVE_SPECT_SKILL(IN $skill VARCHAR(255), IN $teacher_id INT, I
 		spect_skill (statement, teacher_id, creation_date)
 		VALUES
 		($skill, $teacher_id, $creation_date);
-	END;
+	END $$
 
 CREATE PROCEDURE $SAVE_SPECT_THEMATIC_AREA(IN $thematic_area VARCHAR(255), IN $teacher_id INT, IN $creation_date DATETIME) 
 	BEGIN
@@ -61,7 +63,7 @@ CREATE PROCEDURE $SAVE_SPECT_THEMATIC_AREA(IN $thematic_area VARCHAR(255), IN $t
 		spect_thematic_area (statement, teacher_id, creation_date)
 		VALUES
 		($thematic_area, $teacher_id, $creation_date);
-	END;
+	END $$
 
 CREATE PROCEDURE $SAVE_SPECT_CONTENT(IN $content VARCHAR(255), IN $teacher_id INT, IN $creation_date DATETIME) 
 	BEGIN
@@ -69,7 +71,7 @@ CREATE PROCEDURE $SAVE_SPECT_CONTENT(IN $content VARCHAR(255), IN $teacher_id IN
 		spect_content (statement, teacher_id, creation_date)
 		VALUES
 		($content, $teacher_id, $creation_date);
-	END;
+	END $$
 
 CREATE PROCEDURE $SAVE_SPECT_OBJECTIVE(IN $objective VARCHAR(255), IN $teacher_id INT, IN $creation_date DATETIME) 
 	BEGIN
@@ -77,7 +79,7 @@ CREATE PROCEDURE $SAVE_SPECT_OBJECTIVE(IN $objective VARCHAR(255), IN $teacher_i
 		spect_objective (statement, teacher_id, creation_date)
 		VALUES
 		($objective, $teacher_id, $creation_date);
-	END;
+	END $$
 
 
 CREATE PROCEDURE $PROCESS_SKILLS( IN $quiz_id INT, IN $teacher_id INT, IN $creation_date DATETIME, IN $skills JSON)
@@ -99,7 +101,7 @@ CREATE PROCEDURE $PROCESS_SKILLS( IN $quiz_id INT, IN $teacher_id INT, IN $creat
 
 		END WHILE;
 
-	END;
+	END $$
 
 
 CREATE PROCEDURE $SAVE_SPECIFICATIONS_TABLE(IN $quiz_id INT, IN $thematic_area VARCHAR(255), IN $content VARCHAR(255), IN $objective VARCHAR(255), IN $performed_classes INT, IN $row_position INT)
@@ -114,7 +116,7 @@ CREATE PROCEDURE $SAVE_SPECIFICATIONS_TABLE(IN $quiz_id INT, IN $thematic_area V
 			objective_id = VALUES(objective_id),
 			performed_classes = VALUES(performed_classes)
 		;
-	END;
+	END $$
 
 CREATE PROCEDURE $PROCESS_SPECIFICATIONS_TABLE_ROW_SKILLS(IN $quiz_id INT, IN $row_position INT, IN $quiz_skills JSON, IN $row_skills JSON)
 	BEGIN
@@ -151,7 +153,7 @@ CREATE PROCEDURE $PROCESS_SPECIFICATIONS_TABLE_ROW_SKILLS(IN $quiz_id INT, IN $r
 
 		END WHILE;
 
-	END;
+	END $$
 
 
 
@@ -191,7 +193,7 @@ CREATE PROCEDURE $PROCESS_SPECTIFICATIONS_TABLE( IN $quiz_id INT, IN $teacher_id
 
 		END WHILE;
 
-	END;
+	END $$
 
 
 DROP PROCEDURE IF EXISTS $BALANCE_QUESTIONS;
@@ -200,7 +202,7 @@ CREATE PROCEDURE $BALANCE_QUESTIONS(IN $quiz_id INT, IN $questions_length INT)
 		DELETE FROM
 			quiz_question
 			WHERE quiz_id = $quiz_id AND position > $questions_length;
-	END;
+	END $$
 
 CREATE PROCEDURE $SAVE_QUESTION(IN $question VARCHAR(255), IN $teacher_id INT, IN $creation_date DATETIME) 
 	BEGIN
@@ -208,7 +210,7 @@ CREATE PROCEDURE $SAVE_QUESTION(IN $question VARCHAR(255), IN $teacher_id INT, I
 		question (statement, teacher_id, creation_date)
 		VALUES
 		($question, $teacher_id, $creation_date);
-	END;
+	END $$
 
 CREATE PROCEDURE $SAVE_QUIZ_QUESTION(IN $quiz_id INT, IN $question_statement VARCHAR(255), IN $position INT, IN $correct_answer_index INT) 
 	BEGIN
@@ -220,7 +222,7 @@ CREATE PROCEDURE $SAVE_QUIZ_QUESTION(IN $quiz_id INT, IN $question_statement VAR
 			question_id = VALUES(question_id),
 			correct_answer_index = VALUES(correct_answer_index)
 		;
-	END;
+	END $$
 
 CREATE PROCEDURE $SAVE_ANSWER(IN $answer VARCHAR(255), IN $teacher_id INT, IN $creation_date DATETIME) 
 	BEGIN
@@ -228,7 +230,7 @@ CREATE PROCEDURE $SAVE_ANSWER(IN $answer VARCHAR(255), IN $teacher_id INT, IN $c
 		answer (statement, teacher_id, creation_date)
 		VALUES
 		($answer, $teacher_id, $creation_date);
-	END;
+	END $$
 
 DROP PROCEDURE IF EXISTS $BALANCE_ANSWERS;
 CREATE PROCEDURE $BALANCE_ANSWERS(IN $quiz_question_id INT, IN $answers_length INT)
@@ -236,7 +238,7 @@ CREATE PROCEDURE $BALANCE_ANSWERS(IN $quiz_question_id INT, IN $answers_length I
 		DELETE FROM
 			quiz_question_answer
 			WHERE quiz_question_id = $quiz_question_id AND position > $answers_length;
-	END;
+	END $$
 
 CREATE PROCEDURE $SAVE_QUIZ_QUESTION_ANSWER(IN $quiz_question_id INT, IN $answer_statement VARCHAR(255), $position INT)
 	BEGIN
@@ -247,7 +249,7 @@ CREATE PROCEDURE $SAVE_QUIZ_QUESTION_ANSWER(IN $quiz_question_id INT, IN $answer
 			ON DUPLICATE KEY UPDATE 
 				answer_id = VALUES(answer_id)
 				;
-	END;
+	END $$
 
 CREATE PROCEDURE $PROCESS_ANSWERS( IN $quiz_id INT, IN $teacher_id INT, IN $creation_date DATETIME, IN $quiz_question_id INT, IN $answers JSON)
 	BEGIN
@@ -272,7 +274,7 @@ CREATE PROCEDURE $PROCESS_ANSWERS( IN $quiz_id INT, IN $teacher_id INT, IN $crea
 
 		END WHILE;
 		
-	END;
+	END $$
 
 
 CREATE PROCEDURE $PROCESS_QUESTIONS( IN $quiz_id INT, IN $teacher_id INT, IN $creation_date DATETIME, IN $questions JSON)
@@ -316,7 +318,7 @@ CREATE PROCEDURE $PROCESS_QUESTIONS( IN $quiz_id INT, IN $teacher_id INT, IN $cr
 		END WHILE;
 
 	
-	END;
+	END $$
 	
 DROP PROCEDURE IF EXISTS $PROCESS_QUIZ;
 CREATE PROCEDURE $PROCESS_QUIZ(IN $teacher_id INT, IN $quiz_uuid CHAR(36), IN $creation_date DATETIME, IN $quiz_data JSON)
@@ -351,7 +353,7 @@ CREATE PROCEDURE $PROCESS_QUIZ(IN $teacher_id INT, IN $quiz_uuid CHAR(36), IN $c
     CALL $PROCESS_QUESTIONS($quiz_id, $teacher_id, $creation_date, $question_items);
 
     
-  END;
+  END $$
 
 DROP PROCEDURE IF EXISTS $SAVE_QUIZ;
 CREATE PROCEDURE $SAVE_QUIZ(IN $teacher_id INT, IN $quiz_data JSON) 
@@ -364,13 +366,13 @@ CREATE PROCEDURE $SAVE_QUIZ(IN $teacher_id INT, IN $quiz_data JSON)
 
 		CALL $PROCESS_QUIZ($teacher_id, $quiz_uuid, $creation_date, $quiz_data);
 		SELECT $quiz_uuid AS quiz_uuid;
-	END;
+	END $$
 
 DROP PROCEDURE IF EXISTS $UPDATE_QUIZ;
 CREATE PROCEDURE $UPDATE_QUIZ(IN $teacher_id INT, IN $quiz_uuid CHAR(36), IN $creation_date DATETIME, IN $quiz_data JSON)
 	BEGIN
 		CALL $PROCESS_QUIZ($teacher_id, $quiz_uuid, $creation_date, $quiz_data);
-	END;
+	END $$
 
 
 
@@ -419,7 +421,7 @@ CREATE PROCEDURE $GET_QUIZZES(IN $teacher_id INT)
 
 		SELECT title, subject, google_form_id, google_form_url, creation_date FROM performed WHERE teacher_id = $teacher_id;
 
-	END;
+	END $$
 
 
 CREATE PROCEDURE $SAVE_PERFORMED_QUIZ(
@@ -458,7 +460,7 @@ CREATE PROCEDURE $SAVE_PERFORMED_QUIZ(
 		COMMIT;
 
 		SELECT $success AS success, $error_message AS error_message;
-	END;
+	END $$
 
 
 
@@ -508,7 +510,7 @@ CREATE PROCEDURE $SAVE_TEACHER(
 
 		SELECT $success AS success, $teacher_id AS teacher_id, $error_message AS error_message;
 
-	END;
+	END $$
 
 
 DROP PROCEDURE IF EXISTS $SAVE_QUIZ_PERFORMED_RESULTS;
@@ -600,11 +602,11 @@ CREATE PROCEDURE $SAVE_QUIZ_PERFORMED_RESULTS(IN $google_form_id VARCHAR(255), I
 		COMMIT;
 
 		SELECT $success AS success, $error_message AS error_message;
-	END;
+	END $$
 
 
 DROP PROCEDURE IF EXISTS $GET_QUIZ_RESULT_ALL;
-CREATE PROCEDURE $GET_QUIZ_RESULT_ALL(IN $google_form_id VARCHAR(255), IN $teacher_id INT)
+CREATE PROCEDURE $GET_QUIZ_RESULT_ALL(IN $google_form_id VARCHAR(255))
 	BEGIN
 		DECLARE $quiz_uuid CHAR(36) DEFAULT NULL;
 		DECLARE $student_emails JSON DEFAULT NULL;
@@ -643,6 +645,4 @@ CREATE PROCEDURE $GET_QUIZ_RESULT_ALL(IN $google_form_id VARCHAR(255), IN $teach
 
 		SELECT $student_results AS student_results, Get_Quiz($quiz_uuid) AS quiz_data;
       
-	END;
-
-	
+	END $$
