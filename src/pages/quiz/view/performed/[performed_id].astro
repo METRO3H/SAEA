@@ -9,7 +9,8 @@ import ModeIcon from "@assets/svg/mode_icon.svg";
 import HighestGradeIcon from "@assets/svg/highest_grade_icon.svg";
 import LowestGradeIcon from "@assets/svg/lowest_grade_icon.svg";
 import Badge_Container from "@components/badge_container";
-
+import Questions from "@components/overview/questions.tsx";
+import type { only } from "node:test";
 if (!Astro.cookies.has("session_token")) return Astro.redirect("/login");
 const session_token = Astro.cookies.get("session_token")?.value as string;
 const profile_data = await Get_Profile_Data(session_token);
@@ -71,7 +72,6 @@ const quiz_structure_url = Astro.url.origin + "/quiz/create/performed/" + Astro.
          </div>
 
          <div class="tab-content" id="students" style="display: none;">
-
             <div class="table-responsive">
                <table class="table table-hover">
                   <thead>
@@ -83,24 +83,21 @@ const quiz_structure_url = Astro.url.origin + "/quiz/create/performed/" + Astro.
                   <tbody id="student-results" class="table-group-divider">
                      <tr>
                         <td>email@example.com</td>
-                        <td class="grade-cell">10 pts</td>
+                        <td>10 pts</td>
                      </tr>
                   </tbody>
                </table>
             </div>
-
          </div>
 
          <div class="tab-content" id="questions" style="display: none;">
-            <h3>Questions Content</h3>
-            <p>Aquí va el contenido de questions.</p>
+            <Questions client:only/>
          </div>
       </div>
    </div>
 </Document>
 
 <style>
-   
    .cards-container {
       display: flex;
       justify-content: center;
@@ -216,13 +213,12 @@ const quiz_structure_url = Astro.url.origin + "/quiz/create/performed/" + Astro.
       border: 1px solid var(--border);
       min-height: 75vh;
    }
-   #overview{
+   #overview {
       max-width: 75%;
    }
 
    /* Estilos para el contenido de las tabs */
    .tab-content {
-      
       flex: 1;
    }
 
@@ -230,14 +226,19 @@ const quiz_structure_url = Astro.url.origin + "/quiz/create/performed/" + Astro.
       margin-bottom: 10px;
       color: var(--primary);
    }
-
-   
 </style>
 
+<style is:global>
+   .td-score {
+      font-weight: bold;
+      color: var(--main-color-google-form) !important;
+   }
+</style>
 
 <script>
-   import type { QuizResult, Quiz, BadgeMap } from "@content/types";
+   import type { StudentResult, Quiz, BadgeMap } from "@content/types";
    import { $specifications_table } from "@content/shared/badge_data";
+   import { $quiz_results_store, $quiz_store } from "@content/shared/quiz_data";
    import {
       Average_Grade,
       Get_Grade_Distribution,
@@ -273,6 +274,8 @@ const quiz_structure_url = Astro.url.origin + "/quiz/create/performed/" + Astro.
          return;
       }
       const { student_results, quiz_data } = quiz_results_response;
+      $quiz_results_store.set(student_results);
+      $quiz_store.set(quiz_data);
 
       link_form_btn.href = quiz_data.google_form_url;
       quiz_title.textContent = quiz_data.quiz_title;
@@ -285,6 +288,7 @@ const quiz_structure_url = Astro.url.origin + "/quiz/create/performed/" + Astro.
 
       Show_Graphs(student_results, quiz_data);
       Show_Student_Results(student_results);
+      // Show_Question_Results(quiz_data, student_results);
    }
    async function Show_Graphs(student_results, quiz_data) {
       const grade_distribution = Get_Grade_Distribution(student_results);
@@ -298,33 +302,67 @@ const quiz_structure_url = Astro.url.origin + "/quiz/create/performed/" + Astro.
    }
    async function Show_Student_Results(student_results) {
       const students_tab = document.querySelector("#student-results") as HTMLDivElement;
-      
+
       students_tab.innerHTML = "";
       student_results.sort((a, b) => {
-         const a_grade = a.results.reduce((acc, answer) => answer.is_correct ? acc + 1 : acc, 0);
-         const b_grade = b.results.reduce((acc, answer) => answer.is_correct ? acc + 1 : acc, 0);
+         const a_grade = a.results.reduce((acc, answer) => (answer.is_correct ? acc + 1 : acc), 0);
+         const b_grade = b.results.reduce((acc, answer) => (answer.is_correct ? acc + 1 : acc), 0);
          return b_grade - a_grade; // Ordenar de mayor a menor
       });
       student_results.forEach((result) => {
          const student_row = document.createElement("tr");
          const student_cell = document.createElement("td");
          const grade_cell = document.createElement("td");
-         const grade = result.results.reduce((acc, answer) => answer.is_correct ? acc + 1 : acc, 0);
+         const grade = result.results.reduce((acc, answer) => (answer.is_correct ? acc + 1 : acc), 0);
 
          student_cell.textContent = result.email;
          grade_cell.textContent = grade + " pts";
 
-         grade_cell.style.color = "var(--main-color-google-form)";
-         grade_cell.style.fontWeight = "bold";
+         grade_cell.classList.add("td-score");
 
          student_row.appendChild(student_cell);
          student_row.appendChild(grade_cell);
          students_tab.appendChild(student_row);
       });
-
    }
 
-   async function Get_Quiz_Results(performed_id): Promise<{ student_results: QuizResult[]; quiz_data: Quiz } | null> {
+   async function Show_Question_Results(quiz_data, student_results) {
+      const questions_tab = document.querySelector("#question-results") as HTMLDivElement;
+
+      console.log(questions_tab);
+
+      questions_tab.innerHTML = "";
+
+      quiz_data.questions.forEach((question, index) => {
+         const question_row = document.createElement("tr");
+         const question_cell = document.createElement("td");
+         const grade_cell = document.createElement("td");
+
+         const XD = question.question;
+         console.log(XD);
+
+         question_cell.textContent = `Pregunta ${index + 1}: ${question.question}`;
+
+         // Calcular la calificación promedio para esta pregunta
+         let correct_count = 0;
+         student_results.forEach((result) => {
+            if (result.results[index]?.is_correct) {
+               correct_count += 1;
+            }
+         });
+         const average_grade = (correct_count / student_results.length) * 1; // Asumiendo 1 punto por pregunta
+
+         grade_cell.textContent = average_grade.toFixed(2) + " pts";
+
+         grade_cell.classList.add("td-score");
+
+         question_row.appendChild(question_cell);
+         // question_row.appendChild(grade_cell);
+         questions_tab.appendChild(question_row);
+      });
+   }
+
+   async function Get_Quiz_Results(performed_id): Promise<{ student_results: StudentResult[]; quiz_data: Quiz } | null> {
       try {
          const response = await fetch(`/request/quiz/results/get/${performed_id}`);
 

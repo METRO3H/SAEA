@@ -37,6 +37,7 @@ export interface QuestionItem {
    question: string;
    answers: string[];
    correct_answer_index: number;
+   question_position: number;
 }
 
 export interface QuestionItem2Generate extends QuestionItem {
@@ -130,12 +131,13 @@ export interface AnswerResult {
    answer_value: string;
 }
 
-export interface QuizResult {
+export interface StudentResult {
    email: string;
    results: {
       question_position: number;
       correct_answer_index: number;
       response_answer_index: number;
+      is_correct: boolean;
    }[];
 }
 
@@ -145,4 +147,9 @@ export interface BadgeMap {
    content: string[];
    objective: string[];
    skill: string[];
+}
+
+export interface QuizDataAll {
+   quiz: Quiz;
+   student_results: StudentResult[];
 }

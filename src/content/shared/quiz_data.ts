@@ -1,5 +1,5 @@
 import { atom, computed } from "nanostores";
-import type { Quiz } from "@content/types";
+import type { Quiz, StudentResult } from "@content/types";
 
 export const $quiz_store = atom<Quiz>({
    quiz_id: "",
@@ -48,6 +48,8 @@ export const $quiz_store = atom<Quiz>({
    questions: [],
 });
 
+export const $quiz_results_store = atom<StudentResult[]>([]);
+
 export const $update_spect_flag = atom(false);
 
 export const $quiz_id = computed($quiz_store, ($quiz_store) => $quiz_store.quiz_id);
@@ -57,4 +59,3 @@ export const $quiz_subject = computed($quiz_store, ($quiz_store) => $quiz_store.
 export const $quiz_creation_date = computed($quiz_store, ($quiz_store) => $quiz_store.creation_date);
 export const $specifications_table = computed($quiz_store, ($quiz_store) => $quiz_store.specifications_table);
 export const $questions = computed($quiz_store, ($quiz_store) => $quiz_store.questions);
-
