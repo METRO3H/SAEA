@@ -59,3 +59,30 @@ export const $quiz_subject = computed($quiz_store, ($quiz_store) => $quiz_store.
 export const $quiz_creation_date = computed($quiz_store, ($quiz_store) => $quiz_store.creation_date);
 export const $specifications_table = computed($quiz_store, ($quiz_store) => $quiz_store.specifications_table);
 export const $questions = computed($quiz_store, ($quiz_store) => $quiz_store.questions);
+
+
+export const $quiz_results_all = computed([$quiz_store, $quiz_results_store],
+    ($quiz_store, $quiz_results_store) => {
+
+         const student_result_map = new Map<number, number>();
+   $quiz_results_store.forEach((result) => {
+      result.results.forEach((res) => {
+         const question_student_result = res.is_correct ? (student_result_map.get(res.question_position) || 0) + 1 : 0;
+
+         student_result_map.set(res.question_position, question_student_result);
+      });
+   });
+
+   const questions_performance = $quiz_store.questions.map((questionItem, index) => {
+      const question_result = student_result_map.get(questionItem.question_position) || 0;
+      const performance = (question_result * 100) / $quiz_results_store.length;
+      return {
+         question_position: questionItem.question_position,
+         question: questionItem.question,
+         performance: question_result + " / " + $quiz_results_store.length,
+         percentage: Math.round(performance * 10) / 10,
+      };
+   });
+
+   return questions_performance;
+    });
