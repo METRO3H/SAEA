@@ -320,41 +320,6 @@ const quiz_structure_url = Astro.url.origin + "/quiz/create/performed/" + Astro.
       });
    }
 
-   async function Show_Question_Results(quiz_data, student_results) {
-      const questions_tab = document.querySelector("#question-results") as HTMLDivElement;
-
-      console.log(questions_tab);
-
-      questions_tab.innerHTML = "";
-
-      quiz_data.questions.forEach((question, index) => {
-         const question_row = document.createElement("tr");
-         const question_cell = document.createElement("td");
-         const grade_cell = document.createElement("td");
-
-         const XD = question.question;
-         console.log(XD);
-
-         question_cell.textContent = `Pregunta ${index + 1}: ${question.question}`;
-
-         // Calcular la calificación promedio para esta pregunta
-         let correct_count = 0;
-         student_results.forEach((result) => {
-            if (result.results[index]?.is_correct) {
-               correct_count += 1;
-            }
-         });
-         const average_grade = (correct_count / student_results.length) * 1; // Asumiendo 1 punto por pregunta
-
-         grade_cell.textContent = average_grade.toFixed(2) + " pts";
-
-         grade_cell.classList.add("td-score");
-
-         question_row.appendChild(question_cell);
-         // question_row.appendChild(grade_cell);
-         questions_tab.appendChild(question_row);
-      });
-   }
 
    async function Get_Quiz_Results(performed_id): Promise<{ student_results: StudentResult[]; quiz_data: Quiz } | null> {
       try {
@@ -466,33 +431,22 @@ const quiz_structure_url = Astro.url.origin + "/quiz/create/performed/" + Astro.
 
    function Stat_Cards(grade_distribution, max_grade_possible) {
       const average_grade_element = document.getElementById("average-grade") as HTMLDivElement;
-      // const median_grade_element = document.getElementById("median-grade") as HTMLDivElement;
       const mode_grade_element = document.getElementById("mode-grade") as HTMLDivElement;
-      // const pass_rate_element = document.getElementById("pass-rate") as HTMLDivElement;
-      // const fail_rate_element = document.getElementById("fail-rate") as HTMLDivElement;
       const highest_grade_element = document.getElementById("highest-grade") as HTMLDivElement;
       const lowest_grade_element = document.getElementById("lowest-grade") as HTMLDivElement;
 
       const average_grade = Average_Grade(grade_distribution);
-      const median_grade = Median_Grade(grade_distribution);
       const mode_grade = Mode_Grade(grade_distribution);
-      const pass_rate = Pass_Rate(grade_distribution, max_grade_possible);
-      const fail_rate = 1 - pass_rate;
+      const highest_grade = grade_distribution[grade_distribution.length - 1];
+      const lowest_grade = grade_distribution[0];
 
-      average_grade_element.textContent = average_grade.toFixed(2) + " pts";
-      // median_grade_element.textContent = median_grade.toFixed(2);
-      mode_grade_element.textContent = mode_grade.join(", ") + " pts";
-      // pass_rate_element.textContent = (pass_rate * 100).toFixed(1) + "%";
-      // fail_rate_element.textContent = (fail_rate * 100).toFixed(1) + "%";
+      average_grade_element.textContent = average_grade ? average_grade.toFixed(2) + " pts": "...";
+      mode_grade_element.textContent = mode_grade.length > 0 ? mode_grade.join(", ") + " pts": "...";
 
-      highest_grade_element.textContent = grade_distribution[grade_distribution.length - 1] + " pts";
-      lowest_grade_element.textContent = grade_distribution[0] + " pts";
 
-      // console.log("Average grade:", average_grade);
-      // console.log("Median grade:", median_grade);
-      // console.log("Mode grade:", mode_grade);
-      // console.log("Pass rate:", pass_rate);
-      // console.log("Fail rate:", fail_rate);
+      highest_grade_element.textContent = highest_grade ? highest_grade + " pts": "...";
+      lowest_grade_element.textContent = lowest_grade ? lowest_grade + " pts": "...";
+
    }
 
    function Doughnut_Graph(grade_distribution, max_grade_possible) {

@@ -9,14 +9,14 @@ export let quiz_data_store = atom<Quiz>({
   quiz_id: "",
   google_form_url: "",
   quiz_title: "",
-  created_by: -1,
   quiz_subject: "",
-  quiz_creation_date: "",
+  creation_date: "",
   specifications_table: {
     total_questions: 0,
     quiz_skills: ["", "", ""],
     items: [
       {
+        row_position: 0,
         thematic_area: "",
         content: "",
         objective: "",
@@ -24,6 +24,7 @@ export let quiz_data_store = atom<Quiz>({
         row_skills: [],
       },
       {
+        row_position: 1,
         thematic_area: "",
         content: "",
         objective: "",
@@ -31,6 +32,7 @@ export let quiz_data_store = atom<Quiz>({
         row_skills: [],
       },
       {
+        row_position: 2,
         thematic_area: "",
         content: "",
         objective: "",
@@ -38,6 +40,7 @@ export let quiz_data_store = atom<Quiz>({
         row_skills: [],
       },
       {
+        row_position: 3,
         thematic_area: "",
         content: "",
         objective: "",
@@ -51,7 +54,7 @@ export let quiz_data_store = atom<Quiz>({
 
 export const search_input_store = atom<string>("");
 
-export const quiz_type_store = atom<boolean>(true);
+export const quiz_type_store = atom<boolean>(false);
 
 export const quiz_list_length_store = atom<QuizListLengthType>({
   draft: 0,

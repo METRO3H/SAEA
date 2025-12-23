@@ -19,14 +19,16 @@ const profile_data = await Get_Profile_Data(session_token);
         <div id="filter-options">
           Cuestionarios
           <ul id="quiz-type-options">
-            <li id="drafted" class="quiz-type-options-item-active">
-              <span>Borradores</span>
-              <span class="type-counter">-</span>
-            </li>
-            <li id="performed">
+            <li id="performed" class="quiz-type-options-item-active">
               <span>Realizados</span>
               <span class="type-counter">-</span>
             </li>
+
+            <li id="drafted" >
+              <span>Borradores</span>
+              <span class="type-counter">-</span>
+            </li>
+            
           </ul>
         </div>
       </div>
@@ -139,8 +141,8 @@ const profile_data = await Get_Profile_Data(session_token);
     target.classList.add("quiz-type-options-item-active");
 
     list_title.textContent = !quiz_type_store.get()
-      ? "Cuestionarios borradores"
-      : "Cuestionarios realizados";
+      ? "Cuestionarios realizados"
+      : "Cuestionarios borradores";
 
     quiz_type_store.set(!quiz_type_store.get());
   }
