@@ -40,7 +40,7 @@
    font-style: normal;
    font-display: swap;
 }
-html{
+html {
    scrollbar-gutter: stable;
 }
 body {
@@ -59,7 +59,6 @@ body {
    flex-direction: column;
    min-height: 100vh;
    overflow: auto;
-   
 }
 main {
    flex: 1;
@@ -166,3 +165,5 @@ button {
 button:hover {
    opacity: 90%;
 }
+
+

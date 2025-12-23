@@ -1,3 +1,6 @@
+table {
+   font-family: sans-serif;
+}
 .td-score {
    font-weight: bold;
    color: var(--main-color-google-form) !important;
@@ -6,24 +9,38 @@
    cursor: pointer;
 }
 .th-sort > span {
-    margin: 0;
-    padding: 0;
+   margin: 0;
+   padding: 0;
    padding-left: 1.25rem;
    font-size: 1.25rem;
+   user-select: none;
 }
-.th-sort > i {
-    visibility: hidden;
-}
+/* .th-sort > i {
+   visibility: hidden;
+} */
 .th-sort:hover {
    color: var(--main-color-google-form);
    transition: color 100ms ease-in-out;
    background-color: var(--main-color-google-form-light);
 }
 
-.th-sort:hover > i {
-    visibility: visible!important;
+/* .th-sort:hover > i {
+   visibility: visible !important;
+} */
+
+.th-sort-active {
+   color: var(--main-color-google-form) !important;
+   background-color: var(--main-color-google-form-light) !important;
 }
 
 th {
-    vertical-align: middle;
+   vertical-align: middle;
+}
+svg {
+   padding-bottom: 0.15rem;
+}
+
+.table-hover > tbody > tr:hover > * {
+   --mdb-table-hover-bg: var(--main-color-google-form-light);
+   --mdb-table-hover-color: var(--main-color-google-form);
 }
