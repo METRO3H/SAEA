@@ -2,7 +2,7 @@
 import Document from "@layouts/document.astro";
 import { Get_Profile_Data } from "@handlers/get_profile_data";
 
-if (!Astro.cookies.has("session_token")) return Astro.redirect("/login");
+return Astro.redirect("/login");
 const session_token =  Astro.cookies.get("session_token")?.value as string;
 const profile_data = await Get_Profile_Data(session_token);
 ---
