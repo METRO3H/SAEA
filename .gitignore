@@ -31,3 +31,4 @@ pnpm-debug.log*
 
 #ignore folders
 server/test/*
+credentials.json
