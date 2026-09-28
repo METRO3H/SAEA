@@ -567,22 +567,6 @@ The current implementation is centered around multiple-choice assessments and Go
 
 ---
 
-## Project Status
-
-**Version:** `0.0.1`
-
-SAEA is an actively developed project. Some areas of the application may still contain experimental, testing, or legacy code, particularly within the database and development tooling.
-
----
-
-## License
-
-No license is currently specified in the project repository.
-
-If this project is intended for public distribution, add an appropriate `LICENSE` file and update this section accordingly.
-
----
-
 ## Acknowledgements
 
 SAEA is built on top of several open-source technologies and Google APIs, including:
@@ -598,8 +582,6 @@ SAEA is built on top of several open-source technologies and Google APIs, includ
 
 ---
 
-## SAEA
+## Author
 
-**Sistema de Análisis Educativo y Autoevaluación**
-
-A platform for creating assessments, integrating them with Google Forms, and turning student responses into useful educational insights.
+[METRO3H](https://github.com/METRO3H)
