@@ -1,18 +1,21 @@
 // db.js
 import mysql from 'mysql2/promise'; // Importar la biblioteca mysql2 usando ES6
+import dotenv from 'dotenv';
 
+dotenv.config();
 // Crear el pool de conexión
 const pool = mysql.createPool({
-  host: '172.30.46.0',
-  user: 'admin',
-  port: 3306,
-  password: '201271', // Cambia por tu contraseña
-  database: 'SAEA',     // Cambia por tu base de datos
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  port: Number(process.env.DB_PORT),
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
   dateStrings: true,
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0
 });
+
 
 // Función base para manejar consultas
 export async function Execute_Query(query, params = []) {
